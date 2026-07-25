@@ -1,5 +1,6 @@
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import { useBootstrap } from '../api/useBootstrap';
+import { TabNavigator } from '../navigation/TabNavigator';
 
 export const BootstrapScreen = () => {
   const { data, error, isLoading, refetch } = useBootstrap();
@@ -37,9 +38,8 @@ export const BootstrapScreen = () => {
   }
 
   return (
-    <View style={styles.container} testID="bootstrap-success">
-      <Text style={styles.title}>Casa Maiz</Text>
-      <Text style={styles.subtitle}>Contract v{data.contractVersion} loaded</Text>
+    <View style={styles.fill} testID="bootstrap-success">
+      <TabNavigator destinations={data.data.navigation} />
     </View>
   );
 };
@@ -50,6 +50,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
+  },
+  fill: {
+    flex: 1,
   },
   title: {
     fontSize: 24,

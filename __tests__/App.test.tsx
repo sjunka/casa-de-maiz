@@ -11,7 +11,12 @@ import App from '../App';
 
 const envelope = (overrides: Record<string, unknown> = {}) => ({
   contractVersion: '1.1',
-  data: {},
+  data: {
+    navigation: [
+      { path: '/', label: 'Home', platforms: ['ios', 'android'], highlighted: true },
+      { path: '/menu', label: 'Menu', platforms: ['ios', 'android'], highlighted: false },
+    ],
+  },
   nextChangeAt: null,
   preview: false,
   resolvedContext: {},
