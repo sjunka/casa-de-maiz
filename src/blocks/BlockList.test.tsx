@@ -140,6 +140,66 @@ test('a channel value the app does not recognise (e.g. "web") does not break par
   expect(screen.getByText('All platforms')).toBeTruthy();
 });
 
+test('an imageBlock renders its caption and honours fullBleed through the registry', async () => {
+  const layout: BlockEnvelope[] = [
+    {
+      blockType: 'imageBlock',
+      contractVersion: '1.1',
+      channels: ['ios', 'android'],
+      image: { url: '/menu/tacos.jpg', alt: 'Tacos al pastor' },
+      caption: 'Tacos al pastor',
+      fullBleed: true,
+    },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Tacos al pastor')).toBeTruthy();
+});
+
+test('an imageBlock with no image degrades to just its caption, without throwing', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'imageBlock', contractVersion: '1.1', channels: ['ios', 'android'], caption: 'Sin imagen' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Sin imagen')).toBeTruthy();
+});
+
+test('an imageBlock with a malformed image falls back to the unknown-block marker without breaking the page', async () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  const layout: BlockEnvelope[] = [
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Antes' },
+    {
+      blockType: 'imageBlock',
+      contractVersion: '1.1',
+      channels: ['ios', 'android'],
+      image: { url: 42 },
+      caption: 'Malformada',
+    },
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Despues' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Antes')).toBeTruthy();
+  expect(screen.getByText('Despues')).toBeTruthy();
+  expect(screen.queryByText('Malformada')).toBeNull();
+});
+
 test('a block whose channels exclude the running platform is skipped', async () => {
   const layout: BlockEnvelope[] = [
     { blockType: 'textBlock', contractVersion: '1.1', channels: ['android'], body: 'Android only' },

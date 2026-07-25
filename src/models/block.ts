@@ -73,12 +73,21 @@ export const restaurantCtaBlockSchema = blockBaseSchema.extend({
 });
 export type RestaurantCtaBlock = z.infer<typeof restaurantCtaBlockSchema>;
 
+export const imageBlockSchema = blockBaseSchema.extend({
+  blockType: z.literal('imageBlock'),
+  image: mediaAssetSchema.optional(),
+  caption: z.string().optional(),
+  fullBleed: z.boolean().default(false),
+});
+export type ImageBlock = z.infer<typeof imageBlockSchema>;
+
 export const KNOWN_BLOCK_SCHEMAS = {
   cardGrid: cardGridBlockSchema,
   carousel: carouselBlockSchema,
   promoRail: promoRailBlockSchema,
   textBlock: textBlockSchema,
   restaurantCTA: restaurantCtaBlockSchema,
+  imageBlock: imageBlockSchema,
 } as const;
 
 export type KnownBlockType = keyof typeof KNOWN_BLOCK_SCHEMAS;
@@ -88,7 +97,8 @@ export type Block =
   | CarouselBlock
   | PromoRailBlock
   | TextBlock
-  | RestaurantCtaBlock;
+  | RestaurantCtaBlock
+  | ImageBlock;
 
 export const blockEnvelopeSchema = z
   .object({

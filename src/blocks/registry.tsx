@@ -7,6 +7,7 @@ import { CarouselBlock } from './CarouselBlock';
 import { PromoRailBlock } from './PromoRailBlock';
 import { TextBlock } from './TextBlock';
 import { RestaurantCtaBlock } from './RestaurantCtaBlock';
+import { ImageBlock } from './ImageBlock';
 import { UnknownBlock } from './UnknownBlock';
 
 type UnsafeBlockComponent = (props: { block: never }) => React.JSX.Element | null;
@@ -17,6 +18,7 @@ const REGISTRY: Record<KnownBlockType, UnsafeBlockComponent> = {
   promoRail: PromoRailBlock,
   textBlock: TextBlock,
   restaurantCTA: RestaurantCtaBlock,
+  imageBlock: ImageBlock,
 } as Record<KnownBlockType, UnsafeBlockComponent>;
 
 const isKnownBlockType = (blockType: string): blockType is KnownBlockType =>
