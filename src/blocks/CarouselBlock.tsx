@@ -20,7 +20,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const Slide = ({ item }: ListRenderItemInfo<Slide>) => (
   <View style={styles.slide}>
-    <CmsImage image={item.image} mobileImage={item.mobileImage} style={styles.image} />
+    <CmsImage image={item.image} style={styles.image} />
     {item.title ? <Text style={styles.title}>{item.title}</Text> : null}
     {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
   </View>
@@ -55,6 +55,7 @@ export const CarouselBlock = ({ block }: Props) => {
 
   return (
     <View>
+      {block.title ? <Text style={styles.heading}>{block.title}</Text> : null}
       <FlatList
         ref={listRef}
         data={block.slides}
@@ -99,6 +100,7 @@ export const CarouselBlock = ({ block }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  heading: { marginHorizontal: 16, marginTop: 16, fontSize: 20, fontWeight: '700' },
   slide: { padding: 16, width: SCREEN_WIDTH },
   image: { borderRadius: 8, backgroundColor: '#eee' },
   title: { marginTop: 8, fontSize: 18, fontWeight: '600' },

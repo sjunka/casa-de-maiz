@@ -12,10 +12,20 @@ import App from '../App';
 const envelope = (overrides: Record<string, unknown> = {}) => ({
   contractVersion: '1.1',
   data: {
-    navigation: [
-      { path: '/', label: 'Home', platforms: ['ios', 'android'], highlighted: true },
-      { path: '/menu', label: 'Menu', platforms: ['ios', 'android'], highlighted: false },
-    ],
+    navigation: {
+      items: [
+        {
+          label: 'Home',
+          highlighted: true,
+          destination: { key: 'home', label: 'Home', path: '/', supportedPlatforms: ['ios', 'android'] },
+        },
+        {
+          label: 'Menu',
+          highlighted: false,
+          destination: { key: 'menu', label: 'Menu', path: '/menu', supportedPlatforms: ['ios', 'android'] },
+        },
+      ],
+    },
   },
   nextChangeAt: null,
   preview: false,

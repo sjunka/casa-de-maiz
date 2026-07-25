@@ -11,9 +11,9 @@ const block: RestaurantCtaBlockData = {
   blockType: 'restaurantCTA',
   contractVersion: '1.1',
   channels: ['ios', 'android'],
-  heading: 'Reserva tu mesa',
-  buttonLabel: 'Reservar ahora',
-  destination: '/reservas',
+  headline: 'Reserva tu mesa',
+  label: 'Reservar ahora',
+  href: '/reservas',
 };
 
 test('navigates through the destination resolver when pressed', async () => {

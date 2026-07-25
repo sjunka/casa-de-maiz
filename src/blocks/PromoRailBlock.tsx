@@ -9,7 +9,8 @@ const keyExtractor = (_: Promotion, index: number) => `promo-${index}`;
 
 const PromotionItem = ({ item }: ListRenderItemInfo<Promotion>) => (
   <View style={styles.card}>
-    <CmsImage image={item.image} mobileImage={item.mobileImage} style={styles.image} />
+    <CmsImage image={item.desktopImage} mobileImage={item.mobileImage} style={styles.image} />
+    {item.eyebrow ? <Text style={styles.eyebrow}>{item.eyebrow}</Text> : null}
     <Text style={styles.title}>{item.title}</Text>
     {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
   </View>
@@ -17,7 +18,7 @@ const PromotionItem = ({ item }: ListRenderItemInfo<Promotion>) => (
 
 export const PromoRailBlock = ({ block }: Props) => (
   <View>
-    {block.heading ? <Text style={styles.heading}>{block.heading}</Text> : null}
+    {block.title ? <Text style={styles.heading}>{block.title}</Text> : null}
     <FlatList
       data={block.promotions}
       keyExtractor={keyExtractor}
@@ -30,10 +31,11 @@ export const PromoRailBlock = ({ block }: Props) => (
 );
 
 const styles = StyleSheet.create({
-  heading: { marginHorizontal: 16, marginTop: 16, fontSize: 20, fontWeight: '600' },
+  heading: { marginHorizontal: 16, marginTop: 16, fontSize: 20, fontWeight: '700' },
   container: { padding: 16, gap: 12 },
   card: { width: 220 },
   image: { borderRadius: 8, backgroundColor: '#eee' },
-  title: { marginTop: 8, fontSize: 15, fontWeight: '600' },
+  eyebrow: { marginTop: 8, fontSize: 12, color: '#8a2c1d', fontWeight: '600' },
+  title: { marginTop: 2, fontSize: 15, fontWeight: '600' },
   description: { marginTop: 4, fontSize: 13, color: '#666' },
 });

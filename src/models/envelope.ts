@@ -4,9 +4,9 @@ export const envelopeSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
   z.object({
     contractVersion: z.string(),
     data: dataSchema,
-    nextChangeAt: z.string().nullable(),
-    preview: z.boolean(),
-    resolvedContext: z.record(z.string(), z.unknown()),
+    nextChangeAt: z.string().nullable().optional(),
+    preview: z.boolean().optional(),
+    resolvedContext: z.record(z.string(), z.unknown()).optional(),
   });
 
 export type Envelope<T extends z.ZodTypeAny> = z.infer<

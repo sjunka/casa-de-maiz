@@ -3,47 +3,53 @@ import { NavigationContainer } from '@react-navigation/native';
 import { BlockList } from './BlockList';
 import type { BlockEnvelope } from '../models/block';
 
+// Shaped after a real /api/content/v1/pages/home response from the Casa Maiz CMS.
 const realHomePayload: BlockEnvelope[] = [
   {
     blockType: 'cardGrid',
     contractVersion: '1.1',
-    channels: ['ios', 'android'],
+    channels: ['web', 'ios', 'android'],
+    eyebrow: 'Menu de temporada',
+    title: 'De la milpa a la mesa',
     cards: [
-      { title: 'Tacos al pastor', description: 'Slow-roasted pork, pineapple, cilantro' },
-      { title: 'Elote', description: 'Grilled corn, mayo, cotija' },
+      { title: 'Tacos al pastor', description: 'Cerdo, pina, cilantro', price: '$220' },
+      { title: 'Elote', description: 'Mayo, cotija, chile', price: '$85' },
     ],
   },
   {
     blockType: 'carousel',
     contractVersion: '1.1',
     channels: ['ios', 'android'],
+    title: 'Rituales de la casa',
     slides: [
-      { title: 'Nueva temporada', description: 'Platillos de otoño' },
+      { title: 'Nueva temporada', description: 'Platillos de otono' },
       { title: 'Fin de semana', description: 'Musica en vivo' },
     ],
   },
   {
     blockType: 'promoRail',
     contractVersion: '1.1',
-    channels: ['ios', 'android'],
-    heading: 'Promociones',
-    promotions: [{ title: '2x1 Margaritas', description: 'Todos los martes' }],
+    channels: ['web', 'ios', 'android'],
+    title: 'Promociones',
+    promotions: [{ title: '2x1 Margaritas', eyebrow: 'Solo por temporada', description: 'Todos los martes' }],
   },
   {
     blockType: 'textBlock',
     contractVersion: '1.1',
-    channels: ['ios', 'android'],
+    channels: ['web', 'ios', 'android'],
+    eyebrow: 'Nuestra casa',
     heading: 'Nuestra historia',
-    body: 'Casa Maiz nacio en el corazon de la ciudad hace veinte años.',
+    body: 'Casa Maiz nacio en el corazon de la ciudad hace veinte anos.',
+    alignment: 'center',
   },
   {
     blockType: 'restaurantCTA',
     contractVersion: '1.1',
-    channels: ['ios', 'android'],
-    heading: 'Reserva tu mesa',
+    channels: ['web', 'ios', 'android'],
+    headline: 'Reserva tu mesa',
     description: 'Vive la experiencia Casa Maiz',
-    buttonLabel: 'Reservar ahora',
-    destination: '/reservas',
+    label: 'Reservar ahora',
+    href: '/reservas',
   },
 ];
 
@@ -54,8 +60,11 @@ test('a real Home payload renders every block type in order with its authored co
     </NavigationContainer>,
   );
 
+  expect(screen.getByText('De la milpa a la mesa')).toBeTruthy();
   expect(screen.getByText('Tacos al pastor')).toBeTruthy();
+  expect(screen.getByText('$220')).toBeTruthy();
   expect(screen.getByText('Elote')).toBeTruthy();
+  expect(screen.getByText('Rituales de la casa')).toBeTruthy();
   expect(screen.getByText('Nueva temporada')).toBeTruthy();
   expect(screen.getByText('Promociones')).toBeTruthy();
   expect(screen.getByText('2x1 Margaritas')).toBeTruthy();
@@ -113,6 +122,22 @@ test('a block declaring an unsupported contract version is skipped while the res
 
   expect(screen.queryByText('Incompatible')).toBeNull();
   expect(screen.getByText('Compatible')).toBeTruthy();
+});
+
+test('a channel value the app does not recognise (e.g. "web") does not break parsing or filtering', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['web'], body: 'Web only' },
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['web', 'ios', 'android'], body: 'All platforms' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.queryByText('Web only')).toBeNull();
+  expect(screen.getByText('All platforms')).toBeTruthy();
 });
 
 test('a block whose channels exclude the running platform is skipped', async () => {
