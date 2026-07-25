@@ -23,6 +23,8 @@ const envelope = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+const homeEnvelope = () => envelope({ data: { layout: [] } });
+
 const jsonResponse = (body: unknown, status = 200) => ({
   ok: status >= 200 && status < 300,
   status,
@@ -35,7 +37,11 @@ beforeEach(() => {
 });
 
 test('shows a loading state on launch, then the success state once bootstrap is validated', async () => {
-  globalThis.fetch = jest.fn().mockResolvedValue(jsonResponse(envelope())) as unknown as typeof fetch;
+  globalThis.fetch = jest.fn(url =>
+    Promise.resolve(
+      jsonResponse(String(url).includes('/home') ? homeEnvelope() : envelope()),
+    ),
+  ) as unknown as typeof fetch;
 
   await render(<App />);
 
@@ -45,10 +51,16 @@ test('shows a loading state on launch, then the success state once bootstrap is 
 });
 
 test('shows a user-safe error with a working retry when the request fails', async () => {
-  const fetchMock = jest
-    .fn()
-    .mockRejectedValueOnce(new Error('offline'))
-    .mockResolvedValueOnce(jsonResponse(envelope()));
+  let bootstrapCalls = 0;
+  const fetchMock = jest.fn(url => {
+    if (String(url).includes('/home')) {
+      return Promise.resolve(jsonResponse(homeEnvelope()));
+    }
+    bootstrapCalls += 1;
+    return bootstrapCalls === 1
+      ? Promise.reject(new Error('offline'))
+      : Promise.resolve(jsonResponse(envelope()));
+  });
   globalThis.fetch = fetchMock as unknown as typeof fetch;
 
   await render(<App />);
