@@ -1,7 +1,14 @@
 import { z } from 'zod';
 import { API_BASE_URL } from './config';
 import { buildDeliveryContext } from './deliveryContext';
-import { ApiError, httpError, networkError, parseError, unsupportedContractError } from './apiError';
+import {
+  ApiError,
+  httpError,
+  networkError,
+  notFoundError,
+  parseError,
+  unsupportedContractError,
+} from './apiError';
 import { envelopeSchema } from '../models/envelope';
 import { isContractVersionCompatible, type ContractVersion } from '../models/contractVersion';
 
@@ -28,7 +35,7 @@ export const fetchEnvelope = async <T extends z.ZodTypeAny>(
   }
 
   if (!response.ok) {
-    return logAndThrow(httpError(path, response.status));
+    return logAndThrow(response.status === 404 ? notFoundError(path) : httpError(path, response.status));
   }
 
   let json: unknown;

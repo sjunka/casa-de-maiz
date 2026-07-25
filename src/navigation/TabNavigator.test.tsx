@@ -49,5 +49,5 @@ test('builds tabs only for destinations that support the running platform, in th
   expect(screen.getByText('Inicio')).toBeTruthy();
   expect(screen.getByText('Reservar')).toBeTruthy();
 
-  await waitFor(() => expect(screen.getByTestId('home-success')).toBeTruthy());
+  await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
 });
