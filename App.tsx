@@ -3,25 +3,39 @@
  */
 
 import { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { queryClient } from './src/api/queryClient';
 import { BootstrapScreen } from './src/screens/BootstrapScreen';
 import { navigationRef, getCurrentRouteName } from './src/navigation/navigationRef';
+import { useTheme } from './src/theme/useTheme';
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const theme = useTheme();
   const [currentRouteName, setCurrentRouteName] = useState('home');
+
+  const navigationTheme = {
+    ...(theme.scheme === 'dark' ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(theme.scheme === 'dark' ? DarkTheme.colors : DefaultTheme.colors),
+      background: theme.colors.background,
+      card: theme.colors.surface,
+      text: theme.colors.text,
+      border: theme.colors.border,
+      primary: theme.colors.accent,
+    },
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <View style={styles.container}>
+        <StatusBar barStyle={theme.scheme === 'dark' ? 'light-content' : 'dark-content'} />
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
           <NavigationContainer
             ref={navigationRef}
+            theme={navigationTheme}
             onStateChange={() => setCurrentRouteName(getCurrentRouteName() ?? 'home')}
           >
             <BootstrapScreen currentRouteName={currentRouteName} />
