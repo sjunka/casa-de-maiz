@@ -1,3 +1,7 @@
+jest.mock('react-native-device-info', () => ({
+  getVersion: () => '1.0.0',
+}));
+
 import { render, screen } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { TabNavigator } from './TabNavigator';
