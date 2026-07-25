@@ -3,6 +3,7 @@ import { useHome } from '../api/useHome';
 import { useBootstrap } from '../api/useBootstrap';
 import { BlockList } from '../blocks/BlockList';
 import { ContentStatus, SavedContentBanner } from '../ui/ContentStatus';
+import { trackScrollProgress } from '../alerts/scrollProgress';
 
 export const HomeScreen = () => {
   const { data, error, isLoading, isFetching, refetch } = useHome();
@@ -32,6 +33,8 @@ export const HomeScreen = () => {
     <ScrollView
       style={styles.fill}
       testID="home-success"
+      onScroll={trackScrollProgress('home')}
+      scrollEventThrottle={100}
       refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
     >
       {data.isSaved && <SavedContentBanner />}

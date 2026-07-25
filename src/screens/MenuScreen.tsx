@@ -2,6 +2,7 @@ import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { useMenu } from '../api/useMenu';
 import { BlockList } from '../blocks/BlockList';
 import { ContentStatus, SavedContentBanner } from '../ui/ContentStatus';
+import { trackScrollProgress } from '../alerts/scrollProgress';
 
 export const MenuScreen = () => {
   const { data, error, isLoading, isFetching, refetch } = useMenu();
@@ -29,6 +30,8 @@ export const MenuScreen = () => {
     <ScrollView
       style={styles.fill}
       testID="menu-success"
+      onScroll={trackScrollProgress('menu')}
+      scrollEventThrottle={100}
       refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
     >
       {data.isSaved && <SavedContentBanner />}

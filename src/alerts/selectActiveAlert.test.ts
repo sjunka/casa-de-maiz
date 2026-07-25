@@ -36,8 +36,13 @@ test('an unsupported placement renders nothing', () => {
 });
 
 test('an unsupported trigger renders nothing', () => {
-  const alerts = [alert({ trigger: { type: 'scrollPercent', scrollPercent: 30 } as Alert['trigger'] })];
+  const alerts = [alert({ trigger: { type: 'timeOnPage', afterMs: 5000 } as Alert['trigger'] })];
   expect(selectActiveAlert(alerts, 'home', new Set())).toBeNull();
+});
+
+test('a scrollPercent trigger is selectable — arming is the banner’s job', () => {
+  const alerts = [alert({ trigger: { type: 'scrollPercent', scrollPercent: 30 } })];
+  expect(selectActiveAlert(alerts, 'home', new Set())).toEqual(alerts[0]);
 });
 
 test('a suppressed (dismissed, in-cooldown) alert is excluded', () => {

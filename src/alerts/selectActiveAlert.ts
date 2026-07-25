@@ -1,10 +1,10 @@
 import type { Alert } from '../models/alert';
 
 const SUPPORTED_PLACEMENT = 'topBar';
-const SUPPORTED_TRIGGER = 'load';
+const SUPPORTED_TRIGGERS = ['load', 'scrollPercent'];
 
 const isSupported = (alert: Alert): boolean =>
-  alert.placement === SUPPORTED_PLACEMENT && alert.trigger.type === SUPPORTED_TRIGGER;
+  alert.placement === SUPPORTED_PLACEMENT && SUPPORTED_TRIGGERS.includes(alert.trigger.type);
 
 const targetsPage = (alert: Alert, pageSlug: string): boolean =>
   alert.pageSlugs.length === 0 || alert.pageSlugs.includes(pageSlug);

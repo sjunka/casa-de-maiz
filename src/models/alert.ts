@@ -11,6 +11,7 @@ const alertTriggerSchema = z
   .object({
     type: z.string(),
     delayMs: z.number().optional(),
+    scrollPercent: z.number().optional(),
   })
   .passthrough();
 
