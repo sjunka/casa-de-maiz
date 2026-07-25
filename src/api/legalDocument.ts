@@ -1,6 +1,6 @@
 import { fetchEnvelope } from './client';
+import { SUPPORTED_CONTRACT_VERSION } from './contract';
 import { legalDocumentDataSchema } from '../models/legalDocument';
-import { SUPPORTED_CONTRACT_VERSION } from './bootstrap';
 
 export const fetchLegalDocument = (key: string) =>
-  fetchEnvelope(`/legal/${key}`, legalDocumentDataSchema, SUPPORTED_CONTRACT_VERSION);
+  fetchEnvelope(`/api/content/v1/legal/${key}`, legalDocumentDataSchema, SUPPORTED_CONTRACT_VERSION);

@@ -1,6 +1,7 @@
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import { useBootstrap } from '../api/useBootstrap';
 import { TabNavigator } from '../navigation/TabNavigator';
+import { flattenNavigation } from '../models/bootstrap';
 
 export const BootstrapScreen = () => {
   const { data, error, isLoading, refetch } = useBootstrap();
@@ -39,7 +40,7 @@ export const BootstrapScreen = () => {
 
   return (
     <View style={styles.fill} testID="bootstrap-success">
-      <TabNavigator destinations={data.data.navigation} />
+      <TabNavigator destinations={flattenNavigation(data.data.navigation)} />
     </View>
   );
 };
