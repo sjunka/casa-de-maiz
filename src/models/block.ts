@@ -81,6 +81,31 @@ export const imageBlockSchema = blockBaseSchema.extend({
 });
 export type ImageBlock = z.infer<typeof imageBlockSchema>;
 
+export const formFieldOptionSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+});
+
+export const formFieldSchema = z.object({
+  blockType: z.string(),
+  name: z.string(),
+  label: z.string().optional(),
+  required: z.boolean().default(false),
+  options: z.array(formFieldOptionSchema).optional(),
+});
+export type FormField = z.infer<typeof formFieldSchema>;
+
+export const formBlockSchema = blockBaseSchema.extend({
+  blockType: z.literal('formBlock'),
+  form: z.object({
+    id: z.union([z.string(), z.number()]),
+    fields: z.array(formFieldSchema).default([]),
+    submitButtonLabel: z.string().optional(),
+    confirmationMessage: z.string().optional(),
+  }),
+});
+export type FormBlock = z.infer<typeof formBlockSchema>;
+
 export const KNOWN_BLOCK_SCHEMAS = {
   cardGrid: cardGridBlockSchema,
   carousel: carouselBlockSchema,
@@ -88,6 +113,7 @@ export const KNOWN_BLOCK_SCHEMAS = {
   textBlock: textBlockSchema,
   restaurantCTA: restaurantCtaBlockSchema,
   imageBlock: imageBlockSchema,
+  formBlock: formBlockSchema,
 } as const;
 
 export type KnownBlockType = keyof typeof KNOWN_BLOCK_SCHEMAS;
@@ -98,7 +124,8 @@ export type Block =
   | PromoRailBlock
   | TextBlock
   | RestaurantCtaBlock
-  | ImageBlock;
+  | ImageBlock
+  | FormBlock;
 
 export const blockEnvelopeSchema = z
   .object({

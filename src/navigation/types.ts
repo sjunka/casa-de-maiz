@@ -3,4 +3,5 @@ export type RootTabParamList = {
   menu: undefined;
   privacy: { legalKey: string };
   reservations: undefined;
+  formFixture: undefined;
 };
