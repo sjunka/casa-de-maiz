@@ -8,6 +8,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { MenuScreen } from '../screens/MenuScreen';
 import { PrivacyScreen } from '../screens/PrivacyScreen';
 import { ReservationsScreen } from '../screens/ReservationsScreen';
+import { FormFixtureScreen } from '../screens/FormFixtureScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -60,6 +61,17 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
         );
         break;
     }
+  }
+
+  if (__DEV__) {
+    screens.push(
+      <Tab.Screen
+        key="formFixture"
+        name="formFixture"
+        component={FormFixtureScreen}
+        options={{ tabBarLabel: 'Form (dev)', tabBarAccessibilityLabel: 'Form (dev)' }}
+      />,
+    );
   }
 
   return <Tab.Navigator>{screens}</Tab.Navigator>;

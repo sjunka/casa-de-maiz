@@ -200,6 +200,49 @@ test('an imageBlock with a malformed image falls back to the unknown-block marke
   expect(screen.queryByText('Malformada')).toBeNull();
 });
 
+test('a formBlock renders its fields from the block payload', async () => {
+  const layout: BlockEnvelope[] = [
+    {
+      blockType: 'formBlock',
+      contractVersion: '1.1',
+      channels: ['ios', 'android'],
+      form: {
+        id: 'contact',
+        submitButtonLabel: 'Send',
+        fields: [{ blockType: 'text', name: 'name', label: 'Name', required: false }],
+      },
+    },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByLabelText('Name')).toBeTruthy();
+  expect(screen.getByLabelText('Send')).toBeTruthy();
+});
+
+test('a formBlock whose shape does not match falls back to the unknown-block marker without crashing', async () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  const layout: BlockEnvelope[] = [
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Antes' },
+    { blockType: 'formBlock', contractVersion: '1.1', channels: ['ios', 'android'] },
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Despues' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Antes')).toBeTruthy();
+  expect(screen.getByText('Despues')).toBeTruthy();
+  expect(screen.getByText(/formBlock/)).toBeTruthy();
+});
+
 test('a block whose channels exclude the running platform is skipped', async () => {
   const layout: BlockEnvelope[] = [
     { blockType: 'textBlock', contractVersion: '1.1', channels: ['android'], body: 'Android only' },

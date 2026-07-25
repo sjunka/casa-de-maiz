@@ -104,7 +104,6 @@ Zod schemas, not generated OpenAPI types. Generated types give a compile-time sh
 Deliberately deferred, with reasoning:
 
 - **Deep links.** Out of scope for the timebox; the destination resolver is already the single chokepoint a deep-link handler would hang off, so adding it later doesn't require re-plumbing navigation.
-- **`formBlock` and its submission endpoint.** No form UI is built and nothing is submitted to the shared form-submission endpoint; the block falls through to the safe unknown-block fallback like every other unimplemented block type.
 - **Generated OpenAPI types.** Rejected outright, not deferred — see Types strategy above.
 - **End-to-end testing.** Component and unit tests cover behaviour a guest can observe; a full E2E suite (Detox/Maestro) was judged lower value than breadth of unit/component coverage inside the timebox.
 - **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
