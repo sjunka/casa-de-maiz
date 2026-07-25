@@ -47,7 +47,7 @@ npm test            # jest, with React Native Testing Library and an in-memory A
 
 ## Source layout
 
-The seven boundaries this codebase is organized around:
+The seven boundaries this codebase is organized around, plus screens on top:
 
 - `src/api` — API transport and configuration (base URL, app version)
 - `src/models` — runtime content validation and inferred TypeScript models
@@ -58,6 +58,15 @@ The seven boundaries this codebase is organized around:
 - `src/ui` — shared, reusable presentation components (not blocks, not screens)
 - `src/screens` — screens, composed from the layers above
 
+Most of these folders are empty at this stage — this ticket establishes the structure; later tickets fill each boundary in.
+
 ## Architecture decisions
 
 See `CONTEXT.md` for the domain glossary and `docs/adr/` for the architectural decisions this scaffold and later verticals are built on.
+
+## Screenshots
+
+Placeholder screen on both platforms, captured at scaffold time:
+
+- [iOS Simulator](docs/screenshots/ios-placeholder.png)
+- [Android emulator](docs/screenshots/android-placeholder.png)
