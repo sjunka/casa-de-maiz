@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useTheme, type Theme } from '../theme/useTheme';
 import type { RichTextDocument, RichTextNode } from '../models/richText';
 
 const FORMAT_BOLD = 1;
@@ -13,28 +14,36 @@ type Props = {
   onLinkPress: (href: string) => void;
 };
 
-export const RichText = ({ document, onLinkPress }: Props) => (
-  <View>
-    {document.root.children.map((node, index) => (
-      <RichTextBlock key={index} node={node} onLinkPress={onLinkPress} />
-    ))}
-  </View>
-);
+export const RichText = ({ document, onLinkPress }: Props) => {
+  const { colors } = useTheme();
 
-type NodeProps = { node: RichTextNode; onLinkPress: (href: string) => void };
+  return (
+    <View>
+      {document.root.children.map((node, index) => (
+        <RichTextBlock key={index} node={node} onLinkPress={onLinkPress} colors={colors} />
+      ))}
+    </View>
+  );
+};
 
-const RichTextBlock = ({ node, onLinkPress }: NodeProps): ReactNode => {
+type NodeProps = { node: RichTextNode; onLinkPress: (href: string) => void; colors: Theme['colors'] };
+
+const RichTextBlock = ({ node, onLinkPress, colors }: NodeProps): ReactNode => {
   switch (node.type) {
     case 'paragraph':
       return (
-        <Text style={styles.paragraph} selectable>
-          {renderInline(node.children ?? [], onLinkPress)}
+        <Text style={[styles.paragraph, { color: colors.text }]} selectable>
+          {renderInline(node.children ?? [], onLinkPress, colors)}
         </Text>
       );
     case 'heading':
       return (
-        <Text style={[styles.paragraph, headingStyle(node.tag)]} selectable accessibilityRole="header">
-          {renderInline(node.children ?? [], onLinkPress)}
+        <Text
+          style={[styles.paragraph, headingStyle(node.tag), { color: colors.text }]}
+          selectable
+          accessibilityRole="header"
+        >
+          {renderInline(node.children ?? [], onLinkPress, colors)}
         </Text>
       );
     case 'list':
@@ -42,9 +51,11 @@ const RichTextBlock = ({ node, onLinkPress }: NodeProps): ReactNode => {
         <View style={styles.list}>
           {(node.children ?? []).map((item, index) => (
             <View key={index} style={styles.listItemRow}>
-              <Text style={styles.paragraph}>{node.listType === 'number' ? `${index + 1}.` : '•'}</Text>
-              <Text style={[styles.paragraph, styles.listItemText]} selectable>
-                {renderInline(item.children ?? [], onLinkPress)}
+              <Text style={[styles.paragraph, { color: colors.text }]}>
+                {node.listType === 'number' ? `${index + 1}.` : '•'}
+              </Text>
+              <Text style={[styles.paragraph, styles.listItemText, { color: colors.text }]} selectable>
+                {renderInline(item.children ?? [], onLinkPress, colors)}
               </Text>
             </View>
           ))}
@@ -57,14 +68,14 @@ const RichTextBlock = ({ node, onLinkPress }: NodeProps): ReactNode => {
       return (
         <>
           {node.children.map((child, index) => (
-            <RichTextBlock key={index} node={child} onLinkPress={onLinkPress} />
+            <RichTextBlock key={index} node={child} onLinkPress={onLinkPress} colors={colors} />
           ))}
         </>
       );
   }
 };
 
-const renderInline = (nodes: RichTextNode[], onLinkPress: (href: string) => void): ReactNode =>
+const renderInline = (nodes: RichTextNode[], onLinkPress: (href: string) => void, colors: Theme['colors']): ReactNode =>
   nodes.map((node, index) => {
     switch (node.type) {
       case 'text':
@@ -80,17 +91,17 @@ const renderInline = (nodes: RichTextNode[], onLinkPress: (href: string) => void
         return (
           <Text
             key={index}
-            style={styles.link}
+            style={[styles.link, { color: colors.link }]}
             accessibilityRole="link"
             onPress={href ? () => onLinkPress(href) : undefined}
           >
-            {renderInline(node.children ?? [], onLinkPress)}
+            {renderInline(node.children ?? [], onLinkPress, colors)}
           </Text>
         );
       }
       default:
         return node.children?.length ? (
-          <Text key={index}>{renderInline(node.children, onLinkPress)}</Text>
+          <Text key={index}>{renderInline(node.children, onLinkPress, colors)}</Text>
         ) : null;
     }
   });
@@ -128,7 +139,7 @@ const styles = StyleSheet.create({
   list: { marginBottom: 12 },
   listItemRow: { flexDirection: 'row', gap: 8 },
   listItemText: { flex: 1 },
-  link: { color: '#0a5', textDecorationLine: 'underline' },
+  link: { textDecorationLine: 'underline' },
   bold: { fontWeight: '700' },
   italic: { fontStyle: 'italic' },
   strikethrough: { textDecorationLine: 'line-through' },

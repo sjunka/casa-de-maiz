@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
+import { useTheme, type Theme } from '../theme/useTheme';
 import type { PromoRailBlock as PromoRailBlockData } from '../models/block';
 import type { BootstrapPromotion } from '../models/promotion';
 
@@ -8,35 +10,48 @@ type Props = { block: PromoRailBlockData; fallbackPromotions?: BootstrapPromotio
 
 const keyExtractor = (_: Promotion, index: number) => `promo-${index}`;
 
-const PromotionItem = ({ item }: ListRenderItemInfo<Promotion>) => (
-  <View style={styles.card}>
-    <CmsImage image={item.desktopImage} mobileImage={item.mobileImage} style={styles.image} />
-    {item.eyebrow ? <Text style={styles.eyebrow}>{item.eyebrow}</Text> : null}
-    <Text style={styles.title}>{item.title}</Text>
-    {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
-  </View>
-);
+const promotionRenderItem =
+  (colors: Theme['colors']) =>
+  ({ item }: ListRenderItemInfo<Promotion>) => (
+    <View style={styles.card}>
+      <CmsImage
+        image={item.desktopImage}
+        mobileImage={item.mobileImage}
+        style={[styles.image, { backgroundColor: colors.imagePlaceholder }]}
+      />
+      {item.eyebrow ? <Text style={[styles.eyebrow, { color: colors.accent }]}>{item.eyebrow}</Text> : null}
+      <Text style={[styles.title, { color: colors.text }]}>{item.title}</Text>
+      {item.description ? (
+        <Text style={[styles.description, { color: colors.textSecondary }]}>{item.description}</Text>
+      ) : null}
+    </View>
+  );
 
-export const PromoRailBlock = ({ block, fallbackPromotions = [] }: Props) => (
-  <View>
-    {block.title ? <Text style={styles.heading}>{block.title}</Text> : null}
-    <FlatList
-      data={block.promotions.length > 0 ? block.promotions : fallbackPromotions}
-      keyExtractor={keyExtractor}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-      renderItem={PromotionItem}
-    />
-  </View>
-);
+export const PromoRailBlock = ({ block, fallbackPromotions = [] }: Props) => {
+  const { colors } = useTheme();
+  const renderItem = useMemo(() => promotionRenderItem(colors), [colors]);
+
+  return (
+    <View>
+      {block.title ? <Text style={[styles.heading, { color: colors.text }]}>{block.title}</Text> : null}
+      <FlatList
+        data={block.promotions.length > 0 ? block.promotions : fallbackPromotions}
+        keyExtractor={keyExtractor}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.container}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   heading: { marginHorizontal: 16, marginTop: 16, fontSize: 20, fontWeight: '700' },
   container: { padding: 16, gap: 12 },
   card: { width: 220 },
-  image: { borderRadius: 8, backgroundColor: '#eee' },
-  eyebrow: { marginTop: 8, fontSize: 12, color: '#8a2c1d', fontWeight: '600' },
+  image: { borderRadius: 8 },
+  eyebrow: { marginTop: 8, fontSize: 12, fontWeight: '600' },
   title: { marginTop: 2, fontSize: 15, fontWeight: '600' },
-  description: { marginTop: 4, fontSize: 13, color: '#666' },
+  description: { marginTop: 4, fontSize: 13 },
 });

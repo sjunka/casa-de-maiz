@@ -1,41 +1,44 @@
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBootstrap } from '../api/useBootstrap';
 import { TabNavigator } from '../navigation/TabNavigator';
 import { flattenNavigation } from '../models/bootstrap';
 import { AlertBanner } from '../alerts/AlertBanner';
 import { OperationalNoticeBanner } from '../operational/OperationalNoticeBanner';
 import { AppUpdateGate } from '../appUpdate/AppUpdateGate';
+import { useTheme } from '../theme/useTheme';
 
 type Props = { currentRouteName: string };
 
 export const BootstrapScreen = ({ currentRouteName }: Props) => {
   const { data, error, isLoading, refetch } = useBootstrap();
+  const { colors } = useTheme();
 
   if (isLoading) {
     return (
-      <View style={styles.container} testID="bootstrap-loading">
+      <SafeAreaView style={styles.container} testID="bootstrap-loading">
         <ActivityIndicator />
-        <Text style={styles.subtitle}>Loading Casa Maiz…</Text>
-      </View>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Loading Casa Maiz…</Text>
+      </SafeAreaView>
     );
   }
 
   if (error?.kind === 'unsupported-contract') {
     return (
-      <View style={styles.container} testID="bootstrap-unsupported-contract">
-        <Text style={styles.title}>Casa Maiz</Text>
-        <Text style={styles.subtitle}>{error.userMessage}</Text>
-      </View>
+      <SafeAreaView style={styles.container} testID="bootstrap-unsupported-contract">
+        <Text style={[styles.title, { color: colors.text }]}>Casa Maiz</Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{error.userMessage}</Text>
+      </SafeAreaView>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.container} testID="bootstrap-error">
-        <Text style={styles.title}>Casa Maiz</Text>
-        <Text style={styles.subtitle}>{error.userMessage}</Text>
+      <SafeAreaView style={styles.container} testID="bootstrap-error">
+        <Text style={[styles.title, { color: colors.text }]}>Casa Maiz</Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{error.userMessage}</Text>
         <Button title="Try again" onPress={() => refetch()} />
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -71,7 +74,6 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 8,
     fontSize: 14,
-    color: '#666',
     textAlign: 'center',
   },
 });
