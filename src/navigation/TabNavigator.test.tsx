@@ -11,6 +11,7 @@ import type { Destination } from '../models/bootstrap';
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
 const destination = (overrides: Partial<Destination>): Destination => ({
+  key: 'home',
   path: '/',
   label: 'Home',
   platforms: ['ios', 'android'],
@@ -50,4 +51,72 @@ test('builds tabs only for destinations that support the running platform, in th
   expect(screen.getByText('Reservar')).toBeTruthy();
 
   await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
+});
+
+test('a feature-flag change alters which destinations appear in navigation', async () => {
+  const destinations = [
+    destination({ key: 'home', path: '/', label: 'Inicio' }),
+    destination({ key: 'reservations', path: '/reservas', label: 'Reservar' }),
+  ];
+
+  globalThis.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      contractVersion: '1.1',
+      data: { layout: [] },
+      nextChangeAt: null,
+      preview: false,
+      resolvedContext: {},
+    }),
+  }) as unknown as typeof fetch;
+
+  const { unmount } = await render(
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <TabNavigator destinations={destinations} flags={{ enable_new_home: false }} />
+      </NavigationContainer>
+    </QueryClientProvider>,
+  );
+
+  expect(screen.getByText('Inicio')).toBeTruthy();
+  expect(screen.queryByText('Reservar')).toBeNull();
+  unmount();
+
+  await render(
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <TabNavigator destinations={destinations} flags={{ enable_new_home: true }} />
+      </NavigationContainer>
+    </QueryClientProvider>,
+  );
+
+  expect(screen.getByText('Inicio')).toBeTruthy();
+  expect(screen.getByText('Reservar')).toBeTruthy();
+});
+
+test('a mapped flag missing from the response is treated as off', async () => {
+  const destinations = [destination({ key: 'reservations', path: '/reservas', label: 'Reservar' })];
+
+  globalThis.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      contractVersion: '1.1',
+      data: { layout: [] },
+      nextChangeAt: null,
+      preview: false,
+      resolvedContext: {},
+    }),
+  }) as unknown as typeof fetch;
+
+  await render(
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <TabNavigator destinations={destinations} flags={{}} />
+      </NavigationContainer>
+    </QueryClientProvider>,
+  );
+
+  expect(screen.queryByText('Reservar')).toBeNull();
 });

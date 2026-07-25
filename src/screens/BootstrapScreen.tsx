@@ -2,8 +2,13 @@ import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native'
 import { useBootstrap } from '../api/useBootstrap';
 import { TabNavigator } from '../navigation/TabNavigator';
 import { flattenNavigation } from '../models/bootstrap';
+import { AlertBanner } from '../alerts/AlertBanner';
+import { OperationalNoticeBanner } from '../operational/OperationalNoticeBanner';
+import { AppUpdateGate } from '../appUpdate/AppUpdateGate';
 
-export const BootstrapScreen = () => {
+type Props = { currentRouteName: string };
+
+export const BootstrapScreen = ({ currentRouteName }: Props) => {
   const { data, error, isLoading, refetch } = useBootstrap();
 
   if (isLoading) {
@@ -40,7 +45,11 @@ export const BootstrapScreen = () => {
 
   return (
     <View style={styles.fill} testID="bootstrap-success">
-      <TabNavigator destinations={flattenNavigation(data.data.navigation)} />
+      <AppUpdateGate appUpdate={data.data.operationalControls?.appUpdate}>
+        <OperationalNoticeBanner operationalControls={data.data.operationalControls} />
+        <AlertBanner alerts={data.data.alerts} currentPageSlug={currentRouteName} />
+        <TabNavigator destinations={flattenNavigation(data.data.navigation)} flags={data.data.featureFlags} />
+      </AppUpdateGate>
     </View>
   );
 };

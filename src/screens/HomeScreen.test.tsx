@@ -8,9 +8,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HomeScreen } from './HomeScreen';
 
-const envelope = (overrides: Record<string, unknown> = {}) => ({
+const envelope = (data: Record<string, unknown>, overrides: Record<string, unknown> = {}) => ({
   contractVersion: '1.1',
-  data: { layout: [{ blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Hola' }] },
+  data,
   nextChangeAt: null,
   preview: false,
   resolvedContext: {},
@@ -22,6 +22,24 @@ const jsonResponse = (body: unknown, status = 200) => ({
   status,
   json: async () => body,
 });
+
+const homeEnvelope = envelope({
+  layout: [{ blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Hola' }],
+});
+const bootstrapEnvelope = envelope({ navigation: { items: [] } });
+
+// Routes each fetch by URL so a screen's own request and its bootstrap
+// request can be scripted independently, regardless of call order.
+const fetchRoutedBy = (responses: {
+  home?: () => ReturnType<typeof jsonResponse> | Promise<ReturnType<typeof jsonResponse>>;
+  bootstrap?: () => ReturnType<typeof jsonResponse> | Promise<ReturnType<typeof jsonResponse>>;
+}) =>
+  jest.fn((url: string) => {
+    if (url.includes('/bootstrap')) {
+      return Promise.resolve((responses.bootstrap ?? (() => jsonResponse(bootstrapEnvelope)))());
+    }
+    return Promise.resolve((responses.home ?? (() => jsonResponse(homeEnvelope)))());
+  }) as unknown as typeof fetch;
 
 const renderScreen = () => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -41,24 +59,18 @@ beforeEach(async () => {
 });
 
 test('a successful load followed by a failing request serves saved content marked as such', async () => {
-  const fetchMock = jest
-    .fn()
-    .mockResolvedValueOnce(jsonResponse(envelope()))
-    .mockRejectedValueOnce(new Error('offline'));
-  globalThis.fetch = fetchMock as unknown as typeof fetch;
-
+  globalThis.fetch = fetchRoutedBy({});
   renderScreen();
   await waitFor(() => expect(screen.getByText('Hola')).toBeTruthy());
 
+  globalThis.fetch = fetchRoutedBy({ home: () => Promise.reject(new Error('offline')) as never });
   renderScreen();
   await waitFor(() => expect(screen.getByTestId('content-saved-banner')).toBeTruthy());
   expect(screen.getByText('Hola')).toBeTruthy();
 });
 
 test('an empty layout shows the empty-content state', async () => {
-  globalThis.fetch = jest
-    .fn()
-    .mockResolvedValue(jsonResponse(envelope({ data: { layout: [] } }))) as unknown as typeof fetch;
+  globalThis.fetch = fetchRoutedBy({ home: () => jsonResponse(envelope({ layout: [] })) });
 
   renderScreen();
 
@@ -66,7 +78,7 @@ test('an empty layout shows the empty-content state', async () => {
 });
 
 test('a 404 response shows the page-not-found state', async () => {
-  globalThis.fetch = jest.fn().mockResolvedValue(jsonResponse({}, 404)) as unknown as typeof fetch;
+  globalThis.fetch = fetchRoutedBy({ home: () => jsonResponse({}, 404) });
 
   renderScreen();
 
@@ -74,7 +86,7 @@ test('a 404 response shows the page-not-found state', async () => {
 });
 
 test('first launch offline with no saved content shows the retry state', async () => {
-  globalThis.fetch = jest.fn().mockRejectedValue(new Error('offline')) as unknown as typeof fetch;
+  globalThis.fetch = fetchRoutedBy({ home: () => Promise.reject(new Error('offline')) as never });
 
   renderScreen();
 

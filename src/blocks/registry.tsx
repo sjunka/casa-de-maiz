@@ -1,7 +1,8 @@
 import { Platform } from 'react-native';
 import { isContractVersionCompatible } from '../models/contractVersion';
 import { SUPPORTED_CONTRACT_VERSION } from '../api/contract';
-import { KNOWN_BLOCK_SCHEMAS, type BlockEnvelope, type KnownBlockType } from '../models/block';
+import { KNOWN_BLOCK_SCHEMAS, type BlockEnvelope, type KnownBlockType, type PromoRailBlock as PromoRailBlockData } from '../models/block';
+import type { BootstrapPromotion } from '../models/promotion';
 import { CardGridBlock } from './CardGridBlock';
 import { CarouselBlock } from './CarouselBlock';
 import { PromoRailBlock } from './PromoRailBlock';
@@ -27,7 +28,13 @@ const isKnownBlockType = (blockType: string): blockType is KnownBlockType =>
 const isForRunningPlatform = (channels: unknown): boolean =>
   !Array.isArray(channels) || channels.includes(Platform.OS);
 
-export const renderBlock = (envelope: BlockEnvelope, key: React.Key): React.ReactElement | null => {
+type RenderContext = { fallbackPromotions?: BootstrapPromotion[] };
+
+export const renderBlock = (
+  envelope: BlockEnvelope,
+  key: React.Key,
+  context: RenderContext = {},
+): React.ReactElement | null => {
   const channels = (envelope as { channels?: unknown }).channels;
   if (!isForRunningPlatform(channels)) {
     return null;
@@ -48,6 +55,16 @@ export const renderBlock = (envelope: BlockEnvelope, key: React.Key): React.Reac
   if (!parsed.success) {
     console.warn(`[blocks] block failed validation: ${blockType}`);
     return <UnknownBlock key={key} blockType={blockType} />;
+  }
+
+  if (blockType === 'promoRail') {
+    return (
+      <PromoRailBlock
+        key={key}
+        block={parsed.data as PromoRailBlockData}
+        fallbackPromotions={context.fallbackPromotions}
+      />
+    );
   }
 
   const Component = REGISTRY[blockType];
