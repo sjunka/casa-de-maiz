@@ -40,7 +40,7 @@ test('every content request carries all four delivery-context parameters, with p
   await fetchEnvelope('/bootstrap', dataSchema, supported);
 
   const requestedUrl = new URL(fetchMock.mock.calls[0][0]);
-  expect(requestedUrl.pathname).toBe('/bootstrap');
+  expect(requestedUrl.pathname).toBe('/api/content/v1/bootstrap');
   expect(requestedUrl.searchParams.get('platform')).toBe('ios');
   expect(requestedUrl.searchParams.get('market')).toBe('MX');
   expect(requestedUrl.searchParams.get('audience')).toBe('guest');

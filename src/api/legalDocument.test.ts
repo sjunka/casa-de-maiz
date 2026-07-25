@@ -38,6 +38,6 @@ test('fetches the legal document by key', async () => {
   const result = await fetchLegalDocument('privacy-policy');
 
   const requestedUrl = new URL(fetchMock.mock.calls[0][0]);
-  expect(requestedUrl.pathname).toBe('/legal/privacy-policy');
+  expect(requestedUrl.pathname).toBe('/api/content/v1/legal/privacy-policy');
   expect(result.data.title).toBe('Privacy Notice');
 });

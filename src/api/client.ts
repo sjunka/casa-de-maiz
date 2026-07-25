@@ -7,7 +7,7 @@ import { isContractVersionCompatible, type ContractVersion } from '../models/con
 
 const buildUrl = (path: string): string => {
   const params = new URLSearchParams({ ...buildDeliveryContext() });
-  return `${API_BASE_URL}${path}?${params.toString()}`;
+  return `${API_BASE_URL}/api/content/v1${path}?${params.toString()}`;
 };
 
 const logAndThrow = (error: ApiError): never => {
