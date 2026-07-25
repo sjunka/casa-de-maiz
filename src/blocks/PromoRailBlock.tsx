@@ -1,9 +1,10 @@
 import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
 import type { PromoRailBlock as PromoRailBlockData } from '../models/block';
+import type { BootstrapPromotion } from '../models/promotion';
 
 type Promotion = PromoRailBlockData['promotions'][number];
-type Props = { block: PromoRailBlockData };
+type Props = { block: PromoRailBlockData; fallbackPromotions?: BootstrapPromotion[] };
 
 const keyExtractor = (_: Promotion, index: number) => `promo-${index}`;
 
@@ -16,11 +17,11 @@ const PromotionItem = ({ item }: ListRenderItemInfo<Promotion>) => (
   </View>
 );
 
-export const PromoRailBlock = ({ block }: Props) => (
+export const PromoRailBlock = ({ block, fallbackPromotions = [] }: Props) => (
   <View>
     {block.title ? <Text style={styles.heading}>{block.title}</Text> : null}
     <FlatList
-      data={block.promotions}
+      data={block.promotions.length > 0 ? block.promotions : fallbackPromotions}
       keyExtractor={keyExtractor}
       horizontal
       showsHorizontalScrollIndicator={false}

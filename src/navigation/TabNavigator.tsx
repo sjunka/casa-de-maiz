@@ -2,6 +2,7 @@ import { Platform, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { Destination } from '../models/bootstrap';
 import { resolveDestination } from './resolveDestination';
+import { isDestinationEnabled } from './featureFlags';
 import type { RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
 import { MenuScreen } from '../screens/MenuScreen';
@@ -10,13 +11,17 @@ import { ReservationsScreen } from '../screens/ReservationsScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-type Props = { destinations: Destination[] };
+type Props = { destinations: Destination[]; flags?: Record<string, boolean> };
 
-export const TabNavigator = ({ destinations }: Props) => {
+export const TabNavigator = ({ destinations, flags = {} }: Props) => {
   const screens: React.JSX.Element[] = [];
 
   for (const destination of destinations) {
     if (!destination.platforms.includes(Platform.OS as 'ios' | 'android')) {
+      continue;
+    }
+
+    if (!isDestinationEnabled(destination.key, flags)) {
       continue;
     }
 

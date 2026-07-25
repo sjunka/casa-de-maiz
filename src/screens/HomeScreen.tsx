@@ -1,11 +1,14 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { useHome } from '../api/useHome';
+import { useBootstrap } from '../api/useBootstrap';
 import { BlockList } from '../blocks/BlockList';
 import { ContentStatus, SavedContentBanner } from '../ui/ContentStatus';
 
 export const HomeScreen = () => {
   const { data, error, isLoading, isFetching, refetch } = useHome();
+  const { data: bootstrap } = useBootstrap();
   const isEmpty = !!data && data.data.layout.length === 0;
+  const homePromotions = bootstrap?.data.promotions.filter(promotion => promotion.placement === 'home') ?? [];
 
   if (isLoading || error || isEmpty) {
     return (
@@ -32,7 +35,7 @@ export const HomeScreen = () => {
       refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
     >
       {data.isSaved && <SavedContentBanner />}
-      <BlockList layout={data.data.layout} />
+      <BlockList layout={data.data.layout} fallbackPromotions={homePromotions} />
     </ScrollView>
   );
 };
