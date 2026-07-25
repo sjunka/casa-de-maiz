@@ -5,6 +5,7 @@ import { useDestinationNavigation } from '../navigation/useDestinationNavigation
 import { useLegalDocument } from '../api/useLegalDocument';
 import { RichText } from '../ui/RichText';
 import { useTheme } from '../theme/useTheme';
+import { trackScrollProgress } from '../alerts/scrollProgress';
 
 type Props = { route: RouteProp<RootTabParamList, 'privacy'> };
 
@@ -37,7 +38,12 @@ export const PrivacyScreen = ({ route }: Props) => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.content} testID="privacy-success">
+    <ScrollView
+      contentContainerStyle={styles.content}
+      testID="privacy-success"
+      onScroll={trackScrollProgress('privacy')}
+      scrollEventThrottle={100}
+    >
       <Text style={[styles.title, { color: colors.text }]} selectable accessibilityRole="header">
         {data.data.title}
       </Text>

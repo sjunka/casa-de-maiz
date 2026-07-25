@@ -4,10 +4,21 @@ jest.mock(
 );
 
 import { Linking } from 'react-native';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AlertBanner } from './AlertBanner';
+import { resetScrollProgress, trackScrollProgress } from './scrollProgress';
 import type { Alert } from '../models/alert';
+
+const scrollTo = (owner: string, percent: number) =>
+  trackScrollProgress(owner)({
+    nativeEvent: {
+      contentOffset: { x: 0, y: percent * 10 },
+      contentSize: { width: 400, height: 2000 },
+      layoutMeasurement: { width: 400, height: 1000 },
+    },
+  } as NativeSyntheticEvent<NativeScrollEvent>);
 
 const alert = (overrides: Partial<Alert> = {}): Alert => ({
   id: 'closing-notice',
@@ -24,6 +35,7 @@ const alert = (overrides: Partial<Alert> = {}): Alert => ({
 
 beforeEach(async () => {
   await AsyncStorage.clear();
+  resetScrollProgress();
   jest.spyOn(Linking, 'canOpenURL').mockResolvedValue(true);
   jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined as never);
 });
@@ -58,6 +70,27 @@ test('an action navigates through the destination resolver', async () => {
 
   await fireEvent.press(screen.getByLabelText('Learn more'));
   await waitFor(() => expect(Linking.openURL).toHaveBeenCalledWith('https://example.com'));
+});
+
+test('a scrollPercent alert stays hidden until the guest reaches its threshold', async () => {
+  const scrollAlert = alert({ trigger: { type: 'scrollPercent', scrollPercent: 40, delayMs: 10 } });
+  await render(<AlertBanner alerts={[scrollAlert]} currentPageSlug="home" />);
+
+  await act(() => scrollTo('home', 20));
+  await new Promise(resolve => setTimeout(() => resolve(undefined), 20));
+  expect(screen.queryByTestId('alert-banner')).toBeNull();
+
+  await act(() => scrollTo('home', 45));
+  await waitFor(() => expect(screen.getByTestId('alert-banner')).toBeTruthy());
+});
+
+test('a scrollPercent alert ignores scrolling on a different page', async () => {
+  const scrollAlert = alert({ trigger: { type: 'scrollPercent', scrollPercent: 40, delayMs: 10 } });
+  await render(<AlertBanner alerts={[scrollAlert]} currentPageSlug="home" />);
+
+  await act(() => scrollTo('menu', 90));
+  await new Promise(resolve => setTimeout(() => resolve(undefined), 20));
+  expect(screen.queryByTestId('alert-banner')).toBeNull();
 });
 
 test('an alert targeting other pages does not appear on this page', async () => {

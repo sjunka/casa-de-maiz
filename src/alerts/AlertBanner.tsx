@@ -5,6 +5,7 @@ import { useTheme } from '../theme/useTheme';
 import type { Alert } from '../models/alert';
 import { selectActiveAlert } from './selectActiveAlert';
 import { isDismissed, recordDismissal } from './dismissal';
+import { useScrollProgress } from './scrollProgress';
 import { openDestination } from '../navigation/openDestination';
 import { navigateToResolved } from '../navigation/navigationRef';
 
@@ -16,7 +17,14 @@ export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
   const [suppressedIds, setSuppressedIds] = useState<Set<string>>(new Set());
   const [visibleAlert, setVisibleAlert] = useState<Alert | null>(null);
 
+  const scrollPercent = useScrollProgress(currentPageSlug);
+
   const candidate = selectActiveAlert(alerts, currentPageSlug, suppressedIds);
+
+  // A `scrollPercent` alert waits for the guest to reach its threshold on this
+  // page; every other supported trigger is armed as soon as the page renders.
+  const isArmed =
+    candidate?.trigger.type !== 'scrollPercent' || scrollPercent >= (candidate.trigger.scrollPercent ?? 0);
 
   useEffect(() => {
     let cancelled = false;
@@ -46,14 +54,14 @@ export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
 
   useEffect(() => {
     setVisibleAlert(null);
-    if (!candidate) return;
+    if (!candidate || !isArmed) return;
 
     const timer = setTimeout(() => setVisibleAlert(candidate), candidate.trigger.delayMs ?? 0);
     return () => clearTimeout(timer);
     // Re-arm only when which alert is selected actually changes, not on every
     // render — `candidate` is a fresh object each render even for the same alert.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [candidate?.id]);
+  }, [candidate?.id, isArmed]);
 
   if (!visibleAlert) return null;
 
