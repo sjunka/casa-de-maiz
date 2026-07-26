@@ -11,7 +11,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { useTheme } from '../theme/useTheme';
+import { getElevatedSurfaceStyle } from '../theme/tokens';
 import { GlassSurface } from '../ui/GlassSurface';
 import { submitFormSubmission } from '@data/remote/formSubmission';
 import { ApiError } from '@core/transport/apiError';
@@ -49,7 +51,7 @@ export const FormBlock = ({ block }: Props) => {
 
   // A `select` field reads as unanswered with nothing highlighted; default it
   // to its first option so there's always a visible choice.
-  const [values, setValues] = useState<Record<string, string>>(() => {
+  const getInitialValues = (): Record<string, string> => {
     const defaults: Record<string, string> = {};
     for (const field of fields) {
       const firstOption = field.blockType === 'select' ? field.options?.[0]?.value : undefined;
@@ -60,7 +62,9 @@ export const FormBlock = ({ block }: Props) => {
       }
     }
     return defaults;
-  });
+  };
+
+  const [values, setValues] = useState<Record<string, string>>(getInitialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -114,12 +118,64 @@ export const FormBlock = ({ block }: Props) => {
     }
   };
 
+  const handleClose = () => {
+    setStatus('idle');
+    setValues(getInitialValues());
+    setErrors({});
+    setSubmitError(null);
+  };
+
   if (status === 'success') {
-    return (
-      <View style={styles.container} testID="form-block-success">
+    // A wax-seal medallion in the accent (sealing-wax terracotta) reads as
+    // "sealed/confirmed" without borrowing a generic checkmark-in-a-circle.
+    const closeButton = (
+      <AppPressable
+        accessibilityRole="button"
+        accessibilityLabel="Close"
+        onPress={handleClose}
+        style={styles.successClose}
+        rippleColor={colors.border}
+        testID="form-block-success-close"
+      >
+        <MaterialDesignIcons name="close" size={22} color={colors.textSecondary} />
+      </AppPressable>
+    );
+
+    const successBody = (
+      <>
+        <View style={[styles.successSeal, { backgroundColor: colors.accentContainer }]}>
+          <MaterialDesignIcons name="seal-variant" size={40} color={colors.accent} />
+        </View>
         <Text style={[styles.confirmation, { color: colors.text }]}>
           {block.form.confirmationMessage ?? 'Thanks! We received your submission.'}
         </Text>
+      </>
+    );
+
+    if (Platform.OS === 'ios') {
+      return (
+        <View style={styles.iosPage} testID="form-block-success">
+          <View style={styles.successCard}>
+            <GlassSurface
+              style={styles.successCardFill}
+              blurType={scheme === 'dark' ? 'thinMaterialDark' : 'thinMaterialLight'}
+              fallbackColor={colors.surfaceElevated}
+            />
+            <View style={styles.successCardContent}>
+              {closeButton}
+              {successBody}
+            </View>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.androidPage} testID="form-block-success">
+        <View style={[styles.successCard, styles.successCardContent, getElevatedSurfaceStyle(colors)]}>
+          {closeButton}
+          {successBody}
+        </View>
       </View>
     );
   }
@@ -355,7 +411,6 @@ const OutlinedField = ({ field, value, error, onChange }: FieldProps) => {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  container: { padding: 24 },
   field: { marginBottom: 26 },
   label: { fontSize: 13, fontWeight: '700', letterSpacing: 0.4, textTransform: 'uppercase', marginBottom: 9 },
   checkboxRow: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginBottom: 26 },
@@ -371,6 +426,13 @@ const styles = StyleSheet.create({
   submitLabel: { fontSize: 16, fontWeight: '700' },
   submitError: { marginBottom: 14, fontSize: 14 },
   confirmation: { fontSize: 16, textAlign: 'center' },
+
+  // Success — wax-seal medallion in a centered card, X to return to the form
+  successCard: { borderRadius: 28, overflow: 'hidden' },
+  successCardFill: { borderRadius: 28 },
+  successCardContent: { padding: 32, paddingTop: 44, alignItems: 'center' },
+  successClose: { position: 'absolute', top: 8, right: 8, minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 22 },
+  successSeal: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
   textarea: { minHeight: 96, textAlignVertical: 'top' },
   options: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   option: { minHeight: 46, minWidth: 44, justifyContent: 'center', paddingHorizontal: 18, borderRadius: 23, borderWidth: 1.5 },

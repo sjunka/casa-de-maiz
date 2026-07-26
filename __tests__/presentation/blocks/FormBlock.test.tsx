@@ -80,6 +80,22 @@ test('a successful submission shows the confirmation message', async () => {
   });
 });
 
+test('closing the confirmation returns to a cleared, idle form', async () => {
+  submitFormSubmissionMock.mockResolvedValue(undefined);
+  await render(<FormBlock block={block} />);
+
+  await fireEvent.changeText(screen.getByLabelText('Name'), 'Ana');
+  await fireEvent.press(screen.getByLabelText('Reservation'));
+  await fireEvent.press(screen.getByLabelText('Send message'));
+  await waitFor(() => expect(screen.getByTestId('form-block-success')).toBeTruthy());
+
+  await fireEvent.press(screen.getByLabelText('Close'));
+
+  expect(screen.getByTestId('form-block')).toBeTruthy();
+  // `__DEV__` prefill reappears rather than the typed-over 'Ana'.
+  expect(screen.getByLabelText('Name').props.value).toBe('Jhon Smith');
+});
+
 test('a submission failure shows the error user message and keeps the form on screen', async () => {
   submitFormSubmissionMock.mockRejectedValue(new ApiError('network', 'Check your connection.', 'boom'));
   await render(<FormBlock block={block} />);
