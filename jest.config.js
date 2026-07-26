@@ -3,6 +3,9 @@ module.exports = {
   setupFiles: ['./jest.setup.js'],
   forceExit: true,
   moduleNameMapper: {
+    // The icon package `require`s its own .ttf so the native side can register
+    // the font; jest has no loader for binary assets.
+    '\\.ttf$': '<rootDir>/jest.fontStub.js',
     '^@core/(.*)$': '<rootDir>/src/core/$1',
     '^@data/(.*)$': '<rootDir>/src/data/$1',
     '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',

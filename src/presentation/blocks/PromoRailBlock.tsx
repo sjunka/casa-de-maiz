@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
+import { Surface } from '../ui/Surface';
 import { useTheme, type Theme } from '../theme/useTheme';
 import type { PromoRailBlock as PromoRailBlockData } from '@core/contract/models/block';
 import type { BootstrapPromotion } from '@core/contract/models/promotion';
@@ -13,7 +14,7 @@ const keyExtractor = (_: Promotion, index: number) => `promo-${index}`;
 const promotionRenderItem =
   (colors: Theme['colors']) =>
   ({ item }: ListRenderItemInfo<Promotion>) => (
-    <View style={styles.card}>
+    <Surface style={styles.card}>
       <CmsImage
         image={item.desktopImage}
         mobileImage={item.mobileImage}
@@ -24,7 +25,7 @@ const promotionRenderItem =
       {item.description ? (
         <Text style={[styles.description, { color: colors.textSecondary }]}>{item.description}</Text>
       ) : null}
-    </View>
+    </Surface>
   );
 
 export const PromoRailBlock = ({ block, fallbackPromotions = [] }: Props) => {

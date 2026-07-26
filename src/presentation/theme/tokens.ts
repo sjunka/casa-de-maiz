@@ -8,6 +8,10 @@ export type ColorTokens = {
   textSecondary: string;
   accent: string;
   onAccent: string;
+  // A tonal wash of `accent`, for active indicators and selected states that
+  // need to read as "on" without inverting to a solid accent fill. `accent`
+  // stays the foreground on top of it.
+  accentContainer: string;
   border: string;
   imagePlaceholder: string;
   link: string;
@@ -26,6 +30,7 @@ export const lightColors: ColorTokens = {
   textSecondary: '#666666',
   accent: '#8a2c1d',
   onAccent: '#ffffff',
+  accentContainer: '#f6e3de',
   border: '#eeeeee',
   imagePlaceholder: '#eeeeee',
   link: '#0a5',
@@ -44,6 +49,7 @@ export const darkColors: ColorTokens = {
   textSecondary: '#aaaaaa',
   accent: '#d97a5f',
   onAccent: '#121212',
+  accentContainer: '#3d241c',
   border: '#333333',
   imagePlaceholder: '#333333',
   link: '#4ade80',

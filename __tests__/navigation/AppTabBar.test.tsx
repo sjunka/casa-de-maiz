@@ -1,7 +1,8 @@
 import { Platform } from 'react-native';
 import { render, screen, fireEvent } from '@testing-library/react-native';
-import { AndroidTabBar } from '@navigation/AndroidTabBar';
+import { AppTabBar } from '@navigation/AppTabBar';
 import { lightColors } from '@presentation/theme/tokens';
+import { chromeFor, VARIANTS } from '@presentation/prototype/chrome';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 const buildProps = (): BottomTabBarProps => {
@@ -30,18 +31,23 @@ const buildProps = (): BottomTabBarProps => {
   };
 };
 
-test('the focused tab is tinted, ripple-enabled, and pressing an unfocused tab navigates to it', async () => {
-  Platform.OS = 'android';
-  const props = buildProps();
+test.each(VARIANTS)(
+  'variant %s marks the focused tab, keeps every tab labelled, and navigates on press',
+  async variant => {
+    Platform.OS = 'android';
+    const props = buildProps();
 
-  await render(<AndroidTabBar {...props} colors={lightColors} />);
+    await render(<AppTabBar {...props} colors={lightColors} scheme="light" chrome={chromeFor(variant)} />);
 
-  const home = screen.getByLabelText('Inicio');
-  expect(home.props.accessibilityState).toEqual({ selected: true });
+    // The icon-only rail variant still has to expose the tab name to a screen
+    // reader — the label is what disappears, not the accessible name.
+    const home = screen.getByLabelText('Inicio');
+    expect(home.props.accessibilityState).toEqual({ selected: true });
 
-  const menu = screen.getByLabelText('Menu');
-  expect(menu.props.accessibilityState).toEqual({ selected: false });
+    const menu = screen.getByLabelText('Menu');
+    expect(menu.props.accessibilityState).toEqual({ selected: false });
 
-  fireEvent.press(menu);
-  expect(props.navigation.navigate).toHaveBeenCalledWith('menu', undefined);
-});
+    fireEvent.press(menu);
+    expect(props.navigation.navigate).toHaveBeenCalledWith('menu', undefined);
+  },
+);

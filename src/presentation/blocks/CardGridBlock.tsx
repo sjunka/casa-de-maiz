@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
+import { Surface } from '../ui/Surface';
 import { useTheme, type Theme } from '../theme/useTheme';
 import type { CardGridBlock as CardGridBlockData } from '@core/contract/models/block';
 
@@ -12,14 +13,14 @@ const keyExtractor = (_: Card, index: number) => `card-${index}`;
 const cardRenderItem =
   (colors: Theme['colors']) =>
   ({ item }: ListRenderItemInfo<Card>) => (
-    <View style={styles.card}>
+    <Surface style={styles.card}>
       <CmsImage image={item.image} style={[styles.image, { backgroundColor: colors.imagePlaceholder }]} />
       <Text style={[styles.title, { color: colors.text }]}>{item.title}</Text>
       {item.description ? (
         <Text style={[styles.description, { color: colors.textSecondary }]}>{item.description}</Text>
       ) : null}
       {item.price ? <Text style={[styles.price, { color: colors.text }]}>{item.price}</Text> : null}
-    </View>
+    </Surface>
   );
 
 export const CardGridBlock = ({ block }: Props) => {
