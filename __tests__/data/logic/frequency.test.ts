@@ -4,7 +4,7 @@ jest.mock(
 );
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { isSuppressed, recordDismissal, recordShown } from '@data/logic/frequency';
+import { isSuppressed, recordDismissal, recordShown, resetDismissals } from '@data/logic/frequency';
 import type { Alert } from '@core/contract/models/alert';
 
 const alert = (overrides: Partial<Alert> = {}): Alert => ({
@@ -87,6 +87,23 @@ describe('unknown or missing frequency type', () => {
     const noFrequencyAlert = alert({ frequency: undefined, id: 'alert-no-freq' });
     await recordDismissal('alert-no-freq');
     expect(await isSuppressed(noFrequencyAlert)).toBe(false);
+  });
+});
+
+describe('launch reset', () => {
+  test('clears persisted dismissals so a restart opens with the notice showing again', async () => {
+    await recordDismissal('alert-1');
+    expect(await isSuppressed(alert({ frequency: { type: 'always', cooldownHours: 24 } }))).toBe(true);
+
+    await resetDismissals();
+
+    expect(await isSuppressed(alert({ frequency: { type: 'always', cooldownHours: 24 } }))).toBe(false);
+  });
+
+  test('leaves storage that is not an alert dismissal alone', async () => {
+    await AsyncStorage.setItem('feature-flag-override', 'on');
+    await resetDismissals();
+    expect(await AsyncStorage.getItem('feature-flag-override')).toBe('on');
   });
 });
 

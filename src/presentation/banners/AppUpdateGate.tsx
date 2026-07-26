@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAppVersion } from '@core/contract/appVersion';
 import { decideAppUpdate } from '@data/logic/decideAppUpdate';
 import { useTheme } from '../theme/useTheme';
-import { AppPressable } from '../ui/AppPressable';
+import { NoticeCard } from './NoticeCard';
 import type { AppUpdate } from '@core/contract/models/operationalControls';
 
 type Props = { appUpdate?: AppUpdate; children: ReactNode };
@@ -26,20 +26,16 @@ export const AppUpdateGate = ({ appUpdate, children }: Props) => {
   return (
     <View style={styles.fill}>
       {decision.kind === 'recommended' && !dismissed && (
-        <View
-          style={[styles.banner, { backgroundColor: colors.warningBackground }]}
+        <NoticeCard
           testID="app-update-recommended"
-        >
-          <Text style={[styles.bannerMessage, { color: colors.warningText }]}>{decision.message}</Text>
-          <AppPressable
-            accessibilityRole="button"
-            accessibilityLabel="Dismiss update message"
-            style={styles.dismiss}
-            onPress={() => setDismissed(true)}
-          >
-            <Text style={[styles.dismissLabel, { color: colors.warningText }]}>×</Text>
-          </AppPressable>
-        </View>
+          icon="update"
+          tint={colors.warningBackground}
+          accent={colors.warningText}
+          message={decision.message}
+          dismissible
+          dismissLabel="Dismiss update message"
+          onDismiss={() => setDismissed(true)}
+        />
       )}
       {children}
     </View>
@@ -51,14 +47,4 @@ const styles = StyleSheet.create({
   blocking: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   title: { fontSize: 20, fontWeight: '700', textAlign: 'center' },
   message: { marginTop: 8, fontSize: 14, textAlign: 'center' },
-  banner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingLeft: 16,
-    paddingRight: 4,
-  },
-  bannerMessage: { flex: 1, fontSize: 13, lineHeight: 18 },
-  dismiss: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
-  dismissLabel: { fontSize: 26, lineHeight: 30 },
 });

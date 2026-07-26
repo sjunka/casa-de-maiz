@@ -1,4 +1,4 @@
-import { selectActiveAlert } from '@data/logic/selectActiveAlert';
+import { selectActiveAlerts } from '@data/logic/selectActiveAlert';
 import type { Alert } from '@core/contract/models/alert';
 
 const alert = (overrides: Partial<Alert>): Alert => ({
@@ -15,37 +15,37 @@ const alert = (overrides: Partial<Alert>): Alert => ({
 
 test('an alert targeting no pages appears everywhere', () => {
   const alerts = [alert({ pageSlugs: [] })];
-  expect(selectActiveAlert(alerts, 'menu', new Set())).toEqual(alerts[0]);
+  expect(selectActiveAlerts(alerts, 'menu', new Set())).toEqual(alerts);
 });
 
 test('an alert targeting specific pages appears only on those pages', () => {
   const alerts = [alert({ pageSlugs: ['home'] })];
-  expect(selectActiveAlert(alerts, 'home', new Set())).toEqual(alerts[0]);
-  expect(selectActiveAlert(alerts, 'menu', new Set())).toBeNull();
+  expect(selectActiveAlerts(alerts, 'home', new Set())).toEqual(alerts);
+  expect(selectActiveAlerts(alerts, 'menu', new Set())).toEqual([]);
 });
 
-test('competing alerts are ordered by priority', () => {
+test('several qualifying alerts all appear, ordered by priority', () => {
   const low = alert({ id: 'low', priority: 1 });
   const high = alert({ id: 'high', priority: 100 });
-  expect(selectActiveAlert([low, high], 'home', new Set())).toEqual(high);
+  expect(selectActiveAlerts([low, high], 'home', new Set())).toEqual([high, low]);
 });
 
 test('an unsupported placement renders nothing', () => {
   const alerts = [alert({ placement: 'modal' })];
-  expect(selectActiveAlert(alerts, 'home', new Set())).toBeNull();
+  expect(selectActiveAlerts(alerts, 'home', new Set())).toEqual([]);
 });
 
 test('an unsupported trigger renders nothing', () => {
   const alerts = [alert({ trigger: { type: 'timeOnPage', afterMs: 5000 } as Alert['trigger'] })];
-  expect(selectActiveAlert(alerts, 'home', new Set())).toBeNull();
+  expect(selectActiveAlerts(alerts, 'home', new Set())).toEqual([]);
 });
 
 test('a scrollPercent trigger is selectable — arming is the banner’s job', () => {
   const alerts = [alert({ trigger: { type: 'scrollPercent', scrollPercent: 30 } })];
-  expect(selectActiveAlert(alerts, 'home', new Set())).toEqual(alerts[0]);
+  expect(selectActiveAlerts(alerts, 'home', new Set())).toEqual(alerts);
 });
 
 test('a suppressed (dismissed, in-cooldown) alert is excluded', () => {
   const alerts = [alert({ id: 'alert-1' })];
-  expect(selectActiveAlert(alerts, 'home', new Set(['alert-1']))).toBeNull();
+  expect(selectActiveAlerts(alerts, 'home', new Set(['alert-1']))).toEqual([]);
 });

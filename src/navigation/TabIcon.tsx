@@ -13,7 +13,6 @@ const ICONS: Record<keyof RootTabParamList, { active: Glyph; inactive: Glyph }> 
   reservations: { active: 'calendar-blank', inactive: 'calendar-blank-outline' },
   privacy: { active: 'shield-lock', inactive: 'shield-lock-outline' },
   formFixture: { active: 'form-select', inactive: 'form-select' },
-  noticeBannerPrototype: { active: 'bulletin-board', inactive: 'bulletin-board' },
 };
 
 type Props = { route: string; focused: boolean; color: string; size: number };

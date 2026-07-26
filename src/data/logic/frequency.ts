@@ -10,6 +10,19 @@ type AlertRecord = { shownAt?: string; dismissedAt?: string };
 const shownThisSession = new Set<string>();
 const warnedFrequencyTypes = new Set<string>();
 
+// Every launch opens with the full notice stack, so dismissals are cleared
+// once per process start: a dismissal holds for the rest of the session but
+// never carries across a restart.
+export const resetDismissals = async (): Promise<void> => {
+  const keys = await AsyncStorage.getAllKeys();
+  const dismissals = keys.filter(key => key.startsWith('alert-dismissed:'));
+  if (dismissals.length > 0) await AsyncStorage.removeMany(dismissals);
+};
+
+// `isSuppressed` awaits this rather than the app firing it at boot, so a
+// banner can never read a stale record before the reset lands.
+const launchReset = resetDismissals();
+
 const readRecord = async (alertId: string): Promise<AlertRecord> => {
   const raw = await AsyncStorage.getItem(storageKey(alertId));
   if (!raw) return {};
@@ -46,6 +59,7 @@ const isDismissedWithinCooldown = (record: AlertRecord, cooldownHours: number): 
 };
 
 export const isSuppressed = async (alert: Alert): Promise<boolean> => {
+  await launchReset;
   const type = alert.frequency?.type;
 
   if (type === 'session') return shownThisSession.has(alert.id);
