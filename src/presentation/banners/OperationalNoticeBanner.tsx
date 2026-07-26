@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme } from '../../theme/useTheme';
+import { useTheme } from '../theme/useTheme';
 import type { OperationalControls } from '@core/contract/models/operationalControls';
 
 type Props = { operationalControls?: OperationalControls };

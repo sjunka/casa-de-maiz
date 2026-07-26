@@ -5,13 +5,13 @@ import { resolveDestination } from './resolveDestination';
 import { isDestinationEnabled } from '@data/state/featureFlags';
 import { AndroidTabBar } from './AndroidTabBar';
 import { TabBarBackground } from './TabBarBackground';
-import { useTheme } from '../theme/useTheme';
+import { useTheme } from '@presentation/theme/useTheme';
 import type { RootTabParamList } from './types';
-import { HomeScreen } from '../screens/HomeScreen';
-import { MenuScreen } from '../screens/MenuScreen';
-import { PrivacyScreen } from '../screens/PrivacyScreen';
-import { ReservationsScreen } from '../screens/ReservationsScreen';
-import { FormFixtureScreen } from '../screens/FormFixtureScreen';
+import { HomeScreen } from '@presentation/screens/HomeScreen';
+import { MenuScreen } from '@presentation/screens/MenuScreen';
+import { PrivacyScreen } from '@presentation/screens/PrivacyScreen';
+import { ReservationsScreen } from '@presentation/screens/ReservationsScreen';
+import { FormFixtureScreen } from '@presentation/screens/FormFixtureScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 

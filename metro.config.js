@@ -17,6 +17,11 @@ const config = {
       '@core/contract': path.resolve(__dirname, 'src/core/contract'),
       '@data/repository': path.resolve(__dirname, 'src/data/repository'),
       '@data/state': path.resolve(__dirname, 'src/data/state'),
+      '@presentation/blocks': path.resolve(__dirname, 'src/presentation/blocks'),
+      '@presentation/banners': path.resolve(__dirname, 'src/presentation/banners'),
+      '@presentation/ui': path.resolve(__dirname, 'src/presentation/ui'),
+      '@presentation/theme': path.resolve(__dirname, 'src/presentation/theme'),
+      '@presentation/screens': path.resolve(__dirname, 'src/presentation/screens'),
     },
   },
 };

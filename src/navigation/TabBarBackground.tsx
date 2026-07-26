@@ -1,5 +1,5 @@
-import { GlassSurface } from '../ui/GlassSurface';
-import { useTheme } from '../theme/useTheme';
+import { GlassSurface } from '@presentation/ui/GlassSurface';
+import { useTheme } from '@presentation/theme/useTheme';
 
 export const TabBarBackground = () => {
   const { colors, scheme } = useTheme();

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppPressable } from '../../ui/AppPressable';
-import { GlassSurface } from '../../ui/GlassSurface';
-import { useTheme } from '../../theme/useTheme';
+import { AppPressable } from '../ui/AppPressable';
+import { GlassSurface } from '../ui/GlassSurface';
+import { useTheme } from '../theme/useTheme';
 import type { Alert } from '@core/contract/models/alert';
 import { selectActiveAlert } from '@data/state/selectActiveAlert';
 import { isSuppressed, recordDismissal, recordShown } from '@data/state/frequency';

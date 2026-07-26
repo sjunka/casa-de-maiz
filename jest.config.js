@@ -5,6 +5,7 @@ module.exports = {
   moduleNameMapper: {
     '^@core/(.*)$': '<rootDir>/src/core/$1',
     '^@data/(.*)$': '<rootDir>/src/data/$1',
+    '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',
   },
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-native-async-storage|react-native-safe-area-context|@react-navigation|react-native-screens|@sentry)/)',

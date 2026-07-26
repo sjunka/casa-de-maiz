@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { AppPressable } from '../ui/AppPressable';
-import { getElevatedSurfaceStyle } from '../theme/tokens';
-import type { Theme } from '../theme/useTheme';
+import { AppPressable } from '@presentation/ui/AppPressable';
+import { getElevatedSurfaceStyle } from '@presentation/theme/tokens';
+import type { Theme } from '@presentation/theme/useTheme';
 
 type Props = BottomTabBarProps & { colors: Theme['colors'] };
 

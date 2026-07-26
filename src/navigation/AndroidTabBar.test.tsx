@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import { AndroidTabBar } from './AndroidTabBar';
-import { lightColors } from '../theme/tokens';
+import { lightColors } from '@presentation/theme/tokens';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 const buildProps = (): BottomTabBarProps => {

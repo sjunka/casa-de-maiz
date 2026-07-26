@@ -12,7 +12,7 @@ import { ImageBlock } from './ImageBlock';
 import { FormBlock } from './FormBlock';
 import { GenericBlock } from './GenericBlock';
 import { UnknownBlock } from './UnknownBlock';
-import { reportUnknownBlock } from '../observability/crashReporting';
+import { reportUnknownBlock } from '../../observability/crashReporting';
 
 type UnsafeBlockComponent = (props: { block: never }) => React.JSX.Element | null;
 

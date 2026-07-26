@@ -95,10 +95,10 @@ The app is organized around seven boundaries, screens composed on top:
 - `src/data/repository` — endpoint fetchers, query hooks, cache and freshness policy, query client
 - `src/data/state` — alert selection and frequency policy, scroll-progress derivation, app-update decisioning, feature flags — bootstrap-driven application state. No React; enforced by lint.
 - `src/navigation` — destination resolution and the tab shell built from bootstrap
-- `src/blocks` — the block registry and block components
+- `src/presentation/blocks` — the block registry and block components
 - `src/presentation/banners` — the alert banner, app-update gate and operational-notice banner
-- `src/ui` / `src/theme` — shared presentation, tokens, dark mode, reduced motion
-- `src/screens` — composition only; no screen talks to the network or cache directly
+- `src/presentation/ui` / `src/presentation/theme` — shared presentation, tokens, dark mode, reduced motion
+- `src/presentation/screens` — composition only; no screen talks to the network or cache directly
 
 Key trade-offs, and why they sit where they do:
 

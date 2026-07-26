@@ -5,7 +5,8 @@
     "baseUrl": ".",
     "paths": {
       "@core/*": ["src/core/*"],
-      "@data/*": ["src/data/*"]
+      "@data/*": ["src/data/*"],
+      "@presentation/*": ["src/presentation/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
