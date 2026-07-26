@@ -116,6 +116,7 @@ const textFormatStyle = (format?: number | string) => {
   if (!bits) {
     return undefined;
   }
+  /* eslint-disable no-bitwise -- bitmask flags from the Lexical CMS format field */
   return [
     (bits & FORMAT_BOLD) !== 0 && styles.bold,
     (bits & FORMAT_ITALIC) !== 0 && styles.italic,
@@ -123,6 +124,7 @@ const textFormatStyle = (format?: number | string) => {
     (bits & FORMAT_UNDERLINE) !== 0 && styles.underline,
     (bits & FORMAT_CODE) !== 0 && styles.code,
   ];
+  /* eslint-enable no-bitwise */
 };
 
 const headingStyle = (tag?: string) => {
