@@ -11,6 +11,7 @@ import { RestaurantCtaBlock } from './RestaurantCtaBlock';
 import { ImageBlock } from './ImageBlock';
 import { FormBlock } from './FormBlock';
 import { UnknownBlock } from './UnknownBlock';
+import { reportUnknownBlock } from '../observability/crashReporting';
 
 type UnsafeBlockComponent = (props: { block: never }) => React.JSX.Element | null;
 
@@ -50,12 +51,14 @@ export const renderBlock = (
   const blockType = envelope.blockType;
   if (!isKnownBlockType(blockType)) {
     console.warn(`[blocks] unknown block type: ${blockType}`);
+    reportUnknownBlock(blockType);
     return <UnknownBlock key={key} blockType={blockType} />;
   }
 
   const parsed = KNOWN_BLOCK_SCHEMAS[blockType].safeParse(envelope);
   if (!parsed.success) {
     console.warn(`[blocks] block failed validation: ${blockType}`);
+    reportUnknownBlock(blockType);
     return <UnknownBlock key={key} blockType={blockType} />;
   }
 

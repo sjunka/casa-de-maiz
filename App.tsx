@@ -12,6 +12,9 @@ import { BootstrapScreen } from './src/screens/BootstrapScreen';
 import { navigationRef, getCurrentRouteName, flushPendingNavigation } from './src/navigation/navigationRef';
 import { initDeepLinking } from './src/navigation/deepLinking';
 import { useTheme } from './src/theme/useTheme';
+import { initCrashReporting, wrapRootComponent } from './src/observability/crashReporting';
+
+initCrashReporting();
 
 const App = () => {
   const theme = useTheme();
@@ -56,4 +59,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default wrapRootComponent(App);
