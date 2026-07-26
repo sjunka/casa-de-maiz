@@ -51,8 +51,7 @@ curl -s -o /dev/null -w "ttfb=%{time_starttransfer}s total=%{time_total}s size=%
 The first request of a run is consistently the slowest, which is the Vercel
 deployment waking rather than anything in the app. Practical consequence: first
 content lands roughly 0.5–0.9 s after launch on a warm network, and the
-persisted last-good response ([ADR 0006](adr/0006-cache-policy.md)) is what
-covers the cold or offline case.
+persisted last-good response is what covers the cold or offline case.
 
 ## Scroll performance
 
@@ -117,7 +116,7 @@ The original sweep found three controls sized to the iOS 44 pt minimum on both
 platforms, where Material specifies 48 dp, and notice action pills at just
 36 dp. All of them now resolve through one `MIN_TOUCH_TARGET` token
 (`src/presentation/theme/tokens.ts`) that returns 48 on Android and 44 on iOS,
-alongside the other platform divergences ([ADR 0012](adr/0012-platform-native-presentation.md)).
+alongside the other platform divergences.
 
 Note that `uiautomator` reports visual bounds and cannot see React Native's
 `hitSlop`, so the dismiss button still reads as 20 dp in a raw dump. Its

@@ -13,7 +13,7 @@ type Props = BottomTabBarProps & { colors: Theme['colors']; scheme: Theme['schem
 // top indicator line rather than a label or a filled pill. iOS and Android
 // share this structure by design — only the material behind it diverges
 // (a real UIVisualEffectView on iOS, a tonal Material surface with elevation
-// on Android, ADR 0012). Press feedback follows AppPressable's platform
+// on Android). Press feedback follows AppPressable's platform
 // default: ripple on Android, opacity-on-press on iOS.
 //
 // react-navigation invokes `tabBar` as a plain function call, not as JSX

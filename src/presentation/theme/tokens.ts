@@ -79,7 +79,7 @@ export const darkColors: ColorTokens = {
 export const MIN_TOUCH_TARGET = Platform.OS === 'android' ? 48 : 44;
 
 // Android conveys elevation with a tonal surface and `elevation`; iOS conveys
-// it with a hairline border and a soft shadow (ADR 0010, ADR 0012).
+// it with a hairline border and a soft shadow.
 export const getElevatedSurfaceStyle = (colors: ColorTokens): ViewStyle =>
   Platform.OS === 'android'
     ? { backgroundColor: colors.surfaceElevated, elevation: 3 }

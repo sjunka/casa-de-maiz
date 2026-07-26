@@ -73,8 +73,4 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ### Issue tracker
 
-Issues tracked as GitHub Issues via `gh` CLI. See `docs/agents/issue-tracker.md`.
-
-### Domain docs
-
-Single-context: `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
+Issues tracked as GitHub Issues via `gh` CLI.

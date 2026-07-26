@@ -9,8 +9,8 @@ type Props = {
 };
 
 // A genuine UIVisualEffectView material on iOS. Reduce Transparency swaps it
-// for an opaque surface, live via a listener rather than only at mount
-// (ADR 0012). Android has no glass treatment; it gets an opaque surface too.
+// for an opaque surface, live via a listener rather than only at mount.
+// Android has no glass treatment; it gets an opaque surface too.
 export const GlassSurface = ({ style, blurType, fallbackColor }: Props) => {
   const reduceTransparency = useReduceTransparency();
 

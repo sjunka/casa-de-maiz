@@ -38,8 +38,7 @@ const DEV_PREFILL: Partial<Record<string, string>> = {
   textarea: 'Quisiera reservar una mesa para 2 el viernes a las 8pm',
 };
 
-// Platform look-and-feel decided via mattpocock-skills:prototype (see
-// docs/adr/0012-platform-native-presentation.md for the wider pattern):
+// Platform look-and-feel decided via mattpocock-skills:prototype:
 // iOS gets a raised glass "ticket" card (GlassSurface); Android gets
 // outlined M3 fields with a segmented control for `select` and a filled
 // pill button — no card, no glass. Both share the same validation/submit

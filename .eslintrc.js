@@ -22,19 +22,19 @@ module.exports = {
               {
                 name: 'react',
                 allowTypeImports: true,
-                message: 'The data layer holds no React — see ADR 0016 (source layout).',
+                message: 'The data layer holds no React.',
               },
               {
                 name: 'react-native',
                 allowTypeImports: true,
-                message: 'The data layer holds no React — see ADR 0016 (source layout).',
+                message: 'The data layer holds no React.',
               },
             ],
             patterns: [
               {
                 group: ['react-native/*'],
                 allowTypeImports: true,
-                message: 'The data layer holds no React — see ADR 0016 (source layout).',
+                message: 'The data layer holds no React.',
               },
             ],
           },

@@ -9,7 +9,7 @@ import type { GenericBlock as GenericBlockData } from '@core/contract/models/blo
 type Props = { block: GenericBlockData };
 
 // Best-effort renderer for block types the OpenAPI contract declares but
-// doesn't shape (ADR 0008). Reads only recognised optional fields; anything
+// doesn't shape. Reads only recognised optional fields; anything
 // else renders nothing rather than guessing at an unpublished schema.
 export const GenericBlock = ({ block }: Props) => {
   const navigateToDestination = useDestinationNavigation();
