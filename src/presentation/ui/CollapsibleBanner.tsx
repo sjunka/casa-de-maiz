@@ -1,12 +1,17 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { StyleSheet } from 'react-native';
+import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import { useReducedMotion } from '../theme/useReducedMotion';
 
-// Enter is unhurried so the banner reads as arriving; exit is quicker so the
-// space it gives back to the content feels immediate (ADR 0012 motion notes).
-const ENTER_MS = 260;
-const EXIT_MS = 160;
+// Leaving reads in three beats: the banner gives up its ink, then lifts and
+// accelerates out of the top, and only then does the slot close — so the page
+// settles after the banner has left rather than being dragged up with it.
+// Arriving replays the same beats in reverse, unhurried, so it reads as
+// something coming to rest (ADR 0012 motion notes).
+const FADE_MS = 130;
+const RISE_MS = 240;
+const RISE_DELAY = 70;
+const COLLAPSE_MS = 260;
 
 type Props = { visible: boolean; onExited?: () => void; children: ReactNode };
 
@@ -15,7 +20,9 @@ type Props = { visible: boolean; onExited?: () => void; children: ReactNode };
 // dismissal, so everything below it slides instead of jumping.
 export const CollapsibleBanner = ({ visible, onExited, children }: Props) => {
   const [contentHeight, setContentHeight] = useState(0);
-  const progress = useSharedValue(0);
+  const fade = useSharedValue(0);
+  const lift = useSharedValue(1);
+  const collapse = useSharedValue(0);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -23,32 +30,54 @@ export const CollapsibleBanner = ({ visible, onExited, children }: Props) => {
     // to 0. Leaving never waits: the dismissal must always resolve.
     if (!contentHeight && visible) return;
 
-    progress.value = withTiming(
-      visible ? 1 : 0,
-      {
-        duration: reducedMotion ? 0 : visible ? ENTER_MS : EXIT_MS,
-        easing: visible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
-      },
-      finished => {
-        if (finished && !visible && onExited) runOnJS(onExited)();
-      },
-    );
-  }, [visible, contentHeight, reducedMotion, progress, onExited]);
+    const scale = reducedMotion ? 0 : 1;
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: progress.value * contentHeight,
-    opacity: progress.value,
-    transform: [{ translateY: (progress.value - 1) * 8 }],
+    if (visible) {
+      collapse.value = withTiming(1, { duration: COLLAPSE_MS * scale, easing: Easing.out(Easing.cubic) });
+      lift.value = withDelay(
+        COLLAPSE_MS * 0.4 * scale,
+        withTiming(0, { duration: RISE_MS * scale, easing: Easing.out(Easing.cubic) }),
+      );
+      fade.value = withDelay(COLLAPSE_MS * 0.4 * scale, withTiming(1, { duration: FADE_MS * scale }));
+      return;
+    }
+
+    fade.value = withTiming(0, { duration: FADE_MS * scale });
+    lift.value = withDelay(
+      RISE_DELAY * scale,
+      withTiming(1, { duration: RISE_MS * scale, easing: Easing.in(Easing.cubic) }),
+    );
+    collapse.value = withDelay(
+      (RISE_DELAY + RISE_MS * 0.4) * scale,
+      withTiming(0, { duration: COLLAPSE_MS * scale, easing: Easing.inOut(Easing.cubic) }, finished => {
+        if (finished && onExited) runOnJS(onExited)();
+      }),
+    );
+  }, [visible, contentHeight, reducedMotion, fade, lift, collapse, onExited]);
+
+  // Height and maxHeight are set together, not just height: a documented
+  // Reanimated/iOS quirk leaves a stale native frame for touch delivery when
+  // only `height` drives the collapse (unconfirmed here — see ADR 0018 follow-up).
+  const slotStyle = useAnimatedStyle(() => {
+    const height = collapse.value * contentHeight;
+    return { height, maxHeight: height };
+  });
+  const contentStyle = useAnimatedStyle(() => ({
+    opacity: fade.value,
+    transform: [{ translateY: -34 * lift.value }, { scale: 1 - 0.07 * lift.value }],
   }));
 
   return (
     // The wrapper owns the height the layout sees; the content sits out of
     // flow inside it so it always measures itself at full size, however far
     // the wrapper has collapsed.
-    <Animated.View style={[styles.clip, animatedStyle]}>
-      <View style={styles.content} onLayout={event => setContentHeight(event.nativeEvent.layout.height)}>
+    <Animated.View style={[styles.clip, slotStyle]}>
+      <Animated.View
+        style={[styles.content, contentStyle]}
+        onLayout={event => setContentHeight(event.nativeEvent.layout.height)}
+      >
         {children}
-      </View>
+      </Animated.View>
     </Animated.View>
   );
 };

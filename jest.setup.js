@@ -20,13 +20,14 @@ jest.mock('react-native-reanimated', () => {
   return {
     __esModule: true,
     default: { View, Text },
-    Easing: { in: identity, out: identity, cubic: identity },
+    Easing: { in: identity, out: identity, inOut: identity, cubic: identity },
     useSharedValue: (initial) => ({ value: initial }),
     useAnimatedStyle: (factory) => factory(),
     withTiming: (toValue, _config, callback) => {
       callback?.(true);
       return toValue;
     },
+    withDelay: (_delay, animation) => animation,
     runOnJS: identity,
   };
 });

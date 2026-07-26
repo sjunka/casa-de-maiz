@@ -1,11 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { AccessibilityInfo, StyleSheet, Text, View } from 'react-native';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { AppPressable } from '../ui/AppPressable';
 import { useTheme } from '../theme/useTheme';
+import { useReducedMotion } from '../theme/useReducedMotion';
+import { noticeCardStrings } from './noticeCardStrings';
 
 type Glyph = React.ComponentProps<typeof MaterialDesignIcons>['name'];
 
 type Action = { key: string; label: string; onPress: () => void };
+
+// How long a dismissed notice waits in its own slot before the dismissal
+// becomes real. Long enough to catch a mis-tap, short enough that the notice
+// is not still sitting there when the guest has moved on.
+const UNDO_MS = 4000;
 
 type Props = {
   icon: Glyph;
@@ -38,6 +47,44 @@ export const NoticeCard = ({
   testID,
 }: Props) => {
   const { colors } = useTheme();
+  const [pending, setPending] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => clearTimeout(timer.current ?? undefined), []);
+
+  // Dismissing swaps the card for an undo row in the same slot, so nothing
+  // below it moves until the dismissal is real. The notice itself is gone
+  // from the moment of the tap — the row is only the window to take it back.
+  const dismiss = () => {
+    setPending(true);
+    AccessibilityInfo.announceForAccessibility(noticeCardStrings.dismissed);
+    timer.current = setTimeout(() => onDismiss?.(), UNDO_MS);
+  };
+
+  const undo = () => {
+    clearTimeout(timer.current ?? undefined);
+    setPending(false);
+    AccessibilityInfo.announceForAccessibility(noticeCardStrings.restoredAnnouncement);
+  };
+
+  if (pending) {
+    return (
+      <View style={styles.wrapper}>
+        <View style={[styles.undoRow, { backgroundColor: tint }]} testID={testID ? `${testID}-undo` : undefined}>
+          <Text style={[styles.undoMessage, { color: accent }]}>{noticeCardStrings.dismissed}</Text>
+          <AppPressable
+            accessibilityRole="button"
+            accessibilityLabel={noticeCardStrings.undoAccessibilityLabel}
+            style={styles.undoAction}
+            onPress={undo}
+          >
+            <Text style={[styles.undoLabel, { color: accent }]}>{noticeCardStrings.undo}</Text>
+          </AppPressable>
+          <UndoDrain color={accent} />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -53,7 +100,7 @@ export const NoticeCard = ({
               accessibilityLabel={dismissLabel}
               style={styles.dismiss}
               hitSlop={12}
-              onPress={onDismiss}
+              onPress={dismiss}
             >
               <MaterialDesignIcons name="close" size={14} color={colors.textSecondary} />
             </AppPressable>
@@ -80,6 +127,21 @@ export const NoticeCard = ({
   );
 };
 
+// The undo window has to be visible or the notice leaving on its own reads as
+// a glitch: a hairline rule drains for exactly as long as the undo lives.
+const UndoDrain = ({ color }: { color: string }) => {
+  const remaining = useSharedValue(1);
+  const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    remaining.value = withTiming(0, { duration: reducedMotion ? 0 : UNDO_MS, easing: Easing.linear });
+  }, [remaining, reducedMotion]);
+
+  const style = useAnimatedStyle(() => ({ transform: [{ scaleX: remaining.value }] }));
+
+  return <Animated.View style={[styles.drain, { backgroundColor: color }, style]} />;
+};
+
 const styles = StyleSheet.create({
   wrapper: { paddingHorizontal: 12, paddingTop: 8 },
   card: { borderRadius: 14, padding: 14 },
@@ -104,4 +166,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   actionLabel: { fontWeight: '600', fontSize: 13 },
+  undoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 14,
+    paddingLeft: 14,
+    paddingRight: 6,
+    minHeight: 52,
+    overflow: 'hidden',
+  },
+  undoMessage: { flex: 1, fontSize: 14, fontWeight: '500' },
+  undoAction: { minHeight: 44, paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' },
+  undoLabel: { fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
+  drain: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 2, opacity: 0.35, transformOrigin: 'left' },
 });

@@ -40,6 +40,10 @@ beforeEach(async () => {
   jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined as never);
 });
 
+afterEach(() => {
+  jest.useRealTimers();
+});
+
 test('appears after its trigger delay rather than flashing on load', async () => {
   await render(<AlertBanner alerts={[alert()]} currentPageSlug="home" />);
 
@@ -62,6 +66,20 @@ test('a dismissal survives a restart (fresh mount reads the persisted cooldown)'
   await render(<AlertBanner alerts={[alert()]} currentPageSlug="home" />);
   await new Promise(resolve => setTimeout(() => resolve(undefined), 20));
   expect(screen.queryByTestId('alert-banner')).toBeNull();
+});
+
+test('waiting out the undo window commits the dismissal and records it', async () => {
+  jest.useFakeTimers();
+
+  await render(<AlertBanner alerts={[alert()]} currentPageSlug="home" />);
+  await act(async () => jest.advanceTimersByTime(10));
+  expect(screen.getByTestId('alert-banner')).toBeTruthy();
+
+  await fireEvent.press(screen.getByLabelText('Dismiss alert'));
+  await act(async () => jest.advanceTimersByTime(4000));
+
+  expect(screen.queryByTestId('alert-banner')).toBeNull();
+  expect(await AsyncStorage.getItem('alert-dismissed:closing-notice')).toBeTruthy();
 });
 
 test('an action navigates through the destination resolver', async () => {

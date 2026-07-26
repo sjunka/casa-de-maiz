@@ -15,7 +15,9 @@ Nothing animated. A banner arriving snapped the page down; dismissing one snappe
 ## Decision
 **One claim on the safe area.** `BootstrapScreen` wraps the whole stack in `SafeAreaView edges={['top']}`. Banners use plain padding, and `TabNavigator` sets `headerStatusBarHeight: 0` — necessary because React Navigation's `SafeAreaProviderCompat` re-provides window insets to its screens and would otherwise ignore the parent's consumption. The inset is paid once, by the topmost element.
 
-**One slab shape.** All three banners are full-bleed, message left-aligned, `paddingVertical: 14 / paddingLeft: 16 / paddingRight: 4`, with a 26px `×` on a 44×44 target. An inset rounded card was prototyped and rejected: stacked with the update bar it read as two unrelated objects rather than one piece of chrome.
+**One slab shape.** All three banners are full-bleed, message left-aligned, `paddingVertical: 14 / paddingLeft: 16 / paddingRight: 4`, with a 26px `×` on a 44×44 target. An inset rounded card was prototyped and rejected here: stacked with the update bar it read as two unrelated objects rather than one piece of chrome.
+
+**Superseded.** The inset rounded card was adopted later (`NoticeCard`, commit b0e3476) once all three notices shared it rather than one of them wearing it alone — see [0018-notice-dismissal](0018-notice-dismissal.md). The rest of this decision (safe-area, animation-in-the-layout, absolute-content) still holds.
 
 **Colour carries severity, not decoration.** The `info` tokens moved from cold blue to a warm tonal wash (`#f6e3de` on `#5c2317`; `#3d241c` on `#f0d9d1` dark), siblings of `accentContainer`. That yields a deliberate ladder: yellow update (loudest, blocks a broken app), terracotta alert (accent, campaign-driven), warm notice (quiet, informational). Tokens were retuned at source rather than overridden per call site — nothing else consumed them.
 
