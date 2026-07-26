@@ -83,4 +83,4 @@ xcrun simctl openurl booted casamaiz://menu
 adb shell am start -W -a android.intent.action.VIEW -d "casamaiz://menu"
 ```
 
-An unsupported path lands on Home; any other scheme is rejected. See [ADR 0013](adr/0013-deep-linking.md).
+An unsupported path lands on Home; any other scheme is rejected.

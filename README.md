@@ -21,7 +21,7 @@ editorial is hardcoded.
 
 Same content contract, deliberately different chrome: a real
 `UIVisualEffectView` behind the iOS tab bar, Material tonal surfaces and
-elevation on Android ([ADR 0012](docs/adr/0012-platform-native-presentation.md)).
+elevation on Android.
 
 | Home | Menu | Privacy | Reservations | CMS form | Dark |
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -32,9 +32,8 @@ elevation on Android ([ADR 0012](docs/adr/0012-platform-native-presentation.md))
 
 Dark mode follows system appearance. Debug builds also carry a gear in the
 top-right of the dev-only **Form (dev)** tab that flips the scheme in place, so
-it can be seen without leaving the app for system settings — see
-[ADR 0010](docs/adr/0010-styling-approach.md). Release builds, including the
-downloadable APK below, have neither the tab nor the gear.
+it can be seen without leaving the app for system settings. Release builds,
+including the downloadable APK below, have neither the tab nor the gear.
 
 ## Requirements coverage
 
@@ -42,23 +41,22 @@ Every core requirement in the assessment, and where it lives:
 
 | # | Requirement | Where |
 |---|---|---|
-| 1 | Foundation with clear boundaries, configurable base URL | `src/core`, `src/data`, `src/presentation` ([layout](docs/ARCHITECTURE.md), [ADR 0016](docs/adr/0016-source-layout.md)) |
-| 2 | Typed CMS client: four context params, `Platform.OS`, installed version, contract 1.1, media URLs, dedupe, cancellation | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` ([ADR 0001](docs/adr/0001-types-strategy.md), [ADR 0002](docs/adr/0002-data-layer.md)) |
-| 3 | Block registry rendering every live Home and Menu block; unknown blocks fail safe | `presentation/blocks/registry.tsx` ([ADR 0008](docs/adr/0008-block-fallback.md)) |
-| 4 | Bootstrap as configuration: navigation, promotions, feature flags, operational notice, update gate, alerts with placement/trigger/frequency/dismissal/targeting | `data/logic/`, `presentation/banners/` ([ADR 0007](docs/adr/0007-app-update-semantics.md), [ADR 0017](docs/adr/0017-banner-presentation.md), [ADR 0018](docs/adr/0018-notice-dismissal.md)) |
-| 5 | Navigation from `bootstrap.navigation`, one destination resolver, validated external links, native back | `navigation/resolveDestination.ts`, `navigation/TabNavigator.tsx` ([ADR 0003](docs/adr/0003-navigation-source.md), [ADR 0004](docs/adr/0004-destination-resolution.md)) |
-| 6 | Loading, empty, error+retry, pull-to-refresh, offline/stale, unsupported contract, not found; `nextChangeAt` as a hard expiry | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` ([ADR 0006](docs/adr/0006-cache-policy.md)) |
-| 7 | Absolute and relative media, aspect ratio held, alt text | `data/remote/media.ts`, `presentation/ui/CmsImage.tsx` ([ADR 0009](docs/adr/0009-media-strategy.md)) |
-| 8 | Safe areas, platform back, touch targets, dynamic type, dark mode, reduced motion, keyboard avoidance | `presentation/theme/`, `presentation/ui/AppPressable.tsx` ([ADR 0012](docs/adr/0012-platform-native-presentation.md), [ADR 0019](docs/adr/0019-form-block-presentation.md)) |
+| 1 | Foundation with clear boundaries, configurable base URL | `src/core`, `src/data`, `src/presentation` ([layout](docs/ARCHITECTURE.md)) |
+| 2 | Typed CMS client: four context params, `Platform.OS`, installed version, contract 1.1, media URLs, dedupe, cancellation | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` |
+| 3 | Block registry rendering every live Home and Menu block; unknown blocks fail safe | `presentation/blocks/registry.tsx` |
+| 4 | Bootstrap as configuration: navigation, promotions, feature flags, operational notice, update gate, alerts with placement/trigger/frequency/dismissal/targeting | `data/logic/`, `presentation/banners/` |
+| 5 | Navigation from `bootstrap.navigation`, one destination resolver, validated external links, native back | `navigation/resolveDestination.ts`, `navigation/TabNavigator.tsx` |
+| 6 | Loading, empty, error+retry, pull-to-refresh, offline/stale, unsupported contract, not found; `nextChangeAt` as a hard expiry | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` |
+| 7 | Absolute and relative media, aspect ratio held, alt text | `data/remote/media.ts`, `presentation/ui/CmsImage.tsx` |
+| 8 | Safe areas, platform back, touch targets, dynamic type, dark mode, reduced motion, keyboard avoidance | `presentation/theme/`, `presentation/ui/AppPressable.tsx` |
 | 9 | Automated tests for all six required cases; typecheck, lint and test all pass | 182 tests, 6 Maestro flows ([Testing](docs/TESTING.md)) |
 
 Bonus, all three categories: **iOS glass** (`presentation/ui/GlassSurface.tsx`,
 gated on Reduce Transparency) · **distinct Android Material** (tonal surfaces,
-elevation, ripple) · **advanced work** — `casamaiz://` deep links
-([ADR 0013](docs/adr/0013-deep-linking.md)), mocked form submission
-([ADR 0011](docs/adr/0011-form-block-modelling.md)), runtime Zod validation,
-complete alert-frequency behaviour (`always` / `once` / `session` with cooldown
-and a 4-second undo window), Sentry crash reporting with source maps
+elevation, ripple) · **advanced work** — `casamaiz://` deep links, mocked form
+submission, runtime Zod validation, complete alert-frequency behaviour
+(`always` / `once` / `session` with cooldown and a 4-second undo window),
+Sentry crash reporting with source maps
 ([Observability](docs/OBSERVABILITY.md)), and Maestro E2E flows.
 
 ## Try it without building
@@ -109,4 +107,3 @@ timing boundary, and no screen-reader pass. All of it, with the reasoning, in
 - [Profiling and accessibility notes](docs/PROFILING.md) — measured startup, scroll and touch-target numbers
 - [Production observability](docs/OBSERVABILITY.md)
 - [Known limitations and next steps](docs/LIMITATIONS.md)
-- [`CONTEXT.md`](CONTEXT.md) — domain glossary · [`docs/adr/`](docs/adr/) — 19 decision records

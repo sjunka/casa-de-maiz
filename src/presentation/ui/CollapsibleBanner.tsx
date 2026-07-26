@@ -7,7 +7,7 @@ import { useReducedMotion } from '../theme/useReducedMotion';
 // accelerates out of the top, and only then does the slot close — so the page
 // settles after the banner has left rather than being dragged up with it.
 // Arriving replays the same beats in reverse, unhurried, so it reads as
-// something coming to rest (ADR 0012 motion notes).
+// something coming to rest.
 const FADE_MS = 130;
 const RISE_MS = 240;
 const RISE_DELAY = 70;

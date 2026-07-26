@@ -6,7 +6,7 @@ type Props = Omit<PressableProps, 'style'> & {
 };
 
 // Android gets ripple feedback (Material convention); iOS gets opacity
-// feedback. One component so every call site changes in one place (ADR 0012).
+// feedback. One component so every call site changes in one place.
 export const AppPressable = ({ style, rippleColor, ...rest }: Props) => (
   <Pressable
     android_ripple={Platform.OS === 'android' ? { color: rippleColor } : undefined}

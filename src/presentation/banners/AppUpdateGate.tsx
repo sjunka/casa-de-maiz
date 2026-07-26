@@ -10,7 +10,7 @@ type Props = { appUpdate?: AppUpdate; children: ReactNode };
 
 // Blocks the app when the CMS says the installed version is below the required
 // minimum. A merely recommended update is a dismissible notice instead — see
-// AppUpdateNotice (ADR 0007).
+// AppUpdateNotice.
 export const AppUpdateGate = ({ appUpdate, children }: Props) => {
   const { colors } = useTheme();
   const decision = decideAppUpdate(appUpdate, getAppVersion());

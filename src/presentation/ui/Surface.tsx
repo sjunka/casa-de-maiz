@@ -3,7 +3,7 @@ import { useTheme } from '../theme/useTheme';
 
 type Props = { children: React.ReactNode; style?: StyleProp<ViewStyle> };
 
-// The card counterpart to the tab bar's platform split (ADR 0012). Both
+// The card counterpart to the tab bar's platform split. Both
 // platforms stay opaque — blur behind scrolling content is expensive and
 // hurts legibility over photography — but iOS reads as a distinct raised
 // "pill" (larger radius, stronger shadow) while Android keeps a flatter,

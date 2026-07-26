@@ -9,7 +9,7 @@ type Props = { appUpdate?: AppUpdate };
 
 // The recommended half of the app-update policy: a dismissible notice that
 // takes its place in the notice stack. The required half blocks the app
-// instead and lives in AppUpdateGate (ADR 0007).
+// instead and lives in AppUpdateGate.
 export const AppUpdateNotice = ({ appUpdate }: Props) => {
   const { colors } = useTheme();
   const [dismissed, setDismissed] = useState(false);

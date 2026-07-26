@@ -6,7 +6,7 @@ export type AppUpdateDecision =
   | { kind: 'recommended'; message: string }
   | { kind: 'required'; message: string };
 
-// `policy` is authoritative — a minimum version alone never blocks. See docs/adr/0007.
+// `policy` is authoritative — a minimum version alone never blocks.
 export const decideAppUpdate = (appUpdate: AppUpdate | undefined, installedVersion: string): AppUpdateDecision => {
   if (!appUpdate) return { kind: 'none' };
 

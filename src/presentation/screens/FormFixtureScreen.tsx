@@ -8,7 +8,7 @@ import { useTheme, toggleSchemeOverride } from '../theme/useTheme';
 import { MIN_TOUCH_TARGET } from '../theme/tokens';
 import type { BlockEnvelope } from '@core/contract/models/block';
 
-// Dev-only: no live page serves a formBlock yet (see docs/adr/0011-form-block-modelling.md),
+// Dev-only: no live page serves a formBlock yet,
 // so this fixture is the only way to see and exercise the block.
 const FORM_FIXTURE_LAYOUT: BlockEnvelope[] = [
   {

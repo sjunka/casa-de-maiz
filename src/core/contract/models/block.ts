@@ -109,7 +109,7 @@ export type FormBlock = z.infer<typeof formBlockSchema>;
 
 // Best-effort renderer for block types the contract declares but does not shape.
 // All fields optional so the schema can never fail validation and fall through
-// to the unknown-block marker (ADR 0008).
+// to the unknown-block marker.
 export const genericBlockSchema = blockBaseSchema.extend({
   blockType: z.enum(['restaurantHero', 'cta', 'content', 'mediaBlock', 'archive']),
   heading: z.string().optional(),

@@ -29,7 +29,7 @@ Beyond the minimum: alert frequency policy, scroll-progress triggers, destinatio
 
 ## End-to-end tests
 
-Scenarios that depend on real navigation, persistence and timing rather than a scripted `fetch`: offline fallback, expired content, an unsupported contract version, tab navigation, a CMS-published alert, and a form submission. Maestro-driven, against a local mock content server; see [ADR 0015](adr/0015-e2e-testing-framework.md).
+Scenarios that depend on real navigation, persistence and timing rather than a scripted `fetch`: offline fallback, expired content, an unsupported contract version, tab navigation, a CMS-published alert, and a form submission. Maestro-driven, against a local mock content server.
 
 ```sh
 npm run e2e:mock-server    # terminal 1 — mock CMS content API on :4001
