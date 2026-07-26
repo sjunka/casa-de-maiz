@@ -13,9 +13,8 @@ type Props = BottomTabBarProps & { colors: Theme['colors']; scheme: Theme['schem
 // top indicator line rather than a label or a filled pill. iOS and Android
 // share this structure by design — only the material behind it diverges
 // (a real UIVisualEffectView on iOS, a tonal Material surface with elevation
-// on Android, ADR 0012). Ripple is disabled here (AppPressable's
-// `disableRipple`) since the indicator line already carries the tap/focus
-// feedback; iOS still gets AppPressable's opacity-on-press.
+// on Android, ADR 0012). Press feedback follows AppPressable's platform
+// default: ripple on Android, opacity-on-press on iOS.
 //
 // react-navigation invokes `tabBar` as a plain function call, not as JSX
 // (see BottomTabView's `tabBar({...})`), so this file avoids hooks entirely.
@@ -55,7 +54,6 @@ export const AppTabBar = ({ state, descriptors, navigation, insets, colors, sche
               accessibilityRole="tab"
               accessibilityState={{ selected: focused }}
               accessibilityLabel={options.tabBarAccessibilityLabel ?? text}
-              disableRipple
               onPress={onPress}
               style={styles.item}
             >
