@@ -60,7 +60,7 @@ export const PrivacyScreen = ({ route }: Props) => {
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   content: { padding: 24 },
-  title: { fontSize: 24, fontWeight: '600' },
+  title: { fontSize: 24, fontWeight: '600', textAlign: 'center' },
   subtitle: { marginTop: 8, fontSize: 14, textAlign: 'center' },
-  summary: { marginTop: 8, marginBottom: 16, fontSize: 16 },
+  summary: { marginTop: 8, marginBottom: 16, fontSize: 16, textAlign: 'center' },
 });

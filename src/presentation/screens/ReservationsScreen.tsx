@@ -6,9 +6,8 @@ export const ReservationsScreen = () => {
 
   return (
     <View style={styles.container} testID="reservations-placeholder">
-      <Text style={[styles.title, { color: colors.text }]}>Reservations</Text>
       <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-        Reservations aren't bookable in the app yet. Please call the restaurant to book a table.
+        Todavía no puedes reservar desde la app. Llama al restaurante para apartar tu mesa.
       </Text>
     </View>
   );
@@ -16,6 +15,5 @@ export const ReservationsScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
-  title: { fontSize: 24, fontWeight: '600' },
-  subtitle: { marginTop: 8, fontSize: 14, textAlign: 'center' },
+  subtitle: { fontSize: 14, textAlign: 'center' },
 });

@@ -139,7 +139,7 @@ const headingStyle = (tag?: string) => {
 };
 
 const styles = StyleSheet.create({
-  paragraph: { fontSize: 15, lineHeight: 22, marginBottom: 12 },
+  paragraph: { fontSize: 15, lineHeight: 22, marginBottom: 12, textAlign: 'center' },
   h1: { fontSize: 24, fontWeight: '700' },
   h2: { fontSize: 20, fontWeight: '700' },
   h3: { fontSize: 17, fontWeight: '700' },
