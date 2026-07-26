@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   AccessibilityInfo,
   ActivityIndicator,
@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
+import { FlashList } from '@shopify/flash-list';
 import { useTheme } from '../theme/useTheme';
 import { getElevatedSurfaceStyle } from '../theme/tokens';
 import { GlassSurface } from '../ui/GlassSurface';
@@ -78,6 +79,18 @@ export const FormBlock = ({ block }: Props) => {
       return next;
     });
   };
+
+  const renderOutlinedField = useCallback(
+    ({ item: field }: { item: FormField }) => (
+      <OutlinedField
+        field={field}
+        value={values[field.name]}
+        error={errors[field.name]}
+        onChange={v => setValue(field.name, v)}
+      />
+    ),
+    [values, errors],
+  );
 
   const validate = (): Record<string, string> => {
     const nextErrors: Record<string, string> = {};
@@ -246,18 +259,15 @@ export const FormBlock = ({ block }: Props) => {
   }
 
   return (
-    <ScrollView style={styles.fill} contentContainerStyle={styles.androidPage} testID="form-block">
-      {fields.map(field => (
-        <OutlinedField
-          key={field.name}
-          field={field}
-          value={values[field.name]}
-          error={errors[field.name]}
-          onChange={v => setValue(field.name, v)}
-        />
-      ))}
-      {footer}
-    </ScrollView>
+    <FlashList
+      style={styles.fill}
+      contentContainerStyle={styles.androidPage}
+      testID="form-block"
+      data={fields}
+      keyExtractor={field => field.name}
+      renderItem={renderOutlinedField}
+      ListFooterComponent={footer}
+    />
   );
 };
 
