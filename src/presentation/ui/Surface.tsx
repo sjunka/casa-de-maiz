@@ -31,9 +31,6 @@ const styles = StyleSheet.create({
   raised: { borderRadius: 12, elevation: 2 },
   framed: {
     borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.14,
-    shadowRadius: 12,
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.14)',
   },
 });

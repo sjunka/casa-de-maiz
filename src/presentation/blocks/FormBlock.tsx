@@ -1,9 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import {
   AccessibilityInfo,
   ActivityIndicator,
-  FlatList,
-  type ListRenderItem,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -87,18 +85,6 @@ export const FormBlock = ({ block }: Props) => {
     }
   };
 
-  const renderField: ListRenderItem<FormField> = useCallback(
-    ({ item: field }) => (
-      <FormFieldInput
-        field={field}
-        value={values[field.name]}
-        error={errors[field.name]}
-        onChange={value => setValue(field.name, value)}
-      />
-    ),
-    [values, errors],
-  );
-
   if (status === 'success') {
     return (
       <View style={styles.container} testID="form-block-success">
@@ -111,50 +97,51 @@ export const FormBlock = ({ block }: Props) => {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <FlatList
-        testID="form-block"
-        contentContainerStyle={styles.container}
-        data={fields}
-        keyExtractor={field => field.name}
-        // A form has a handful of CMS-defined fields, not a data feed — every
-        // row stays mounted so a guest never loses focus/keystrokes mid-fill.
-        initialNumToRender={fields.length}
-        renderItem={renderField}
-        ListFooterComponent={
-          <>
-            {submitError ? (
-              <Text
-                accessibilityLiveRegion="polite"
-                style={[styles.submitError, { color: colors.errorText }]}
-                testID="form-block-submit-error"
-              >
-                {submitError}
-              </Text>
-            ) : null}
-            <AppPressable
-              accessibilityRole="button"
-              accessibilityLabel={block.form.submitButtonLabel ?? 'Submit'}
-              accessibilityState={{ disabled: status === 'submitting' }}
-              disabled={status === 'submitting'}
-              onPress={handleSubmit}
-              style={[
-                styles.submitButton,
-                { backgroundColor: colors.accent },
-                status === 'submitting' && styles.submitButtonDisabled,
-              ]}
-              testID="form-block-submit"
-            >
-              {status === 'submitting' ? (
-                <ActivityIndicator color={colors.onAccent} />
-              ) : (
-                <Text style={[styles.submitLabel, { color: colors.onAccent }]}>
-                  {block.form.submitButtonLabel ?? 'Submit'}
-                </Text>
-              )}
-            </AppPressable>
-          </>
-        }
-      />
+      {/* A form has a handful of CMS-defined fields, not a data feed — a plain
+          map keeps every row mounted (no windowing) so a guest never loses
+          focus/keystrokes mid-fill, and avoids nesting a VirtualizedList
+          inside the screen's ScrollView. */}
+      <View testID="form-block" style={styles.container}>
+        {fields.map(field => (
+          <FormFieldInput
+            key={field.name}
+            field={field}
+            value={values[field.name]}
+            error={errors[field.name]}
+            onChange={value => setValue(field.name, value)}
+          />
+        ))}
+        {submitError ? (
+          <Text
+            accessibilityLiveRegion="polite"
+            style={[styles.submitError, { color: colors.errorText }]}
+            testID="form-block-submit-error"
+          >
+            {submitError}
+          </Text>
+        ) : null}
+        <AppPressable
+          accessibilityRole="button"
+          accessibilityLabel={block.form.submitButtonLabel ?? 'Submit'}
+          accessibilityState={{ disabled: status === 'submitting' }}
+          disabled={status === 'submitting'}
+          onPress={handleSubmit}
+          style={[
+            styles.submitButton,
+            { backgroundColor: colors.accent },
+            status === 'submitting' && styles.submitButtonDisabled,
+          ]}
+          testID="form-block-submit"
+        >
+          {status === 'submitting' ? (
+            <ActivityIndicator color={colors.onAccent} />
+          ) : (
+            <Text style={[styles.submitLabel, { color: colors.onAccent }]}>
+              {block.form.submitButtonLabel ?? 'Submit'}
+            </Text>
+          )}
+        </AppPressable>
+      </View>
     </KeyboardAvoidingView>
   );
 };
