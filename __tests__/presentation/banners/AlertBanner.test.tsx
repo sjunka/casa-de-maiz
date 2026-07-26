@@ -56,7 +56,7 @@ test('a dismissed alert can be dismissed and stays suppressed across restarts', 
   await render(<AlertBanner alerts={[alert()]} currentPageSlug="home" />);
   await waitFor(() => expect(screen.getByTestId('alert-banner')).toBeTruthy());
 
-  await fireEvent.press(screen.getByLabelText('Dismiss alert'));
+  await fireEvent.press(screen.getByLabelText('Descartar alerta'));
   await waitFor(() => expect(screen.queryByTestId('alert-banner')).toBeNull());
 });
 
@@ -75,7 +75,7 @@ test('waiting out the undo window commits the dismissal and records it', async (
   await act(async () => jest.advanceTimersByTime(10));
   expect(screen.getByTestId('alert-banner')).toBeTruthy();
 
-  await fireEvent.press(screen.getByLabelText('Dismiss alert'));
+  await fireEvent.press(screen.getByLabelText('Descartar alerta'));
   await act(async () => jest.advanceTimersByTime(4000));
 
   expect(screen.queryByTestId('alert-banner')).toBeNull();

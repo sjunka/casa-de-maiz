@@ -26,7 +26,7 @@ export const OperationalNoticeBanner = ({ operationalControls }: Props) => {
         accent={colors.infoText}
         message={operationalControls?.bannerMessage ?? ''}
         dismissible
-        dismissLabel="Dismiss notice"
+        dismissLabel="Descartar aviso"
         onDismiss={() => setDismissed(true)}
       />
     </CollapsibleBanner>

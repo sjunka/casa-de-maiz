@@ -55,13 +55,7 @@ export const CollapsibleBanner = ({ visible, onExited, children }: Props) => {
     );
   }, [visible, contentHeight, reducedMotion, fade, lift, collapse, onExited]);
 
-  // Height and maxHeight are set together, not just height: a documented
-  // Reanimated/iOS quirk leaves a stale native frame for touch delivery when
-  // only `height` drives the collapse (unconfirmed here — see ADR 0018 follow-up).
-  const slotStyle = useAnimatedStyle(() => {
-    const height = collapse.value * contentHeight;
-    return { height, maxHeight: height };
-  });
+  const slotStyle = useAnimatedStyle(() => ({ height: collapse.value * contentHeight }));
   const contentStyle = useAnimatedStyle(() => ({
     opacity: fade.value,
     transform: [{ translateY: -34 * lift.value }, { scale: 1 - 0.07 * lift.value }],

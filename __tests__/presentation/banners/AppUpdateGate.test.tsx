@@ -16,7 +16,7 @@ test('a recommended update shows a dismissible banner and stays usable', async (
   expect(screen.getByText('Update available')).toBeTruthy();
   expect(screen.getByText('App content')).toBeTruthy();
 
-  await fireEvent.press(screen.getByLabelText('Dismiss update message'));
+  await fireEvent.press(screen.getByLabelText('Descartar mensaje de actualización'));
   expect(screen.queryByText('Update available')).toBeNull();
   expect(screen.getByText('App content')).toBeTruthy();
 });

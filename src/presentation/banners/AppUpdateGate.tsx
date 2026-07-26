@@ -33,7 +33,7 @@ export const AppUpdateGate = ({ appUpdate, children }: Props) => {
           accent={colors.warningText}
           message={decision.message}
           dismissible
-          dismissLabel="Dismiss update message"
+          dismissLabel="Descartar mensaje de actualización"
           onDismiss={() => setDismissed(true)}
         />
       )}
