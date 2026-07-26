@@ -92,6 +92,7 @@ CMS-published alert and a form submission. See [Testing](docs/TESTING.md).
 - [Architecture, trade-offs, dependency choices, types strategy](docs/ARCHITECTURE.md)
 - [Setup: prerequisites, configuration, run commands, deep links](docs/SETUP.md)
 - [Quality and testing](docs/TESTING.md)
+- [Profiling and accessibility notes](docs/PROFILING.md) — measured startup, scroll and touch-target numbers
 - [Production observability](docs/OBSERVABILITY.md)
 - [Known limitations and next steps](docs/LIMITATIONS.md)
 - [`CONTEXT.md`](CONTEXT.md) — domain glossary · [`docs/adr/`](docs/adr/) — 19 decision records

@@ -46,3 +46,5 @@ Flows live in `e2e/flows/`. The `.js` files in that directory drive the mock ser
 ## Accessibility checks
 
 Interactive elements expose roles, labels, states and a minimum touch target through `AppPressable` (`__tests__/presentation/ui/AppPressable.test.tsx`). Dynamic type, dark mode, Reduce Motion and Reduce Transparency each have a hook with its own test under `__tests__/presentation/theme/`.
+
+Measured results — accessibility-tree labels, touch-target sizes, and both platforms at their largest text settings — are in [Profiling and accessibility notes](PROFILING.md), including two findings the tests do not catch.
