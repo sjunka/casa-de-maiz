@@ -1,3 +1,4 @@
+import type React from 'react';
 import * as Sentry from '@sentry/react-native';
 import Config from 'react-native-config';
 import { getAppVersion } from '@core/contract/appVersion';
@@ -43,4 +44,6 @@ export const reportUnknownBlock = (blockType: string): void => {
   });
 };
 
-export const wrapRootComponent = Sentry.wrap;
+export const wrapRootComponent = (
+  component: React.ComponentType<Record<string, unknown>>,
+) => (SENTRY_DSN ? Sentry.wrap(component) : component);
