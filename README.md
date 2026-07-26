@@ -1,175 +1,97 @@
 # Casa Maiz
 
-A React Native CLI app, TypeScript throughout, that renders the Casa Maiz guest experience — Home, Menu, Privacy, navigation, alerts, operational notices and app-update gating — entirely from the published Payload CMS content contract (v1.1). Nothing editorial is hardcoded: the CMS is treated as an external dependency and the app follows whatever it publishes.
+A React Native CLI app, TypeScript throughout, that renders the Casa Maiz guest
+experience — Home, Menu, Privacy, navigation, alerts, notices and app-update
+gating — entirely from the published Payload CMS contract (v1.1). Nothing
+editorial is hardcoded.
 
-## Prerequisites
+> **Reviewing this submission?** [**Architecture and trade-offs**](docs/ARCHITECTURE.md) ·
+> [**Setup**](docs/SETUP.md) · [**Testing**](docs/TESTING.md) ·
+> [**Limitations**](docs/LIMITATIONS.md)
 
-- Node 22.23.1 — pinned in `.nvmrc`. If you use `nvm`, run `nvm use`.
-- Xcode 26.5+ and CocoaPods 1.16+ for iOS.
-- Android Studio (SDK, platform-tools, an emulator image) and a JDK 17 for Android. `JAVA_HOME` must point at a JDK 17 install (e.g. `brew install openjdk@17`).
-- Ruby + Bundler for CocoaPods (`bundle install`).
-- [Maestro CLI](https://maestro.mobile.dev) for the E2E suite — `curl -Ls "https://get.maestro.mobile.dev" | bash`.
+## Demo
 
-## Configuration
+<p align="center">
+  <img src="docs/media/demo.gif" width="300" alt="Demo: the CMS-driven Home blocks, the Menu tab, the privacy legal document, the reservations placeholder and the CMS form" />
+</p>
 
-Base URL is read from `react-native-config` and must never be hardcoded.
+> 🎬 Prefer video? [Watch the MP4](docs/media/demo.mp4)
+
+## Both platforms
+
+Same content contract, deliberately different chrome: a real
+`UIVisualEffectView` behind the iOS tab bar, Material tonal surfaces and
+elevation on Android ([ADR 0012](docs/adr/0012-platform-native-presentation.md)).
+
+| Home | Menu | Privacy | Reservations | CMS form | Dark |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| ![iOS home](docs/media/ios-01-home.png) | ![iOS menu](docs/media/ios-02-menu.png) | ![iOS privacy](docs/media/ios-03-privacy.png) | ![iOS reservations](docs/media/ios-04-reservations.png) | ![iOS form](docs/media/ios-05-form.png) | ![iOS dark](docs/media/ios-06-home-dark.png) |
+| ![Android home](docs/media/android-01-home.png) | ![Android menu](docs/media/android-02-menu.png) | ![Android privacy](docs/media/android-03-privacy.png) | ![Android reservations](docs/media/android-04-reservations.png) | ![Android form](docs/media/android-05-form.png) | ![Android dark](docs/media/android-06-home-dark.png) |
+
+*Top row iOS, bottom row Android.*
+
+## Requirements coverage
+
+Every core requirement in the assessment, and where it lives:
+
+| # | Requirement | Where |
+|---|---|---|
+| 1 | Foundation with clear boundaries, configurable base URL | `src/core`, `src/data`, `src/presentation` ([layout](docs/ARCHITECTURE.md), [ADR 0016](docs/adr/0016-source-layout.md)) |
+| 2 | Typed CMS client: four context params, `Platform.OS`, installed version, contract 1.1, media URLs, dedupe, cancellation | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` ([ADR 0001](docs/adr/0001-types-strategy.md), [ADR 0002](docs/adr/0002-data-layer.md)) |
+| 3 | Block registry rendering every live Home and Menu block; unknown blocks fail safe | `presentation/blocks/registry.tsx` ([ADR 0008](docs/adr/0008-block-fallback.md)) |
+| 4 | Bootstrap as configuration: navigation, promotions, feature flags, operational notice, update gate, alerts with placement/trigger/frequency/dismissal/targeting | `data/logic/`, `presentation/banners/` ([ADR 0007](docs/adr/0007-app-update-semantics.md), [ADR 0017](docs/adr/0017-banner-presentation.md), [ADR 0018](docs/adr/0018-notice-dismissal.md)) |
+| 5 | Navigation from `bootstrap.navigation`, one destination resolver, validated external links, native back | `navigation/resolveDestination.ts`, `navigation/TabNavigator.tsx` ([ADR 0003](docs/adr/0003-navigation-source.md), [ADR 0004](docs/adr/0004-destination-resolution.md)) |
+| 6 | Loading, empty, error+retry, pull-to-refresh, offline/stale, unsupported contract, not found; `nextChangeAt` as a hard expiry | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` ([ADR 0006](docs/adr/0006-cache-policy.md)) |
+| 7 | Absolute and relative media, aspect ratio held, alt text | `data/remote/media.ts`, `presentation/ui/CmsImage.tsx` ([ADR 0009](docs/adr/0009-media-strategy.md)) |
+| 8 | Safe areas, platform back, touch targets, dynamic type, dark mode, reduced motion, keyboard avoidance | `presentation/theme/`, `presentation/ui/AppPressable.tsx` ([ADR 0012](docs/adr/0012-platform-native-presentation.md), [ADR 0019](docs/adr/0019-form-block-presentation.md)) |
+| 9 | Automated tests for all six required cases; typecheck, lint and test all pass | 179 tests, 6 Maestro flows ([Testing](docs/TESTING.md)) |
+
+Bonus, all three categories: **iOS glass** (`presentation/ui/GlassSurface.tsx`,
+gated on Reduce Transparency) · **distinct Android Material** (tonal surfaces,
+elevation, ripple) · **advanced work** — `casamaiz://` deep links
+([ADR 0013](docs/adr/0013-deep-linking.md)), mocked form submission
+([ADR 0011](docs/adr/0011-form-block-modelling.md)), runtime Zod validation,
+complete alert-frequency behaviour (`always` / `once` / `session` with cooldown
+and a 4-second undo window), Sentry crash reporting with source maps
+([Observability](docs/OBSERVABILITY.md)), and Maestro E2E flows.
+
+## Try it without building
+
+[**Download the Android APK**](https://github.com/sjunka/casa-de-maiz/releases/latest) —
+33 MB, arm64-v8a, JS bundled in, pointed at the published CMS. Signed with the
+React Native debug keystore, so Android will warn about an unknown developer.
 
 ```sh
-cp .env.example .env
+adb install casa-maiz-1.0.0-arm64.apk
 ```
 
-`.env.example` defaults `API_BASE_URL` to the published deployment. `.env` is git-ignored — no secrets or machine-specific values are committed.
-
-Crash reporting (`SENTRY_DSN`, `SENTRY_ENVIRONMENT`) is configured the same way. `SENTRY_DSN` is blank by default, which keeps crash reporting disabled locally — set it to a real DSN to enable it.
-
-- **iOS Simulator**: reaches the public API directly over `https`; no setup beyond the base URL.
-- **Android emulator**: the emulator's virtual network reaches the public API directly over `https`; no host-mapping is needed for this deployment. (Only a machine-local server, addressed as `10.0.2.2`, would need special-casing — not the case here.)
-- **Physical device**: same as the emulator, since the base URL is a public `https` endpoint rather than a machine-local server. iOS needs the device registered to a signing team in Xcode; Android needs USB debugging enabled and the device authorized (`adb devices` should list it).
-
-## Install
+## Quick start
 
 ```sh
+cp .env.example .env          # API_BASE_URL defaults to the published deployment
 npm install
-bundle install                # once, for CocoaPods
-(cd ios && bundle exec pod install)
+bundle install && (cd ios && bundle exec pod install)
+npm run ios                   # or: npm run android (emulator must be running)
 ```
 
-## Run
+Node 22, Xcode 26.5+ / Android Studio with a JDK 17. Physical devices, emulator
+networking and deep links: [Setup](docs/SETUP.md).
+
+## Quality
 
 ```sh
-npm run ios       # iOS Simulator
-npm run android   # Android emulator (must be running first)
+npm run typecheck && npm run lint && npm test
 ```
 
-Physical device:
+179 tests across 43 suites, plus 6 Maestro end-to-end flows covering offline
+fallback, expired content, an unsupported contract version, navigation, a
+CMS-published alert and a form submission. See [Testing](docs/TESTING.md).
 
-```sh
-npx react-native run-ios --device "Your iPhone Name"
-npx react-native run-android --device <adb-device-id>   # id from `adb devices`
-```
+## Docs
 
-## Deep links
-
-The app registers the `casamaiz://` scheme. Destinations match the CMS-published paths, e.g. `casamaiz://menu`, `casamaiz://legal/privacy_policy`, `casamaiz://reservas`.
-
-```sh
-# iOS Simulator
-xcrun simctl openurl booted casamaiz://menu
-
-# Android emulator/device
-adb shell am start -W -a android.intent.action.VIEW -d "casamaiz://menu"
-```
-
-An unsupported path lands on Home; any other scheme is rejected. See [ADR 0013](docs/adr/0013-deep-linking.md).
-
-## Quality commands
-
-```sh
-npm run typecheck   # tsc --noEmit
-npm run lint        # eslint .
-npm test            # jest, with React Native Testing Library and an in-memory AsyncStorage mock
-```
-
-All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 164 tests green.
-
-### End-to-end tests
-
-Scenarios that depend on real navigation, persistence and timing rather than a scripted `fetch`: offline fallback, expired content, an unsupported contract version, tab navigation, a CMS-published alert, and a form submission. Maestro-driven, against a local mock content server; see [ADR 0015](docs/adr/0015-e2e-testing-framework.md).
-
-```sh
-npm run e2e:mock-server    # terminal 1 — mock CMS content API on :4001
-
-npm run e2e:build:ios      # terminal 2 — build & launch pointed at the mock (once per change)
-npm run e2e:ios            # run the flows against the iOS Simulator
-
-npm run e2e:build:android  # Android emulator must already be running
-npm run e2e:android
-```
-
-## Architecture overview
-
-The app is organized around seven boundaries, screens composed on top:
-
-```mermaid
-flowchart TD
-    A["core/transport<br/>HTTP client"] --> B["core/contract<br/>Zod schemas"]
-    B --> C["data/remote<br/>fetchers, cache"]
-    C --> D["data/logic<br/>app state"]
-    D --> E["navigation<br/>tab shell"]
-    D --> F["presentation/blocks<br/>+ banners"]
-    E --> G["presentation/screens"]
-    F --> G
-```
-
-- `src/core/transport` — HTTP client, error mapping, base-URL config
-- `src/core/contract` — supported contract version, delivery-context construction, installed app version, and `src/core/contract/models` — Zod schemas and their inferred TypeScript types
-- `src/data/remote` — endpoint fetchers, query hooks, cache and freshness policy, query client
-- `src/data/logic` — alert selection and frequency policy, scroll-progress derivation, app-update decisioning, feature flags — bootstrap-driven application state. No React; enforced by lint.
-- `src/navigation` — destination resolution and the tab shell built from bootstrap
-- `src/presentation/blocks` — the block registry and block components
-- `src/presentation/banners` — the alert banner, app-update gate and operational-notice banner
-- `src/presentation/ui` / `src/presentation/theme` — shared presentation, tokens, dark mode, reduced motion
-- `src/presentation/screens` — composition only; no screen talks to the network or cache directly
-
-Key trade-offs, and why they sit where they do:
-
-- **Runtime validation over generated types** ([ADR 0001](docs/adr/0001-types-strategy.md)). The live API returns fields the public contract doesn't declare, so a generated client and hand validation would be two sources of truth that drift. Zod schemas describe only what the app consumes, tolerate additive fields, and infer TypeScript types with `z.infer` — one source of truth, and a malformed response is caught at the API boundary instead of deep in a component.
-- **TanStack Query behind a thin repository, not a bespoke cache** ([ADR 0002](docs/adr/0002-data-layer.md), [ADR 0006](docs/adr/0006-cache-policy.md)). Query owns request lifecycle (dedupe, cancellation, refetch); the repository owns freshness policy — network-first, persisted last-good response served only on failure and always marked as saved, `nextChangeAt` as a hard expiry. Offline is derived from request failure rather than a connectivity library, since a reachable network with an unreachable API is the same user-facing situation.
-- **One destination resolver, keyed on path, not per-surface routing** ([ADR 0004](docs/adr/0004-destination-resolution.md)). Nav items, alert actions, and block CTAs all converge on the same resolver, so every tappable CMS link gets the same safety rules (`https`-only external links, user-safe messaging for unsupported destinations) for free.
-- **Contract compatibility is major-equal, minor-greater-or-equal, checked twice** ([ADR 0005](docs/adr/0005-contract-version-policy.md)). The envelope is checked once; each block re-checks its own `contractVersion` and `channels` client-side even though the server already filters, so one incompatible block degrades without taking the page down.
-- **Unknown blocks fail safe, not silent forever** ([ADR 0008](docs/adr/0008-block-fallback.md)). A block with no registry entry, a bad version, or an excluded channel renders nothing in release (logging only the `blockType`) and a visible marker in development — new blocks are additive, a registry entry rather than a screen rewrite.
-- **No UI kit** ([ADR 0010](docs/adr/0010-styling-approach.md)). `StyleSheet` plus local design tokens, light/dark driven by system appearance, because a Material component library would impose Android conventions on iOS. The cost is presentation components written by hand instead of imported.
-- **A custom scheme through the existing resolver, not a second `linking` table** ([ADR 0013](docs/adr/0013-deep-linking.md)). `casamaiz://` deep links are stripped to a path and routed through the same `resolveDestination` every other tappable CMS link uses. Universal Links / Android App Links are out of scope — there's no domain the assessment lets us verify ownership of.
-
-See `CONTEXT.md` for the domain glossary and `docs/adr/` for the full set of architectural decisions.
-
-## Dependencies
-
-Every dependency added beyond the React Native CLI template, and why:
-
-| Dependency | Why |
-|---|---|
-| `zod` | Runtime validation at the API boundary and the single source of truth for types ([ADR 0001](docs/adr/0001-types-strategy.md)) — see Types strategy below. |
-| `@tanstack/react-query` | Request de-duplication, cancellation of obsolete responses, and refetch/pull-to-refresh without hand-rolling them ([ADR 0002](docs/adr/0002-data-layer.md)). |
-| `@react-native-async-storage/async-storage` | Persists the last-good response for the offline fallback; the standard, officially-mocked choice for this. |
-| `react-native-config` | Reads `API_BASE_URL` from `.env` per environment, so the base URL is configurable without editing code. |
-| `react-native-device-info` | Reads the real installed app version for the `appVersion` delivery-context parameter, rather than trusting a source-file constant that can drift from the binary. |
-| `@react-navigation/native`, `@react-navigation/bottom-tabs` | The tab shell is built at runtime from `bootstrap.navigation`; these provide native-feeling tab and stack navigation without writing a router. |
-| `react-native-screens`, `react-native-safe-area-context` | Required peer dependencies of `@react-navigation` for native screen management and safe-area handling (notch, home indicator). |
-| `@sentry/react-native` | Native and JS crash reporting at the app root ([ADR 0014](docs/adr/0014-crash-reporting-sdk.md)) — see Production observability below. |
-
-No image library, connectivity library, crash-reporting SDK, or UI kit was added — each was considered and rejected in favour of a platform primitive or a documented deferral (see Known limitations below).
-
-## Types strategy
-
-Zod schemas, not generated OpenAPI types. Generated types give a compile-time shape with no runtime guarantee — a response that stops matching the contract still gets to the render path. The live API also returns fields the public OpenAPI contract doesn't declare, so a generated client and a hand-written validation layer would become two sources of truth that drift from each other over time. Zod schemas describe only the fields the app actually consumes, tolerate any additive field the contract doesn't promise, and TypeScript types are inferred straight from the schema with `z.infer` — one definition, checked at both compile time and at the API boundary at runtime. Full reasoning in [ADR 0001](docs/adr/0001-types-strategy.md).
-
-## Known limitations and next steps
-
-Deliberately deferred, with reasoning:
-
-- **Generated OpenAPI types.** Rejected outright, not deferred — see Types strategy above.
-- **Five block types on a best-effort renderer.** `restaurantHero`, `cta`, `content`, `mediaBlock` and `archive` are declared by the OpenAPI contract but the contract publishes no field shapes for them — no live Home or Menu payload has ever served one to check a shape against. Each renders through `GenericBlock`, which reads only generically-named optional fields (`heading`/`title`, `richText`/`content`, `media`/`image`, `link`/`href`, `label`) and renders nothing if none are present, rather than guessing at an unpublished schema (see [ADR 0008](docs/adr/0008-block-fallback.md)).
-- **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
-- **A connectivity library.** Offline is derived from request failure instead, which already covers the case a connectivity library wouldn't (reachable network, unreachable API) and avoids an extra dependency.
-- **Reservations.** A local placeholder screen — no reservation API is documented for this contract version.
-
-The iOS "glass" and Android Material bonus visual treatments are done — see [ADR 0012](docs/adr/0012-platform-native-presentation.md).
-
-With more time: broader E2E coverage beyond navigation, forms and alerts (deep-linking, error-state screenshots).
-
-## Production observability
-
-- **Crashes.** `@sentry/react-native` is initialised at the app root (`src/observability/crashReporting.ts`, wired in `App.tsx`) and reports native and JS crashes with the installed app version and platform attached, both read from the existing single-source modules (`src/core/contract/appVersion.ts`, `src/core/contract/deliveryContext.ts`). Disabled by default — see Configuration below.
-- **Source maps.** Release builds upload JS source maps to Sentry automatically — Android via `apply from: "sentry.gradle"` in `android/app/build.gradle` (wraps the bundle task), iOS via the `sentry-xcode.sh` wrapper on the "Bundle React Native code and images" build phase. Both read org/project from `ios/sentry.properties` and `android/sentry.properties` (placeholders — fill in the real Sentry org/project slugs) and the upload auth token from a `SENTRY_AUTH_TOKEN` environment variable on the build machine, never committed. Debug builds skip the upload.
-- **Content failures.** Transport failures are mapped at the boundary (`src/core/transport/client.ts`, `src/core/transport/apiError.ts`) to a user-safe message plus retained technical context (endpoint, status, error kind — never full payloads, so production logs can't leak editorial or PII content), and forwarded into the same Sentry pipeline. Unknown or invalid content blocks ([ADR 0008](docs/adr/0008-block-fallback.md)) are recorded as breadcrumbs carrying only the block type.
-- **Performance.** Not built. Screen transitions and first-content timing would be measured via the CMS-fetch boundary already isolated behind the repository/query layer — a single place to time "time to first content" and "time to interactive" without instrumenting every screen individually.
-
-See [ADR 0014](docs/adr/0014-crash-reporting-sdk.md) for the SDK choice and rejected alternatives.
-
-## Screenshots
-
-Captured from the current app on both platforms:
-
-- [iOS Simulator — Home](docs/screenshots/ios-home.png)
-- [Android emulator — Home](docs/screenshots/android-home.png)
+- [Architecture, trade-offs, dependency choices, types strategy](docs/ARCHITECTURE.md)
+- [Setup: prerequisites, configuration, run commands, deep links](docs/SETUP.md)
+- [Quality and testing](docs/TESTING.md)
+- [Production observability](docs/OBSERVABILITY.md)
+- [Known limitations and next steps](docs/LIMITATIONS.md)
+- [`CONTEXT.md`](CONTEXT.md) — domain glossary · [`docs/adr/`](docs/adr/) — 19 decision records
