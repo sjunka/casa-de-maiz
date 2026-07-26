@@ -1,7 +1,11 @@
 import * as Sentry from '@sentry/react-native';
+import Config from 'react-native-config';
 import { getAppVersion } from '@core/contract/appVersion';
 import { buildDeliveryContext } from '@core/contract/deliveryContext';
-import { SENTRY_DSN, SENTRY_ENVIRONMENT } from '@core/transport/config';
+
+// Crash reporting is disabled when no DSN is configured (e.g. local dev).
+const SENTRY_DSN = Config.SENTRY_DSN;
+const SENTRY_ENVIRONMENT = Config.SENTRY_ENVIRONMENT ?? 'development';
 
 export const initCrashReporting = (): void => {
   if (!SENTRY_DSN) {

@@ -8,8 +8,8 @@ import type { Alert } from '@core/contract/models/alert';
 import { selectActiveAlert } from '@data/state/selectActiveAlert';
 import { isSuppressed, recordDismissal, recordShown } from '@data/state/frequency';
 import { useScrollProgress } from './useScrollProgress';
-import { openDestination } from '../../navigation/openDestination';
-import { navigateToResolved } from '../../navigation/navigationRef';
+import { openDestination } from '@navigation/openDestination';
+import { navigateToResolved } from '@navigation/navigationRef';
 
 type Props = { alerts: Alert[]; currentPageSlug: string };
 

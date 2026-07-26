@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { useDestinationNavigation } from '../../navigation/useDestinationNavigation';
+import { useDestinationNavigation } from '@navigation/useDestinationNavigation';
 import { useTheme } from '../theme/useTheme';
 import { AppPressable } from '../ui/AppPressable';
 import type { RestaurantCtaBlock as RestaurantCtaBlockData } from '@core/contract/models/block';

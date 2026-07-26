@@ -6,7 +6,9 @@
     "paths": {
       "@core/*": ["src/core/*"],
       "@data/*": ["src/data/*"],
-      "@presentation/*": ["src/presentation/*"]
+      "@presentation/*": ["src/presentation/*"],
+      "@navigation/*": ["src/navigation/*"],
+      "@observability/*": ["src/observability/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

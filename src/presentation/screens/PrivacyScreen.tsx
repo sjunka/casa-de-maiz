@@ -1,7 +1,7 @@
 import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { RouteProp } from '@react-navigation/native';
-import type { RootTabParamList } from '../../navigation/types';
-import { useDestinationNavigation } from '../../navigation/useDestinationNavigation';
+import type { RootTabParamList } from '@navigation/types';
+import { useDestinationNavigation } from '@navigation/useDestinationNavigation';
 import { useLegalDocument } from '@data/repository/useLegalDocument';
 import { RichText } from '../ui/RichText';
 import { useTheme } from '../theme/useTheme';

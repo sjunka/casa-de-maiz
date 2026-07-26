@@ -22,6 +22,13 @@ const config = {
       '@presentation/ui': path.resolve(__dirname, 'src/presentation/ui'),
       '@presentation/theme': path.resolve(__dirname, 'src/presentation/theme'),
       '@presentation/screens': path.resolve(__dirname, 'src/presentation/screens'),
+      '@navigation/navigationRef': path.resolve(__dirname, 'src/navigation/navigationRef'),
+      '@navigation/deepLinking': path.resolve(__dirname, 'src/navigation/deepLinking'),
+      '@navigation/openDestination': path.resolve(__dirname, 'src/navigation/openDestination'),
+      '@navigation/useDestinationNavigation': path.resolve(__dirname, 'src/navigation/useDestinationNavigation'),
+      '@navigation/types': path.resolve(__dirname, 'src/navigation/types'),
+      '@navigation/TabNavigator': path.resolve(__dirname, 'src/navigation/TabNavigator'),
+      '@observability/crashReporting': path.resolve(__dirname, 'src/observability/crashReporting'),
     },
   },
 };
