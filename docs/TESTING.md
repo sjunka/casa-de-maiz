@@ -8,7 +8,7 @@ npm run lint        # eslint .
 npm test            # jest, with React Native Testing Library and an in-memory AsyncStorage mock
 ```
 
-All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 179 tests across 43 suites green.
+All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 182 tests across 44 suites green.
 
 Tests assert user-observable behaviour through stable selectors (accessibility roles, labels and test IDs) rather than private implementation details.
 

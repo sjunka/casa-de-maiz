@@ -30,6 +30,12 @@ elevation on Android ([ADR 0012](docs/adr/0012-platform-native-presentation.md))
 
 *Top row iOS, bottom row Android.*
 
+Dark mode follows system appearance. Debug builds also carry a gear in the
+top-right of the dev-only **Form (dev)** tab that flips the scheme in place, so
+it can be seen without leaving the app for system settings — see
+[ADR 0010](docs/adr/0010-styling-approach.md). Release builds, including the
+downloadable APK below, have neither the tab nor the gear.
+
 ## Requirements coverage
 
 Every core requirement in the assessment, and where it lives:
@@ -44,7 +50,7 @@ Every core requirement in the assessment, and where it lives:
 | 6 | Loading, empty, error+retry, pull-to-refresh, offline/stale, unsupported contract, not found; `nextChangeAt` as a hard expiry | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` ([ADR 0006](docs/adr/0006-cache-policy.md)) |
 | 7 | Absolute and relative media, aspect ratio held, alt text | `data/remote/media.ts`, `presentation/ui/CmsImage.tsx` ([ADR 0009](docs/adr/0009-media-strategy.md)) |
 | 8 | Safe areas, platform back, touch targets, dynamic type, dark mode, reduced motion, keyboard avoidance | `presentation/theme/`, `presentation/ui/AppPressable.tsx` ([ADR 0012](docs/adr/0012-platform-native-presentation.md), [ADR 0019](docs/adr/0019-form-block-presentation.md)) |
-| 9 | Automated tests for all six required cases; typecheck, lint and test all pass | 179 tests, 6 Maestro flows ([Testing](docs/TESTING.md)) |
+| 9 | Automated tests for all six required cases; typecheck, lint and test all pass | 182 tests, 6 Maestro flows ([Testing](docs/TESTING.md)) |
 
 Bonus, all three categories: **iOS glass** (`presentation/ui/GlassSurface.tsx`,
 gated on Reduce Transparency) · **distinct Android Material** (tonal surfaces,
@@ -83,7 +89,7 @@ networking and deep links: [Setup](docs/SETUP.md).
 npm run typecheck && npm run lint && npm test
 ```
 
-179 tests across 43 suites, plus 6 Maestro end-to-end flows covering offline
+182 tests across 44 suites, plus 6 Maestro end-to-end flows covering offline
 fallback, expired content, an unsupported contract version, navigation, a
 CMS-published alert and a form submission. See [Testing](docs/TESTING.md).
 
