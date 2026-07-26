@@ -5,10 +5,14 @@ appId: ${APP_ID}
 - runScript: reset-normal.js
 - launchApp:
     clearState: true
-- assertVisible: "home-success"
-- assertNotVisible: "content-saved-banner"
+- assertVisible:
+    id: "home-success"
+- assertNotVisible:
+    id: "content-saved-banner"
 - runScript: set-home-failing.js
 - swipe:
     direction: DOWN
-- assertVisible: "content-saved-banner"
-- assertVisible: "home-success"
+- assertVisible:
+    id: "content-saved-banner"
+- assertVisible:
+    id: "home-success"

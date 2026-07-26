@@ -6,4 +6,5 @@ appId: ${APP_ID}
 - runScript: set-unsupported-contract.js
 - launchApp:
     clearState: true
-- assertVisible: "bootstrap-unsupported-contract"
+- assertVisible:
+    id: "bootstrap-unsupported-contract"

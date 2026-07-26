@@ -3,15 +3,19 @@
 # guest should see the retry state, never stale content silently served as current.
 appId: ${APP_ID}
 ---
+- runScript: reset-normal.js
 - runScript: set-home-near-expiry.js
 - launchApp:
     clearState: true
-- assertVisible: "home-success"
-- assertNotVisible: "content-saved-banner"
-- sleep:
-    ms: 4000
+- assertVisible:
+    id: "home-success"
+- assertNotVisible:
+    id: "content-saved-banner"
+- runScript: wait-past-expiry.js
 - runScript: set-home-failing.js
 - swipe:
     direction: DOWN
-- assertVisible: "content-error"
-- assertNotVisible: "content-saved-banner"
+- assertVisible:
+    id: "content-error"
+- assertNotVisible:
+    id: "content-saved-banner"

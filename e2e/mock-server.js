@@ -22,7 +22,20 @@ const send = (res, status, body) => {
 
 const bootstrapEnvelope = () => ({
   contractVersion: state.bootstrapContractVersion,
-  data: { navigation: { items: [] }, alerts: [], featureFlags: {}, promotions: [] },
+  data: {
+    navigation: {
+      items: [
+        {
+          label: 'Home',
+          highlighted: false,
+          destination: { key: 'home', label: 'Home', path: '/', supportedPlatforms: ['ios', 'android'] },
+        },
+      ],
+    },
+    alerts: [],
+    featureFlags: {},
+    promotions: [],
+  },
   nextChangeAt: null,
 });
 
