@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAppVersion } from '@core/contract/appVersion';
 import { decideAppUpdate } from '@data/logic/decideAppUpdate';
 import { useTheme } from '../theme/useTheme';
@@ -10,7 +10,6 @@ import type { AppUpdate } from '@core/contract/models/operationalControls';
 type Props = { appUpdate?: AppUpdate; children: ReactNode };
 
 export const AppUpdateGate = ({ appUpdate, children }: Props) => {
-  const { top } = useSafeAreaInsets();
   const { colors } = useTheme();
   const [dismissed, setDismissed] = useState(false);
   const decision = decideAppUpdate(appUpdate, getAppVersion());
@@ -28,7 +27,7 @@ export const AppUpdateGate = ({ appUpdate, children }: Props) => {
     <View style={styles.fill}>
       {decision.kind === 'recommended' && !dismissed && (
         <View
-          style={[styles.banner, { backgroundColor: colors.warningBackground, paddingTop: 12 + top }]}
+          style={[styles.banner, { backgroundColor: colors.warningBackground }]}
           testID="app-update-recommended"
         >
           <Text style={[styles.bannerMessage, { color: colors.warningText }]}>{decision.message}</Text>
@@ -55,10 +54,11 @@ const styles = StyleSheet.create({
   banner: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 12,
+    paddingVertical: 14,
+    paddingLeft: 16,
+    paddingRight: 4,
   },
-  bannerMessage: { flex: 1, fontSize: 13 },
+  bannerMessage: { flex: 1, fontSize: 13, lineHeight: 18 },
   dismiss: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
-  dismissLabel: { fontSize: 18 },
+  dismissLabel: { fontSize: 26, lineHeight: 30 },
 });

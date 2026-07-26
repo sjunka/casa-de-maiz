@@ -11,6 +11,7 @@ import { MenuScreen } from '@presentation/screens/MenuScreen';
 import { PrivacyScreen } from '@presentation/screens/PrivacyScreen';
 import { ReservationsScreen } from '@presentation/screens/ReservationsScreen';
 import { FormFixtureScreen } from '@presentation/screens/FormFixtureScreen';
+import { NoticeBannerPrototypeScreen } from '@presentation/screens/NoticeBannerPrototypeScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -75,6 +76,14 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
         options={{ tabBarLabel: 'Form (dev)', tabBarAccessibilityLabel: 'Form (dev)' }}
       />,
     );
+    screens.push(
+      <Tab.Screen
+        key="noticeBannerPrototype"
+        name="noticeBannerPrototype"
+        component={NoticeBannerPrototypeScreen}
+        options={{ tabBarLabel: 'Banner (dev)', tabBarAccessibilityLabel: 'Banner (dev)' }}
+      />,
+    );
   }
 
   return (
@@ -84,6 +93,10 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
       // (see its file comment). Theme and chrome are resolved here instead.
       // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <AppTabBar {...props} colors={colors} scheme={scheme} />}
+      // BootstrapScreen already claimed the status-bar inset for the whole
+      // stack; react-navigation re-provides the window insets to its screens,
+      // so the header would otherwise add it a second time.
+      screenOptions={{ headerStatusBarHeight: 0 }}
     >
       {screens}
     </Tab.Navigator>

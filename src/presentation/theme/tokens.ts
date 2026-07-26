@@ -36,8 +36,10 @@ export const lightColors: ColorTokens = {
   link: '#0a5',
   warningBackground: '#fff3cd',
   warningText: '#664d03',
-  infoBackground: '#e6f0ff',
-  infoText: '#1a1a1a',
+  // A warm tonal wash rather than the usual cold "info" blue — a service
+  // notice belongs to the room, not to the operating system.
+  infoBackground: '#f6e3de',
+  infoText: '#5c2317',
   errorText: '#cc0000',
 };
 
@@ -55,8 +57,8 @@ export const darkColors: ColorTokens = {
   link: '#4ade80',
   warningBackground: '#4a3b00',
   warningText: '#ffe58a',
-  infoBackground: '#1c2a3d',
-  infoText: '#f2f2f2',
+  infoBackground: '#3d241c',
+  infoText: '#f0d9d1',
   errorText: '#ff6b6b',
 };
 

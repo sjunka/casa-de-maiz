@@ -1,9 +1,16 @@
-import { render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { OperationalNoticeBanner } from '@presentation/banners/OperationalNoticeBanner';
 
 test('shows the authored banner message when the restaurant is running under a notice', async () => {
   await render(<OperationalNoticeBanner operationalControls={{ mode: 'notice', bannerMessage: 'Kitchen closes at 22:30.' }} />);
   expect(screen.getByText('Kitchen closes at 22:30.')).toBeTruthy();
+});
+
+test('a dismissed notice collapses out of the layout entirely', async () => {
+  await render(<OperationalNoticeBanner operationalControls={{ mode: 'notice', bannerMessage: 'Kitchen closes at 22:30.' }} />);
+
+  await fireEvent.press(screen.getByLabelText('Dismiss notice'));
+  await waitFor(() => expect(screen.queryByTestId('operational-notice-banner')).toBeNull());
 });
 
 test('renders nothing outside of a notice', async () => {
