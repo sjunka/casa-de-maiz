@@ -1,0 +1,12 @@
+# A CMS-published topBar alert appears on load and the guest can dismiss it.
+appId: ${APP_ID}
+---
+- runScript: reset-normal.js
+- runScript: set-topbar-alert.js
+- launchApp:
+    clearState: true
+- assertVisible:
+    id: "alert-banner"
+- tapOn: "Dismiss alert"
+- assertNotVisible:
+    id: "alert-banner"

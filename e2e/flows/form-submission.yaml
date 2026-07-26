@@ -1,0 +1,22 @@
+# Guest fills the dev-only form fixture and submits it (mocked locally, see
+# ENABLE_LIVE_FORM_SUBMISSIONS in .env.e2e.*); the confirmation state renders.
+appId: ${APP_ID}
+---
+- runScript: reset-normal.js
+- launchApp:
+    clearState: true
+- tapOn: "Form (dev)"
+- assertVisible:
+    id: "form-block"
+- tapOn:
+    id: "form-field-name"
+- inputText: "Guest"
+- tapOn:
+    id: "form-field-email"
+- inputText: "guest@example.com"
+- tapOn: "Topic"
+- tapOn: "Reservation"
+- tapOn:
+    id: "form-block-submit"
+- assertVisible:
+    id: "form-block-success"

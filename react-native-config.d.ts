@@ -5,6 +5,7 @@ declare module 'react-native-config' {
     ENABLE_LIVE_FORM_SUBMISSIONS?: string;
     SENTRY_DSN?: string;
     SENTRY_ENVIRONMENT?: string;
+    DISABLE_LOGBOX_NOTIFICATIONS?: string;
   }
 
   export const Config: NativeConfig;

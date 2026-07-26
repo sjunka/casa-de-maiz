@@ -1,7 +1,7 @@
-// Minimal content-contract mock server for E2E resilience flows (offline fallback,
-// expired content, unsupported contract version). Deliberately dependency-free —
-// scenarios need precise, on-demand control over responses that a static fixture
-// server or MSW (in-process only, invisible to a real device/simulator) can't give.
+// Minimal content-contract mock server for E2E flows (resilience, navigation,
+// alerts). Deliberately dependency-free — scenarios need precise, on-demand
+// control over responses that a static fixture server or MSW (in-process only,
+// invisible to a real device/simulator) can't give.
 //
 // Controlled at runtime via POST /__control, called from Maestro flow scripts.
 const http = require('http');
@@ -12,6 +12,7 @@ const state = {
   homeMode: 'normal', // 'normal' | 'failing'
   bootstrapContractVersion: '1.1',
   homeNextChangeAt: null, // ISO string, or null for "far future"
+  alerts: [], // Alert[], see src/models/alert.ts
 };
 
 const send = (res, status, body) => {
@@ -30,9 +31,14 @@ const bootstrapEnvelope = () => ({
           highlighted: false,
           destination: { key: 'home', label: 'Home', path: '/', supportedPlatforms: ['ios', 'android'] },
         },
+        {
+          label: 'Menu',
+          highlighted: false,
+          destination: { key: 'menu', label: 'Menu', path: '/menu', supportedPlatforms: ['ios', 'android'] },
+        },
       ],
     },
-    alerts: [],
+    alerts: state.alerts,
     featureFlags: {},
     promotions: [],
   },
@@ -55,6 +61,22 @@ const homeEnvelope = () => ({
   nextChangeAt: state.homeNextChangeAt ?? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
 });
 
+const menuEnvelope = () => ({
+  contractVersion: '1.1',
+  data: {
+    layout: [
+      {
+        blockType: 'textBlock',
+        contractVersion: '1.1',
+        channels: ['ios', 'android'],
+        heading: 'Mock menu content',
+        body: 'Served by the E2E mock server.',
+      },
+    ],
+  },
+  nextChangeAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+});
+
 const readBody = req =>
   new Promise(resolve => {
     let raw = '';
@@ -74,6 +96,10 @@ const server = http.createServer(async (req, res) => {
       return send(res, 503, { error: 'mock: home content unavailable' });
     }
     return send(res, 200, homeEnvelope());
+  }
+
+  if (path === '/api/content/v1/pages/menu') {
+    return send(res, 200, menuEnvelope());
   }
 
   if (path === '/__control' && req.method === 'POST') {

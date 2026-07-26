@@ -1,0 +1,14 @@
+# Guest switches from Home to the Menu tab; content specific to Menu renders,
+# proving navigation is driven by CMS-published destinations, not a hardcoded list.
+appId: ${APP_ID}
+---
+- runScript: reset-normal.js
+- launchApp:
+    clearState: true
+- assertVisible:
+    id: "home-success"
+- tapOn: "Menu"
+- assertVisible:
+    id: "menu-success"
+- assertNotVisible:
+    id: "home-success"

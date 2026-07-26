@@ -74,7 +74,7 @@ All three pass on `main`: no type errors, no lint errors (five pre-existing `no-
 
 ### End-to-end tests
 
-Three resilience scenarios that depend on real navigation, persistence and timing rather than a scripted `fetch` — offline fallback, expired content, an unsupported contract version. Maestro-driven, against a local mock content server; see [ADR 0015](docs/adr/0015-e2e-testing-framework.md).
+Scenarios that depend on real navigation, persistence and timing rather than a scripted `fetch`: offline fallback, expired content, an unsupported contract version, tab navigation, a CMS-published alert, and a form submission. Maestro-driven, against a local mock content server; see [ADR 0015](docs/adr/0015-e2e-testing-framework.md).
 
 ```sh
 npm run e2e:mock-server    # terminal 1 — mock CMS content API on :4001
@@ -137,18 +137,18 @@ Zod schemas, not generated OpenAPI types. Generated types give a compile-time sh
 Deliberately deferred, with reasoning:
 
 - **Generated OpenAPI types.** Rejected outright, not deferred — see Types strategy above.
-- **End-to-end testing beyond the three resilience paths.** Offline fallback, expired content and unsupported-contract-version are covered (see End-to-end tests above); broader flows (navigation, forms, alerts) still rely on component coverage only, judged lower value than breadth of unit/component coverage inside the timebox.
 - **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
 - **A connectivity library.** Offline is derived from request failure instead, which already covers the case a connectivity library wouldn't (reachable network, unreachable API) and avoids an extra dependency.
 - **Reservations.** A local placeholder screen — no reservation API is documented for this contract version.
 
 The iOS "glass" and Android Material bonus visual treatments are done — see [ADR 0012](docs/adr/0012-platform-native-presentation.md).
 
-With more time, in priority order: source-map upload for the crash-reporting pipeline below, and broader E2E coverage (navigation, forms, alerts).
+With more time: broader E2E coverage beyond navigation, forms and alerts (deep-linking, error-state screenshots).
 
 ## Production observability
 
 - **Crashes.** `@sentry/react-native` is initialised at the app root (`src/observability/crashReporting.ts`, wired in `App.tsx`) and reports native and JS crashes with the installed app version and platform attached, both read from the existing single-source modules (`src/api/appVersion.ts`, `src/api/deliveryContext.ts`). Disabled by default — see Configuration below.
+- **Source maps.** Release builds upload JS source maps to Sentry automatically — Android via `apply from: "sentry.gradle"` in `android/app/build.gradle` (wraps the bundle task), iOS via the `sentry-xcode.sh` wrapper on the "Bundle React Native code and images" build phase. Both read org/project from `ios/sentry.properties` and `android/sentry.properties` (placeholders — fill in the real Sentry org/project slugs) and the upload auth token from a `SENTRY_AUTH_TOKEN` environment variable on the build machine, never committed. Debug builds skip the upload.
 - **Content failures.** Transport failures are mapped at the boundary (`src/api/client.ts`, `src/api/apiError.ts`) to a user-safe message plus retained technical context (endpoint, status, error kind — never full payloads, so production logs can't leak editorial or PII content), and forwarded into the same Sentry pipeline. Unknown or invalid content blocks ([ADR 0008](docs/adr/0008-block-fallback.md)) are recorded as breadcrumbs carrying only the block type.
 - **Performance.** Not built. Screen transitions and first-content timing would be measured via the CMS-fetch boundary already isolated behind the repository/query layer — a single place to time "time to first content" and "time to interactive" without instrumenting every screen individually.
 
