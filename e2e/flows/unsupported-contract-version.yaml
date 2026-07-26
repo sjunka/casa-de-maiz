@@ -1,0 +1,9 @@
+# Bootstrap serves a major-incompatible contractVersion. The app must show the
+# unsupported-contract state, not attempt to render an envelope it can't trust.
+appId: ${APP_ID}
+---
+- runScript: reset-normal.js
+- runScript: set-unsupported-contract.js
+- launchApp:
+    clearState: true
+- assertVisible: "bootstrap-unsupported-contract"

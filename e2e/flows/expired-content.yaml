@@ -1,0 +1,17 @@
+# Home loads and caches with a near-future nextChangeAt. Once that boundary
+# passes, a failing refresh must NOT fall back to the now-expired cache — the
+# guest should see the retry state, never stale content silently served as current.
+appId: ${APP_ID}
+---
+- runScript: set-home-near-expiry.js
+- launchApp:
+    clearState: true
+- assertVisible: "home-success"
+- assertNotVisible: "content-saved-banner"
+- sleep:
+    ms: 4000
+- runScript: set-home-failing.js
+- swipe:
+    direction: DOWN
+- assertVisible: "content-error"
+- assertNotVisible: "content-saved-banner"

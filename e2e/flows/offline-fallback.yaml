@@ -1,0 +1,14 @@
+# Guest opens Home, load succeeds and is cached. Home then fails on refresh —
+# the last-good content is served, visibly marked as saved (not silently stale).
+appId: ${APP_ID}
+---
+- runScript: reset-normal.js
+- launchApp:
+    clearState: true
+- assertVisible: "home-success"
+- assertNotVisible: "content-saved-banner"
+- runScript: set-home-failing.js
+- swipe:
+    direction: DOWN
+- assertVisible: "content-saved-banner"
+- assertVisible: "home-success"
