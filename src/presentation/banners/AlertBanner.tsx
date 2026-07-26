@@ -37,11 +37,11 @@ export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
       );
 
       if (!cancelled) {
-        const suppressedIds = checks.reduce<string[]>((ids, [id, suppressed]) => {
+        const nextSuppressedIds = checks.reduce<string[]>((ids, [id, suppressed]) => {
           if (suppressed) ids.push(id);
           return ids;
         }, []);
-        setSuppressedIds(new Set(suppressedIds));
+        setSuppressedIds(new Set(nextSuppressedIds));
       }
     })();
 
