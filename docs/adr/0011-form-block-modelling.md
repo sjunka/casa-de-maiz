@@ -15,3 +15,5 @@ Because no live page serves a `formBlock`, a dev-only `FormFixtureScreen` render
 
 ## Consequences
 The block is reviewable and testable despite an unobservable contract, and a wrong shape guess never regresses existing behaviour. The cost is that the field-type set and submission endpoint path are assumptions, not verified facts, and must be revisited once a real `formBlock` payload or OpenAPI block schema becomes available.
+
+**Superseded in part.** This ADR left the field layout and the post-submit confirmation screen unstyled (a single line of centred text). Both were decided in [[0019-form-block-presentation]] — platform-native field layout per [[0012-platform-native-presentation]] and a fill-space wax-seal confirmation card with a close-to-idle reset. The data-shape and mocked-submission decisions above still hold.
