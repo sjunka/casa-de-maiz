@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { BlockList } from './BlockList';
 import type { BlockEnvelope } from '../models/block';
@@ -241,6 +241,165 @@ test('a formBlock whose shape does not match falls back to the unknown-block mar
   expect(screen.getByText('Antes')).toBeTruthy();
   expect(screen.getByText('Despues')).toBeTruthy();
   expect(screen.getByText(/formBlock/)).toBeTruthy();
+});
+
+test('a restaurantHero with heading, rich text and media renders all three', async () => {
+  const layout: BlockEnvelope[] = [
+    {
+      blockType: 'restaurantHero',
+      contractVersion: '1.1',
+      channels: ['ios', 'android'],
+      heading: 'Bienvenido a Casa Maiz',
+      richText: { root: { children: [{ type: 'paragraph', children: [{ type: 'text', text: 'Cocina de temporada' }] }] } },
+      media: { url: '/hero.jpg', alt: 'Fachada del restaurante' },
+    },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Bienvenido a Casa Maiz')).toBeTruthy();
+  expect(screen.getByText('Cocina de temporada')).toBeTruthy();
+});
+
+test('a cta with a label and destination renders the label and routes through the resolver', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'cta', contractVersion: '1.1', channels: ['ios', 'android'], label: 'Reservar', href: '/reservas' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Reservar')).toBeTruthy();
+  expect(screen.getByLabelText('Reservar')).toBeTruthy();
+});
+
+test('a content block renders its rich text', async () => {
+  const layout: BlockEnvelope[] = [
+    {
+      blockType: 'content',
+      contractVersion: '1.1',
+      channels: ['ios', 'android'],
+      content: { root: { children: [{ type: 'paragraph', children: [{ type: 'text', text: 'Historia de la casa' }] }] } },
+    },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Historia de la casa')).toBeTruthy();
+});
+
+test('a mediaBlock renders its image via the shared CmsImage component without breaking the rest of the page', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Antes' },
+    {
+      blockType: 'mediaBlock',
+      contractVersion: '1.1',
+      channels: ['ios', 'android'],
+      image: { url: '/comedor.jpg', alt: 'Comedor principal' },
+    },
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Despues' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Antes')).toBeTruthy();
+  expect(screen.getByText('Despues')).toBeTruthy();
+});
+
+test('an archive block renders whatever heading it carries', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'archive', contractVersion: '1.1', channels: ['ios', 'android'], heading: 'Eventos pasados' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Eventos pasados')).toBeTruthy();
+});
+
+test('a generic block type carrying none of the recognised fields renders nothing and does not crash', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Antes' },
+    { blockType: 'archive', contractVersion: '1.1', channels: ['ios', 'android'] },
+    { blockType: 'textBlock', contractVersion: '1.1', channels: ['ios', 'android'], body: 'Despues' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText('Antes')).toBeTruthy();
+  expect(screen.getByText('Despues')).toBeTruthy();
+});
+
+test('an external link inside a generic block is validated before opening, honouring the https-only rule', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'cta', contractVersion: '1.1', channels: ['ios', 'android'], label: 'Sitio externo', href: 'ftp://evil.example.com' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  const button = screen.getByLabelText('Sitio externo');
+  expect(() => fireEvent.press(button)).not.toThrow();
+});
+
+test('a blockType absent from the registry entirely still reaches the unknown-block fallback', async () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  const layout: BlockEnvelope[] = [
+    { blockType: 'newsletterSignup', contractVersion: '1.1', channels: ['ios', 'android'] },
+    { blockType: 'archive', contractVersion: '1.1', channels: ['ios', 'android'], heading: 'Registrado' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.getByText(/newsletterSignup/)).toBeTruthy();
+  expect(screen.getByText('Registrado')).toBeTruthy();
+});
+
+test('these five generic types are filtered by contract-version and channel like every other registry entry', async () => {
+  const layout: BlockEnvelope[] = [
+    { blockType: 'cta', contractVersion: '2.0', channels: ['ios', 'android'], label: 'Incompatible', href: '/menu' },
+    { blockType: 'cta', contractVersion: '1.1', channels: ['android'], label: 'Wrong platform', href: '/menu' },
+    { blockType: 'cta', contractVersion: '1.1', channels: ['ios', 'android'], label: 'Compatible', href: '/menu' },
+  ];
+
+  await render(
+    <NavigationContainer>
+      <BlockList layout={layout} />
+    </NavigationContainer>,
+  );
+
+  expect(screen.queryByText('Incompatible')).toBeNull();
+  expect(screen.queryByText('Wrong platform')).toBeNull();
+  expect(screen.getByText('Compatible')).toBeTruthy();
 });
 
 test('a block whose channels exclude the running platform is skipped', async () => {

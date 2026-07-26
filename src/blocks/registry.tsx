@@ -10,6 +10,7 @@ import { TextBlock } from './TextBlock';
 import { RestaurantCtaBlock } from './RestaurantCtaBlock';
 import { ImageBlock } from './ImageBlock';
 import { FormBlock } from './FormBlock';
+import { GenericBlock } from './GenericBlock';
 import { UnknownBlock } from './UnknownBlock';
 import { reportUnknownBlock } from '../observability/crashReporting';
 
@@ -23,6 +24,11 @@ const REGISTRY: Record<KnownBlockType, UnsafeBlockComponent> = {
   restaurantCTA: RestaurantCtaBlock,
   imageBlock: ImageBlock,
   formBlock: FormBlock,
+  restaurantHero: GenericBlock,
+  cta: GenericBlock,
+  content: GenericBlock,
+  mediaBlock: GenericBlock,
+  archive: GenericBlock,
 } as Record<KnownBlockType, UnsafeBlockComponent>;
 
 const isKnownBlockType = (blockType: string): blockType is KnownBlockType =>

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { mediaAssetSchema } from './media';
+import { richTextSchema } from './richText';
 
 const blockBaseSchema = z.object({
   contractVersion: z.string(),
@@ -106,6 +107,23 @@ export const formBlockSchema = blockBaseSchema.extend({
 });
 export type FormBlock = z.infer<typeof formBlockSchema>;
 
+// Best-effort renderer for block types the contract declares but does not shape.
+// All fields optional so the schema can never fail validation and fall through
+// to the unknown-block marker (ADR 0008).
+export const genericBlockSchema = blockBaseSchema.extend({
+  blockType: z.enum(['restaurantHero', 'cta', 'content', 'mediaBlock', 'archive']),
+  heading: z.string().optional(),
+  title: z.string().optional(),
+  richText: richTextSchema.optional(),
+  content: richTextSchema.optional(),
+  media: mediaAssetSchema.optional(),
+  image: mediaAssetSchema.optional(),
+  link: z.string().optional(),
+  href: z.string().optional(),
+  label: z.string().optional(),
+});
+export type GenericBlock = z.infer<typeof genericBlockSchema>;
+
 export const KNOWN_BLOCK_SCHEMAS = {
   cardGrid: cardGridBlockSchema,
   carousel: carouselBlockSchema,
@@ -114,6 +132,11 @@ export const KNOWN_BLOCK_SCHEMAS = {
   restaurantCTA: restaurantCtaBlockSchema,
   imageBlock: imageBlockSchema,
   formBlock: formBlockSchema,
+  restaurantHero: genericBlockSchema,
+  cta: genericBlockSchema,
+  content: genericBlockSchema,
+  mediaBlock: genericBlockSchema,
+  archive: genericBlockSchema,
 } as const;
 
 export type KnownBlockType = keyof typeof KNOWN_BLOCK_SCHEMAS;
@@ -125,7 +148,8 @@ export type Block =
   | TextBlock
   | RestaurantCtaBlock
   | ImageBlock
-  | FormBlock;
+  | FormBlock
+  | GenericBlock;
 
 export const blockEnvelopeSchema = z
   .object({
