@@ -35,14 +35,23 @@ type Status = 'idle' | 'submitting' | 'success' | 'error';
 // behaviour below, only the rendered field shapes diverge.
 export const FormBlock = ({ block }: Props) => {
   const { colors, scheme } = useTheme();
-  const [values, setValues] = useState<Record<string, string>>({});
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [status, setStatus] = useState<Status>('idle');
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
   const fields = block.form.fields.filter((field): field is FormField =>
     SUPPORTED_FIELD_TYPES.includes(field.blockType),
   );
+
+  // A `select` field reads as unanswered with nothing highlighted; default it
+  // to its first option so there's always a visible choice.
+  const [values, setValues] = useState<Record<string, string>>(() => {
+    const defaults: Record<string, string> = {};
+    for (const field of fields) {
+      const firstOption = field.blockType === 'select' ? field.options?.[0]?.value : undefined;
+      if (firstOption) defaults[field.name] = firstOption;
+    }
+    return defaults;
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<Status>('idle');
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const setValue = (name: string, value: string) => {
     setValues(prev => ({ ...prev, [name]: value }));

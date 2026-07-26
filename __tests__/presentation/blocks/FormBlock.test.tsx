@@ -56,7 +56,9 @@ test('blocks submission and shows an error when a required field is empty', asyn
 
   await fireEvent.press(screen.getByLabelText('Send message'));
 
-  expect(await screen.findAllByText('This field is required.')).toHaveLength(2);
+  // `topic` defaults to its first option (Reservation), so only `name` is
+  // left unanswered.
+  expect(await screen.findAllByText('This field is required.')).toHaveLength(1);
   expect(submitFormSubmissionMock).not.toHaveBeenCalled();
 });
 
