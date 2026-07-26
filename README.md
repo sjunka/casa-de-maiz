@@ -55,6 +55,16 @@ complete alert-frequency behaviour (`always` / `once` / `session` with cooldown
 and a 4-second undo window), Sentry crash reporting with source maps
 ([Observability](docs/OBSERVABILITY.md)), and Maestro E2E flows.
 
+## Try it without building
+
+[**Download the Android APK**](https://github.com/sjunka/casa-de-maiz/releases/latest) —
+33 MB, arm64-v8a, JS bundled in, pointed at the published CMS. Signed with the
+React Native debug keystore, so Android will warn about an unknown developer.
+
+```sh
+adb install casa-maiz-1.0.0-arm64.apk
+```
+
 ## Quick start
 
 ```sh

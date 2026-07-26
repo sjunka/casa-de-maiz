@@ -50,6 +50,27 @@ npx react-native run-ios --device "Your iPhone Name"
 npx react-native run-android --device <adb-device-id>   # id from `adb devices`
 ```
 
+## Prebuilt Android APK
+
+To try the app without a toolchain, install the APK from the
+[latest release](https://github.com/sjunka/casa-de-maiz/releases/latest):
+
+```sh
+adb install casa-maiz-1.0.0-arm64.apk
+```
+
+arm64-v8a only, JS bundled into the binary, pointed at the published CMS. It is
+signed with the React Native debug keystore, so Android warns about an unknown
+developer. Rebuild it with:
+
+```sh
+SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a
+```
+
+The `SENTRY_DISABLE_AUTO_UPLOAD` flag is needed because the Sentry source-map
+upload runs on release builds and fails without real credentials — see
+[Observability](OBSERVABILITY.md).
+
 ## Deep links
 
 The app registers the `casamaiz://` scheme. Destinations match the CMS-published paths, e.g. `casamaiz://menu`, `casamaiz://legal/privacy_policy`, `casamaiz://reservas`.
