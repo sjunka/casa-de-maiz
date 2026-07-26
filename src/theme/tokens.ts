@@ -1,6 +1,9 @@
+import { Platform, StyleSheet, type ViewStyle } from 'react-native';
+
 export type ColorTokens = {
   background: string;
   surface: string;
+  surfaceElevated: string;
   text: string;
   textSecondary: string;
   accent: string;
@@ -18,6 +21,7 @@ export type ColorTokens = {
 export const lightColors: ColorTokens = {
   background: '#ffffff',
   surface: '#ffffff',
+  surfaceElevated: '#f6ece9',
   text: '#1a1a1a',
   textSecondary: '#666666',
   accent: '#8a2c1d',
@@ -35,6 +39,7 @@ export const lightColors: ColorTokens = {
 export const darkColors: ColorTokens = {
   background: '#121212',
   surface: '#1e1e1e',
+  surfaceElevated: '#2c2420',
   text: '#f2f2f2',
   textSecondary: '#aaaaaa',
   accent: '#d97a5f',
@@ -48,3 +53,18 @@ export const darkColors: ColorTokens = {
   infoText: '#f2f2f2',
   errorText: '#ff6b6b',
 };
+
+// Android conveys elevation with a tonal surface and `elevation`; iOS conveys
+// it with a hairline border and a soft shadow (ADR 0010, ADR 0012).
+export const getElevatedSurfaceStyle = (colors: ColorTokens): ViewStyle =>
+  Platform.OS === 'android'
+    ? { backgroundColor: colors.surfaceElevated, elevation: 3 }
+    : {
+        backgroundColor: colors.surface,
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderColor: colors.border,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+      };

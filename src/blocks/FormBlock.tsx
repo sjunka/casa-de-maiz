@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Switch,
@@ -15,6 +14,7 @@ import {
 import { useTheme } from '../theme/useTheme';
 import { submitFormSubmission } from '../api/formSubmission';
 import { ApiError } from '../api/apiError';
+import { AppPressable } from '../ui/AppPressable';
 import type { FormBlock as FormBlockData, FormField } from '../models/block';
 
 type Props = { block: FormBlockData };
@@ -117,7 +117,7 @@ export const FormBlock = ({ block }: Props) => {
             {submitError}
           </Text>
         ) : null}
-        <Pressable
+        <AppPressable
           accessibilityRole="button"
           accessibilityLabel={block.form.submitButtonLabel ?? 'Submit'}
           accessibilityState={{ disabled: status === 'submitting' }}
@@ -133,7 +133,7 @@ export const FormBlock = ({ block }: Props) => {
               {block.form.submitButtonLabel ?? 'Submit'}
             </Text>
           )}
-        </Pressable>
+        </AppPressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -166,7 +166,7 @@ const FormFieldInput = ({ field, value, error, onChange }: FieldProps) => {
       ) : field.blockType === 'select' ? (
         <View style={styles.options}>
           {(field.options ?? []).map(option => (
-            <Pressable
+            <AppPressable
               key={option.value}
               accessibilityRole="radio"
               accessibilityLabel={option.label}
@@ -181,7 +181,7 @@ const FormFieldInput = ({ field, value, error, onChange }: FieldProps) => {
               <Text style={{ color: value === option.value ? colors.onAccent : colors.text }}>
                 {option.label}
               </Text>
-            </Pressable>
+            </AppPressable>
           ))}
         </View>
       ) : (

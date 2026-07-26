@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppPressable } from '../ui/AppPressable';
+import { GlassSurface } from '../ui/GlassSurface';
 import { useTheme } from '../theme/useTheme';
 import type { Alert } from '../models/alert';
 import { selectActiveAlert } from './selectActiveAlert';
@@ -13,7 +15,7 @@ type Props = { alerts: Alert[]; currentPageSlug: string };
 
 export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
   const { top } = useSafeAreaInsets();
-  const { colors } = useTheme();
+  const { colors, scheme } = useTheme();
   const [suppressedIds, setSuppressedIds] = useState<Set<string>>(new Set());
   const [visibleAlert, setVisibleAlert] = useState<Alert | null>(null);
 
@@ -71,14 +73,16 @@ export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
   };
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: colors.accent, paddingTop: 12 + top }]}
-      testID="alert-banner"
-    >
+    <View style={[styles.container, { paddingTop: 12 + top }]} testID="alert-banner">
+      <GlassSurface
+        blurType={scheme === 'dark' ? 'thinMaterialDark' : 'thinMaterialLight'}
+        fallbackColor={colors.accent}
+      />
+      <View style={[styles.tint, { backgroundColor: colors.accent }]} />
       <Text style={[styles.message, { color: colors.onAccent }]}>{visibleAlert.message}</Text>
       <View style={styles.actions}>
         {visibleAlert.actions.map(action => (
-          <Pressable
+          <AppPressable
             key={action.href}
             accessibilityRole="button"
             accessibilityLabel={action.label}
@@ -86,18 +90,18 @@ export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
             onPress={() => openDestination(action.href, navigateToResolved)}
           >
             <Text style={[styles.actionLabel, { color: colors.onAccent }]}>{action.label}</Text>
-          </Pressable>
+          </AppPressable>
         ))}
       </View>
       {visibleAlert.dismissible && (
-        <Pressable
+        <AppPressable
           accessibilityRole="button"
           accessibilityLabel="Dismiss alert"
           style={styles.dismiss}
           onPress={handleDismiss}
         >
           <Text style={[styles.dismissLabel, { color: colors.onAccent }]}>×</Text>
-        </Pressable>
+        </AppPressable>
       )}
     </View>
   );
@@ -110,6 +114,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 12,
   },
+  tint: { ...StyleSheet.absoluteFill, opacity: 0.82 },
   message: { flex: 1, fontSize: 13 },
   actions: { flexDirection: 'row', marginLeft: 8 },
   action: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center', marginLeft: 12 },

@@ -3,6 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { Destination } from '../models/bootstrap';
 import { resolveDestination } from './resolveDestination';
 import { isDestinationEnabled } from './featureFlags';
+import { AndroidTabBar } from './AndroidTabBar';
+import { TabBarBackground } from './TabBarBackground';
+import { useTheme } from '../theme/useTheme';
 import type { RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
 import { MenuScreen } from '../screens/MenuScreen';
@@ -15,6 +18,7 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 type Props = { destinations: Destination[]; flags?: Record<string, boolean> };
 
 export const TabNavigator = ({ destinations, flags = {} }: Props) => {
+  const { colors } = useTheme();
   const screens: React.JSX.Element[] = [];
 
   for (const destination of destinations) {
@@ -74,7 +78,24 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
     );
   }
 
-  return <Tab.Navigator>{screens}</Tab.Navigator>;
+  return (
+    <Tab.Navigator
+      // react-navigation calls `tabBar` as a plain function, not JSX, so it
+      // never gets its own Fiber — AndroidTabBar can't call hooks itself
+      // (see its file comment). `colors` is resolved here instead.
+      // eslint-disable-next-line react/no-unstable-nested-components
+      tabBar={Platform.OS === 'android' ? props => <AndroidTabBar {...props} colors={colors} /> : undefined}
+      screenOptions={{
+        // No icon assets are available from the CMS or an icon library yet;
+        // an explicit null suppresses react-navigation's warning-triangle
+        // placeholder in favor of a label-only tab bar.
+        tabBarIcon: () => null,
+        ...(Platform.OS === 'ios' ? { tabBarBackground: TabBarBackground } : null),
+      }}
+    >
+      {screens}
+    </Tab.Navigator>
+  );
 };
 
 const styles = StyleSheet.create({

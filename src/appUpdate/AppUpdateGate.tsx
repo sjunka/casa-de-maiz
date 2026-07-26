@@ -1,9 +1,10 @@
 import { useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getAppVersion } from '../api/appVersion';
 import { decideAppUpdate } from './decideAppUpdate';
 import { useTheme } from '../theme/useTheme';
+import { AppPressable } from '../ui/AppPressable';
 import type { AppUpdate } from '../models/operationalControls';
 
 type Props = { appUpdate?: AppUpdate; children: ReactNode };
@@ -31,14 +32,14 @@ export const AppUpdateGate = ({ appUpdate, children }: Props) => {
           testID="app-update-recommended"
         >
           <Text style={[styles.bannerMessage, { color: colors.warningText }]}>{decision.message}</Text>
-          <Pressable
+          <AppPressable
             accessibilityRole="button"
             accessibilityLabel="Dismiss update message"
             style={styles.dismiss}
             onPress={() => setDismissed(true)}
           >
             <Text style={[styles.dismissLabel, { color: colors.warningText }]}>×</Text>
-          </Pressable>
+          </AppPressable>
         </View>
       )}
       {children}

@@ -3,7 +3,6 @@ import {
   AccessibilityInfo,
   Dimensions,
   FlatList,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -11,6 +10,7 @@ import {
   type ViewToken,
 } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
+import { AppPressable } from '../ui/AppPressable';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { useTheme, type Theme } from '../theme/useTheme';
 import type { CarouselBlock as CarouselBlockData } from '../models/block';
@@ -78,7 +78,7 @@ export const CarouselBlock = ({ block }: Props) => {
         renderItem={renderItem}
       />
       <View style={styles.controls}>
-        <Pressable
+        <AppPressable
           accessibilityRole="button"
           accessibilityLabel="Previous slide"
           accessibilityState={{ disabled: activeIndex === 0 }}
@@ -87,7 +87,7 @@ export const CarouselBlock = ({ block }: Props) => {
           style={[styles.button, activeIndex === 0 && styles.buttonDisabled]}
         >
           <Text style={{ color: colors.text }}>‹</Text>
-        </Pressable>
+        </AppPressable>
         <Text
           accessibilityLiveRegion="polite"
           accessibilityLabel={`Slide ${activeIndex + 1} of ${slideCount}`}
@@ -95,7 +95,7 @@ export const CarouselBlock = ({ block }: Props) => {
         >
           {activeIndex + 1} / {slideCount}
         </Text>
-        <Pressable
+        <AppPressable
           accessibilityRole="button"
           accessibilityLabel="Next slide"
           accessibilityState={{ disabled: activeIndex === slideCount - 1 }}
@@ -104,7 +104,7 @@ export const CarouselBlock = ({ block }: Props) => {
           style={[styles.button, activeIndex === slideCount - 1 && styles.buttonDisabled]}
         >
           <Text style={{ color: colors.text }}>›</Text>
-        </Pressable>
+        </AppPressable>
       </View>
     </View>
   );
