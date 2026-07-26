@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import { FormBlock } from './FormBlock';
-import { submitFormSubmission } from '../api/formSubmission';
+import { submitFormSubmission } from '@data/repository/formSubmission';
 import { ApiError } from '@core/transport/apiError';
 import type { FormBlock as FormBlockData } from '@core/contract/models/block';
 
-jest.mock('../api/formSubmission', () => ({ submitFormSubmission: jest.fn() }));
+jest.mock('@data/repository/formSubmission', () => ({ submitFormSubmission: jest.fn() }));
 
 const submitFormSubmissionMock = submitFormSubmission as jest.Mock;
 

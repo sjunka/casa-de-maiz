@@ -92,11 +92,11 @@ The app is organized around seven boundaries, screens composed on top:
 
 - `src/core/transport` — HTTP client, error mapping, base-URL config
 - `src/core/contract` — supported contract version, delivery-context construction, installed app version, and `src/core/contract/models` — Zod schemas and their inferred TypeScript types
-- `src/api` — endpoint fetchers, query hooks, cache and freshness policy
-- `src/repository` *(folded into `src/api` hooks + `src/api/cache.ts`)* — cache and freshness policy
-- `src/state` *(covered by `src/alerts`, `src/appUpdate`, `src/operational`, `src/navigation/featureFlags`)* — bootstrap-driven application state
+- `src/data/repository` — endpoint fetchers, query hooks, cache and freshness policy, query client
+- `src/data/state` — alert selection and frequency policy, scroll-progress derivation, app-update decisioning, feature flags — bootstrap-driven application state. No React; enforced by lint.
 - `src/navigation` — destination resolution and the tab shell built from bootstrap
 - `src/blocks` — the block registry and block components
+- `src/presentation/banners` — the alert banner, app-update gate and operational-notice banner
 - `src/ui` / `src/theme` — shared presentation, tokens, dark mode, reduced motion
 - `src/screens` — composition only; no screen talks to the network or cache directly
 

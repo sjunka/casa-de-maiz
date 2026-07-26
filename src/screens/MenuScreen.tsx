@@ -1,8 +1,8 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-import { useMenu } from '../api/useMenu';
+import { useMenu } from '@data/repository/useMenu';
 import { BlockList } from '../blocks/BlockList';
 import { ContentStatus, SavedContentBanner } from '../ui/ContentStatus';
-import { trackScrollProgress } from '../alerts/scrollProgress';
+import { trackScrollProgress } from '@data/state/scrollProgress';
 
 export const MenuScreen = () => {
   const { data, error, isLoading, isFetching, refetch } = useMenu();

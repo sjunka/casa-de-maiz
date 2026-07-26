@@ -7,7 +7,7 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import { QueryClientProvider } from '@tanstack/react-query';
 import { LogBox, StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { queryClient } from './src/api/queryClient';
+import { queryClient } from './src/data/repository/queryClient';
 import { BootstrapScreen } from './src/screens/BootstrapScreen';
 import { navigationRef, getCurrentRouteName, flushPendingNavigation } from './src/navigation/navigationRef';
 import { initDeepLinking } from './src/navigation/deepLinking';

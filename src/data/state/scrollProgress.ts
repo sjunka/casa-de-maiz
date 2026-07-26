@@ -1,4 +1,3 @@
-import { useSyncExternalStore } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 
 type Progress = { owner: string; percent: number };
@@ -35,12 +34,14 @@ export const resetScrollProgress = () => {
   listeners.forEach(listener => listener());
 };
 
-const subscribe = (listener: () => void) => {
+// Exposed for `useScrollProgress` (presentation layer) to subscribe React's
+// external-store hook to — the store itself has no React dependency.
+export const subscribeToScrollProgress = (listener: () => void) => {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
   };
 };
 
-export const useScrollProgress = (owner: string): number =>
-  useSyncExternalStore(subscribe, () => (progress.owner === owner ? progress.percent : 0));
+export const getScrollProgress = (owner: string): number =>
+  progress.owner === owner ? progress.percent : 0;

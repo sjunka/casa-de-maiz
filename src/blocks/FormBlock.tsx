@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import { useTheme } from '../theme/useTheme';
-import { submitFormSubmission } from '../api/formSubmission';
+import { submitFormSubmission } from '@data/repository/formSubmission';
 import { ApiError } from '@core/transport/apiError';
 import { AppPressable } from '../ui/AppPressable';
 import type { FormBlock as FormBlockData, FormField } from '@core/contract/models/block';

@@ -15,6 +15,8 @@ const config = {
     extraNodeModules: {
       '@core/transport': path.resolve(__dirname, 'src/core/transport'),
       '@core/contract': path.resolve(__dirname, 'src/core/contract'),
+      '@data/repository': path.resolve(__dirname, 'src/data/repository'),
+      '@data/state': path.resolve(__dirname, 'src/data/state'),
     },
   },
 };
