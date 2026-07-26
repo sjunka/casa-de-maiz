@@ -2,7 +2,7 @@ import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBootstrap } from '../api/useBootstrap';
 import { TabNavigator } from '../navigation/TabNavigator';
-import { flattenNavigation } from '../models/bootstrap';
+import { flattenNavigation } from '@core/contract/models/bootstrap';
 import { AlertBanner } from '../alerts/AlertBanner';
 import { OperationalNoticeBanner } from '../operational/OperationalNoticeBanner';
 import { AppUpdateGate } from '../appUpdate/AppUpdateGate';

@@ -1,4 +1,4 @@
-import type { AppUpdate } from '../models/operationalControls';
+import type { AppUpdate } from '@core/contract/models/operationalControls';
 import { isBelowMinimumVersion } from './compareVersions';
 
 export type AppUpdateDecision =

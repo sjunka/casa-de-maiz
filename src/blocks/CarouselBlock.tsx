@@ -13,7 +13,7 @@ import { CmsImage } from '../ui/CmsImage';
 import { AppPressable } from '../ui/AppPressable';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { useTheme, type Theme } from '../theme/useTheme';
-import type { CarouselBlock as CarouselBlockData } from '../models/block';
+import type { CarouselBlock as CarouselBlockData } from '@core/contract/models/block';
 
 type Slide = CarouselBlockData['slides'][number];
 type Props = { block: CarouselBlockData };

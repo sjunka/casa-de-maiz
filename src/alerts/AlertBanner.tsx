@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppPressable } from '../ui/AppPressable';
 import { GlassSurface } from '../ui/GlassSurface';
 import { useTheme } from '../theme/useTheme';
-import type { Alert } from '../models/alert';
+import type { Alert } from '@core/contract/models/alert';
 import { selectActiveAlert } from './selectActiveAlert';
 import { isSuppressed, recordDismissal, recordShown } from './frequency';
 import { useScrollProgress } from './scrollProgress';

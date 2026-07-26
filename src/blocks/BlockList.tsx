@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { renderBlock } from './registry';
-import type { BlockEnvelope } from '../models/block';
-import type { BootstrapPromotion } from '../models/promotion';
+import type { BlockEnvelope } from '@core/contract/models/block';
+import type { BootstrapPromotion } from '@core/contract/models/promotion';
 
 type Props = { layout: BlockEnvelope[]; fallbackPromotions?: BootstrapPromotion[] };
 

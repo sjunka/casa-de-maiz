@@ -1,6 +1,6 @@
 import { Platform, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import type { Destination } from '../models/bootstrap';
+import type { Destination } from '@core/contract/models/bootstrap';
 import { resolveDestination } from './resolveDestination';
 import { isDestinationEnabled } from './featureFlags';
 import { AndroidTabBar } from './AndroidTabBar';

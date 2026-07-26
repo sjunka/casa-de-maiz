@@ -1,4 +1,4 @@
-jest.mock('../api/appVersion', () => ({
+jest.mock('@core/contract/appVersion', () => ({
   getAppVersion: () => '1.0.0',
 }));
 

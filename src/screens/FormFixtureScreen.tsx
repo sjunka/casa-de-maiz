@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import { BlockList } from '../blocks/BlockList';
-import type { BlockEnvelope } from '../models/block';
+import type { BlockEnvelope } from '@core/contract/models/block';
 
 // Dev-only: no live page serves a formBlock yet (see docs/adr/0011-form-block-modelling.md),
 // so this fixture is the only way to see and exercise the block.

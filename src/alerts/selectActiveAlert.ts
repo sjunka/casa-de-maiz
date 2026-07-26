@@ -1,4 +1,4 @@
-import type { Alert } from '../models/alert';
+import type { Alert } from '@core/contract/models/alert';
 
 const SUPPORTED_PLACEMENT = 'topBar';
 const SUPPORTED_TRIGGERS = ['load', 'scrollPercent'];

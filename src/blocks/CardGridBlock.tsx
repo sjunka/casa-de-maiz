@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
 import { useTheme, type Theme } from '../theme/useTheme';
-import type { CardGridBlock as CardGridBlockData } from '../models/block';
+import type { CardGridBlock as CardGridBlockData } from '@core/contract/models/block';
 
 type Card = CardGridBlockData['cards'][number];
 type Props = { block: CardGridBlockData };

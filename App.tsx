@@ -12,10 +12,12 @@ import { BootstrapScreen } from './src/screens/BootstrapScreen';
 import { navigationRef, getCurrentRouteName, flushPendingNavigation } from './src/navigation/navigationRef';
 import { initDeepLinking } from './src/navigation/deepLinking';
 import { useTheme } from './src/theme/useTheme';
-import { initCrashReporting, wrapRootComponent } from './src/observability/crashReporting';
-import { DISABLE_LOGBOX_NOTIFICATIONS } from './src/api/config';
+import { initCrashReporting, wrapRootComponent, reportTransportError } from './src/observability/crashReporting';
+import { DISABLE_LOGBOX_NOTIFICATIONS } from './src/core/transport/config';
+import { setTransportErrorReporter } from './src/core/transport/client';
 
 initCrashReporting();
+setTransportErrorReporter(reportTransportError);
 
 if (DISABLE_LOGBOX_NOTIFICATIONS) {
   LogBox.ignoreAllLogs(true);

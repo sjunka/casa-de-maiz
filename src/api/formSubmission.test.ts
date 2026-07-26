@@ -18,14 +18,14 @@ test('submissions never reach the network in the default configuration', async (
 describe('with live submissions enabled', () => {
   beforeEach(() => {
     jest.resetModules();
-    jest.doMock('./config', () => ({
+    jest.doMock('@core/transport/config', () => ({
       API_BASE_URL: 'https://payload-cms-poc-seven.vercel.app',
       ENABLE_LIVE_FORM_SUBMISSIONS: true,
     }));
   });
 
   afterEach(() => {
-    jest.dontMock('./config');
+    jest.dontMock('@core/transport/config');
   });
 
   test('a 201 response resolves', async () => {

@@ -14,9 +14,9 @@ import {
 } from 'react-native';
 import { useTheme } from '../theme/useTheme';
 import { submitFormSubmission } from '../api/formSubmission';
-import { ApiError } from '../api/apiError';
+import { ApiError } from '@core/transport/apiError';
 import { AppPressable } from '../ui/AppPressable';
-import type { FormBlock as FormBlockData, FormField } from '../models/block';
+import type { FormBlock as FormBlockData, FormField } from '@core/contract/models/block';
 
 type Props = { block: FormBlockData };
 

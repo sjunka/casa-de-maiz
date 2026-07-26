@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react-native';
-import { getAppVersion } from '../api/appVersion';
-import { buildDeliveryContext } from '../api/deliveryContext';
-import { SENTRY_DSN, SENTRY_ENVIRONMENT } from '../api/config';
+import { getAppVersion } from '@core/contract/appVersion';
+import { buildDeliveryContext } from '@core/contract/deliveryContext';
+import { SENTRY_DSN, SENTRY_ENVIRONMENT } from '@core/transport/config';
 
 export const initCrashReporting = (): void => {
   if (!SENTRY_DSN) {

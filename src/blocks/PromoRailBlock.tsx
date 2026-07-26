@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
 import { useTheme, type Theme } from '../theme/useTheme';
-import type { PromoRailBlock as PromoRailBlockData } from '../models/block';
-import type { BootstrapPromotion } from '../models/promotion';
+import type { PromoRailBlock as PromoRailBlockData } from '@core/contract/models/block';
+import type { BootstrapPromotion } from '@core/contract/models/promotion';
 
 type Promotion = PromoRailBlockData['promotions'][number];
 type Props = { block: PromoRailBlockData; fallbackPromotions?: BootstrapPromotion[] };

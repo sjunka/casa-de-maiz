@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
-import { isContractVersionCompatible } from '../models/contractVersion';
-import { SUPPORTED_CONTRACT_VERSION } from '../api/contract';
-import { KNOWN_BLOCK_SCHEMAS, type BlockEnvelope, type KnownBlockType, type PromoRailBlock as PromoRailBlockData } from '../models/block';
-import type { BootstrapPromotion } from '../models/promotion';
+import { isContractVersionCompatible } from '@core/contract/models/contractVersion';
+import { SUPPORTED_CONTRACT_VERSION } from '@core/contract/contract';
+import { KNOWN_BLOCK_SCHEMAS, type BlockEnvelope, type KnownBlockType, type PromoRailBlock as PromoRailBlockData } from '@core/contract/models/block';
+import type { BootstrapPromotion } from '@core/contract/models/promotion';
 import { CardGridBlock } from './CardGridBlock';
 import { CarouselBlock } from './CarouselBlock';
 import { PromoRailBlock } from './PromoRailBlock';

@@ -4,7 +4,7 @@ import { useTheme } from '../theme/useTheme';
 import { AppPressable } from '../ui/AppPressable';
 import { CmsImage } from '../ui/CmsImage';
 import { RichText } from '../ui/RichText';
-import type { GenericBlock as GenericBlockData } from '../models/block';
+import type { GenericBlock as GenericBlockData } from '@core/contract/models/block';
 
 type Props = { block: GenericBlockData };
 
