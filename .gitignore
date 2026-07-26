@@ -78,6 +78,7 @@ yarn-error.log
 !.yarn/versions
 
 # Agent-local docs (untracked)
+/CLAUDE.md
 /CONTEXT.md
 /docs/adr/
 /docs/agents/
