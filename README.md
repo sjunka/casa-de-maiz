@@ -87,6 +87,14 @@ npm run typecheck && npm run lint && npm test
 fallback, expired content, an unsupported contract version, navigation, a
 CMS-published alert and a form submission. See [Testing](docs/TESTING.md).
 
+## Known limitations
+
+What was deliberately left out and why — five best-effort block types the
+contract declares but never publishes a shape for, a placeholder Reservations
+screen with no API behind it, performance instrumentation that stops at the
+timing boundary, and no screen-reader pass. All of it, with the reasoning, in
+[**Known limitations and next steps**](docs/LIMITATIONS.md).
+
 ## Docs
 
 - [Architecture, trade-offs, dependency choices, types strategy](docs/ARCHITECTURE.md)

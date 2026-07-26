@@ -4,6 +4,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { AppPressable } from '../ui/AppPressable';
 import { useTheme } from '../theme/useTheme';
+import { MIN_TOUCH_TARGET } from '../theme/tokens';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { noticeCardStrings } from './noticeCardStrings';
 
@@ -15,6 +16,10 @@ type Action = { key: string; label: string; onPress: () => void };
 // becomes real. Long enough to catch a mis-tap, short enough that the notice
 // is not still sitting there when the guest has moved on.
 const UNDO_MS = 4000;
+
+// The close glyph is small on purpose; `hitSlop` is what carries it up to the
+// platform minimum tap target.
+const DISMISS_SIZE = 20;
 
 type Props = {
   icon: Glyph;
@@ -99,7 +104,7 @@ export const NoticeCard = ({
               accessibilityRole="button"
               accessibilityLabel={dismissLabel}
               style={styles.dismiss}
-              hitSlop={12}
+              hitSlop={(MIN_TOUCH_TARGET - DISMISS_SIZE) / 2}
               onPress={dismiss}
             >
               <MaterialDesignIcons name="close" size={14} color={colors.textSecondary} />
@@ -155,10 +160,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   message: { flex: 1, fontSize: 14, lineHeight: 19, fontWeight: '500' },
-  dismiss: { marginLeft: 8, width: 20, height: 20, alignItems: 'center', justifyContent: 'center' },
+  dismiss: {
+    marginLeft: 8,
+    width: DISMISS_SIZE,
+    height: DISMISS_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 12, marginLeft: 34 },
   action: {
-    minHeight: 36,
+    minHeight: MIN_TOUCH_TARGET,
     paddingHorizontal: 14,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
@@ -176,7 +187,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   undoMessage: { flex: 1, fontSize: 14, fontWeight: '500' },
-  undoAction: { minHeight: 44, paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' },
+  undoAction: { minHeight: MIN_TOUCH_TARGET, paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' },
   undoLabel: { fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
   drain: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 2, opacity: 0.35, transformOrigin: 'left' },
 });

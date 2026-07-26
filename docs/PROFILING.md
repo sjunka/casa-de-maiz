@@ -104,22 +104,26 @@ buffers.
 The Android accessibility tree was dumped with `adb exec-out uiautomator dump`
 on Home and every clickable node measured (420 dpi, so 1 dp = 2.625 px):
 
-| Control | Measured | Verdict |
+| Control | Before | After |
 |---|---|---|
-| Tab bar items (×4) | 103 × 52 dp | Passes both platforms |
-| Carousel previous/next | 44 × 44 dp | Passes iOS 44 pt, 4 dp under Android's 48 dp |
-| Notice dismiss | 20 × 20 dp visual, `hitSlop={12}` → 44 × 44 dp effective | Passes iOS 44 pt, 4 dp under Android's 48 dp |
+| Tab bar items | 82–103 × 52 dp | unchanged, already over both minimums |
+| Notice actions ("Ir a menú") | 36 dp tall | **48 dp** |
+| Carousel previous/next | 44 × 44 dp | **48 × 48 dp** on Android, 44 on iOS |
+| Notice dismiss | 20 dp visual + `hitSlop={12}` = 44 dp | 20 dp visual + `hitSlop` = **48 dp** on Android, 44 on iOS |
 
-Every clickable node has an accessibility label — none were missing. Note that
-`uiautomator` reports visual bounds and cannot see React Native's `hitSlop`, so
-the dismiss button reads as 20 dp in the raw dump; the effective target was
-confirmed in `src/presentation/banners/NoticeCard.tsx`.
+Every clickable node has an accessibility label — none were missing.
 
-**Finding:** the carousel arrows and the notice dismiss button are sized to the
-iOS 44 pt minimum on both platforms, where Material specifies 48 dp. A 4 dp
-shortfall on Android only. The fix is a token for the minimum target that
-resolves per platform, in the same place the other platform divergences live
-([ADR 0012](adr/0012-platform-native-presentation.md)).
+The original sweep found three controls sized to the iOS 44 pt minimum on both
+platforms, where Material specifies 48 dp, and notice action pills at just
+36 dp. All of them now resolve through one `MIN_TOUCH_TARGET` token
+(`src/presentation/theme/tokens.ts`) that returns 48 on Android and 44 on iOS,
+alongside the other platform divergences ([ADR 0012](adr/0012-platform-native-presentation.md)).
+
+Note that `uiautomator` reports visual bounds and cannot see React Native's
+`hitSlop`, so the dismiss button still reads as 20 dp in a raw dump. Its
+effective target is asserted in
+`__tests__/presentation/banners/noticeTouchTarget.test.tsx` instead, which is
+the only place the glyph size and the slop are checked together.
 
 ### Large text
 
@@ -131,13 +135,15 @@ titles and descriptions grow, prices stay visible, and nothing is clipped or
 overlapped. The tab bar keeps its icon-only layout, which is exactly why it has
 no labels to overflow.
 
-**Finding:** at the largest sizes the notice stack dominates the viewport. With
-three notices active (app update, operational notice, alert) at Android 2.0× the
-stack takes roughly half the screen, and at the iOS
-`accessibility-extra-extra-extra-large` size it fills it, leaving Home reachable
-only after dismissing. Every notice is dismissible so nobody is stuck, but the
-stack should cap its height and scroll internally past a threshold rather than
-pushing content off.
+The original sweep found the notice stack dominating the viewport at those
+sizes: with three notices active (app update, operational notice, alert) it took
+roughly half the screen at Android 2.0× and filled it entirely at the iOS
+`accessibility-extra-extra-extra-large` size, leaving Home reachable only after
+dismissing them. The three notices now share one container
+(`src/presentation/banners/NoticeStack.tsx`) capped at 40% of the screen that
+scrolls internally past that point. Re-checked at both settings afterwards:
+Home content and the tab bar stay reachable, the stack scrolls to reveal the
+rest, and nothing changes at default text sizes.
 
 ### What was not tested
 

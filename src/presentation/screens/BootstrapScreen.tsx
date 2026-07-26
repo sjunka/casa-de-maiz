@@ -7,6 +7,8 @@ import { seedNotices } from '@data/logic/seedNotices';
 import { AlertBanner } from '../banners/AlertBanner';
 import { OperationalNoticeBanner } from '../banners/OperationalNoticeBanner';
 import { AppUpdateGate } from '../banners/AppUpdateGate';
+import { AppUpdateNotice } from '../banners/AppUpdateNotice';
+import { NoticeStack } from '../banners/NoticeStack';
 import { useTheme } from '../theme/useTheme';
 
 type Props = { currentRouteName: string };
@@ -55,8 +57,11 @@ export const BootstrapScreen = ({ currentRouteName }: Props) => {
     // adding the inset again and stacking up dead space above the content.
     <SafeAreaView edges={['top']} style={styles.fill} testID="bootstrap-success">
       <AppUpdateGate appUpdate={notices.operationalControls.appUpdate}>
-        <OperationalNoticeBanner operationalControls={notices.operationalControls} />
-        <AlertBanner alerts={notices.alerts} currentPageSlug={currentRouteName} />
+        <NoticeStack>
+          <AppUpdateNotice appUpdate={notices.operationalControls.appUpdate} />
+          <OperationalNoticeBanner operationalControls={notices.operationalControls} />
+          <AlertBanner alerts={notices.alerts} currentPageSlug={currentRouteName} />
+        </NoticeStack>
         <TabNavigator destinations={flattenNavigation(data.data.navigation)} flags={data.data.featureFlags} />
       </AppUpdateGate>
     </SafeAreaView>
