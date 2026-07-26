@@ -19,6 +19,8 @@ cp .env.example .env
 
 `.env.example` defaults `API_BASE_URL` to the published deployment. `.env` is git-ignored — no secrets or machine-specific values are committed.
 
+Crash reporting (`SENTRY_DSN`, `SENTRY_ENVIRONMENT`) is configured the same way. `SENTRY_DSN` is blank by default, which keeps crash reporting disabled locally — set it to a real DSN to enable it.
+
 - **iOS Simulator**: reaches the public API directly over `https`; no setup beyond the base URL.
 - **Android emulator**: the emulator's virtual network reaches the public API directly over `https`; no host-mapping is needed for this deployment. (Only a machine-local server, addressed as `10.0.2.2`, would need special-casing — not the case here.)
 - **Physical device**: same as the emulator, since the base URL is a public `https` endpoint rather than a machine-local server. iOS needs the device registered to a signing team in Xcode; Android needs USB debugging enabled and the device authorized (`adb devices` should list it).
@@ -107,6 +109,7 @@ Every dependency added beyond the React Native CLI template, and why:
 | `react-native-device-info` | Reads the real installed app version for the `appVersion` delivery-context parameter, rather than trusting a source-file constant that can drift from the binary. |
 | `@react-navigation/native`, `@react-navigation/bottom-tabs` | The tab shell is built at runtime from `bootstrap.navigation`; these provide native-feeling tab and stack navigation without writing a router. |
 | `react-native-screens`, `react-native-safe-area-context` | Required peer dependencies of `@react-navigation` for native screen management and safe-area handling (notch, home indicator). |
+| `@sentry/react-native` | Native and JS crash reporting at the app root ([ADR 0014](docs/adr/0014-crash-reporting-sdk.md)) — see Production observability below. |
 
 No image library, connectivity library, crash-reporting SDK, or UI kit was added — each was considered and rejected in favour of a platform primitive or a documented deferral (see Known limitations below).
 
@@ -122,19 +125,18 @@ Deliberately deferred, with reasoning:
 - **End-to-end testing.** Component and unit tests cover behaviour a guest can observe; a full E2E suite (Detox/Maestro) was judged lower value than breadth of unit/component coverage inside the timebox.
 - **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
 - **A connectivity library.** Offline is derived from request failure instead, which already covers the case a connectivity library wouldn't (reachable network, unreachable API) and avoids an extra dependency.
-- **Crash-reporting integration.** No SDK added — see Production observability below for what would replace this.
 - **iOS "glass" and Android Material bonus visual treatments.** Explicitly a bonus in the original spec; core functionality and accessibility were prioritized first and the timebox didn't extend to platform-specific visual flourish beyond what `ADR 0010` already covers (native back gestures, safe areas, dark mode).
 - **Reservations.** A local placeholder screen — no reservation API is documented for this contract version.
 
-With more time, in priority order: a crash-reporting SDK at the app root, E2E coverage of the resilience paths (offline, expired content, unsupported contract version), and the bonus platform-specific visual treatments.
+With more time, in priority order: source-map upload for the crash-reporting pipeline below, E2E coverage of the resilience paths (offline, expired content, unsupported contract version), and the bonus platform-specific visual treatments.
 
 ## Production observability
 
-Not built — documented here instead, since no crash-reporting or analytics dependency was added inside the timebox. How each failure mode would be observed in production:
+- **Crashes.** `@sentry/react-native` is initialised at the app root (`src/observability/crashReporting.ts`, wired in `App.tsx`) and reports native and JS crashes with the installed app version and platform attached, both read from the existing single-source modules (`src/api/appVersion.ts`, `src/api/deliveryContext.ts`). Disabled by default — see Configuration below.
+- **Content failures.** Transport failures are mapped at the boundary (`src/api/client.ts`, `src/api/apiError.ts`) to a user-safe message plus retained technical context (endpoint, status, error kind — never full payloads, so production logs can't leak editorial or PII content), and forwarded into the same Sentry pipeline. Unknown or invalid content blocks ([ADR 0008](docs/adr/0008-block-fallback.md)) are recorded as breadcrumbs carrying only the block type.
+- **Performance.** Not built. Screen transitions and first-content timing would be measured via the CMS-fetch boundary already isolated behind the repository/query layer — a single place to time "time to first content" and "time to interactive" without instrumenting every screen individually.
 
-- **Crashes.** No crash-reporting SDK or error boundary exists yet. A crash-reporting SDK (e.g. Sentry or a similar RN-native integration) would wrap the app root and report native and JS crashes with the installed app version and platform attached, both of which the app already reads in one place (`src/api/appVersion.ts`, `src/api/deliveryContext.ts`).
-- **Content failures.** Transport failures are already mapped at the boundary (`src/api/client.ts`, `src/api/apiError.ts`) to a user-safe message plus retained technical context (endpoint, status, block type — never full payloads, so production logs can't leak editorial or PII content). Wiring that existing context into a logging backend is the remaining step, not a redesign.
-- **Performance.** Screen transitions and first-content timing would be measured via the CMS-fetch boundary already isolated behind the repository/query layer — a single place to time "time to first content" and "time to interactive" without instrumenting every screen individually.
+See [ADR 0014](docs/adr/0014-crash-reporting-sdk.md) for the SDK choice and rejected alternatives.
 
 ## Screenshots
 
