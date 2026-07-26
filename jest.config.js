@@ -13,6 +13,6 @@ module.exports = {
     '^@observability/(.*)$': '<rootDir>/src/observability/$1',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-native-async-storage|react-native-safe-area-context|@react-navigation|react-native-screens|@sentry)/)',
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-native-async-storage|react-native-safe-area-context|@react-navigation|react-native-screens|react-native-reanimated|react-native-worklets|@sentry)/)',
   ],
 };

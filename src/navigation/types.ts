@@ -6,6 +6,7 @@ export type RootTabParamList = {
   privacy: { legalKey: string };
   reservations: undefined;
   formFixture: undefined;
+  noticeBannerPrototype: undefined;
 };
 
 // `BottomTabNavigationOptions` is a type alias upstream, not an interface, so
