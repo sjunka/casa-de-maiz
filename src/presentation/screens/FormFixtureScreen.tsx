@@ -28,7 +28,7 @@ const FORM_FIXTURE_LAYOUT: BlockEnvelope[] = [
 ];
 
 export const FormFixtureScreen = () => (
-  <ScrollView style={styles.fill} testID="form-fixture-screen">
+  <ScrollView style={styles.fill} contentContainerStyle={styles.fill} testID="form-fixture-screen">
     <BlockList layout={FORM_FIXTURE_LAYOUT} />
   </ScrollView>
 );

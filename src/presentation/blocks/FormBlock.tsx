@@ -154,7 +154,7 @@ export const FormBlock = ({ block }: Props) => {
 
     if (Platform.OS === 'ios') {
       return (
-        <View style={styles.iosPage} testID="form-block-success">
+        <View style={styles.successPage} testID="form-block-success">
           <View style={styles.successCard}>
             <GlassSurface
               style={styles.successCardFill}
@@ -171,7 +171,7 @@ export const FormBlock = ({ block }: Props) => {
     }
 
     return (
-      <View style={styles.androidPage} testID="form-block-success">
+      <View style={styles.successPage} testID="form-block-success">
         <View style={[styles.successCard, styles.successCardContent, getElevatedSurfaceStyle(colors)]}>
           {closeButton}
           {successBody}
@@ -427,10 +427,11 @@ const styles = StyleSheet.create({
   submitError: { marginBottom: 14, fontSize: 14 },
   confirmation: { fontSize: 16, textAlign: 'center' },
 
-  // Success — wax-seal medallion in a centered card, X to return to the form
-  successCard: { borderRadius: 28, overflow: 'hidden' },
+  // Success — wax-seal medallion in a card that fills the available space, X to return to the form
+  successPage: { flex: 1, padding: 20 },
+  successCard: { flex: 1, borderRadius: 28, overflow: 'hidden' },
   successCardFill: { borderRadius: 28 },
-  successCardContent: { padding: 32, paddingTop: 44, alignItems: 'center' },
+  successCardContent: { flex: 1, padding: 32, alignItems: 'center', justifyContent: 'center' },
   successClose: { position: 'absolute', top: 8, right: 8, minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 22 },
   successSeal: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
   textarea: { minHeight: 96, textAlignVertical: 'top' },
