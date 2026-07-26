@@ -45,6 +45,20 @@ npx react-native run-ios --device "Your iPhone Name"
 npx react-native run-android --device <adb-device-id>   # id from `adb devices`
 ```
 
+## Deep links
+
+The app registers the `casamaiz://` scheme. Destinations match the CMS-published paths, e.g. `casamaiz://menu`, `casamaiz://legal/privacy_policy`, `casamaiz://reservas`.
+
+```sh
+# iOS Simulator
+xcrun simctl openurl booted casamaiz://menu
+
+# Android emulator/device
+adb shell am start -W -a android.intent.action.VIEW -d "casamaiz://menu"
+```
+
+An unsupported path lands on Home; any other scheme is rejected. See [ADR 0013](docs/adr/0013-deep-linking.md).
+
 ## Quality commands
 
 ```sh
@@ -53,7 +67,7 @@ npm run lint        # eslint .
 npm test            # jest, with React Native Testing Library and an in-memory AsyncStorage mock
 ```
 
-All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 109 tests green.
+All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 152 tests green.
 
 ## Architecture overview
 
@@ -76,6 +90,7 @@ Key trade-offs, and why they sit where they do:
 - **Contract compatibility is major-equal, minor-greater-or-equal, checked twice** ([ADR 0005](docs/adr/0005-contract-version-policy.md)). The envelope is checked once; each block re-checks its own `contractVersion` and `channels` client-side even though the server already filters, so one incompatible block degrades without taking the page down.
 - **Unknown blocks fail safe, not silent forever** ([ADR 0008](docs/adr/0008-block-fallback.md)). A block with no registry entry, a bad version, or an excluded channel renders nothing in release (logging only the `blockType`) and a visible marker in development — new blocks are additive, a registry entry rather than a screen rewrite.
 - **No UI kit** ([ADR 0010](docs/adr/0010-styling-approach.md)). `StyleSheet` plus local design tokens, light/dark driven by system appearance, because a Material component library would impose Android conventions on iOS. The cost is presentation components written by hand instead of imported.
+- **A custom scheme through the existing resolver, not a second `linking` table** ([ADR 0013](docs/adr/0013-deep-linking.md)). `casamaiz://` deep links are stripped to a path and routed through the same `resolveDestination` every other tappable CMS link uses. Universal Links / Android App Links are out of scope — there's no domain the assessment lets us verify ownership of.
 
 See `CONTEXT.md` for the domain glossary and `docs/adr/` for the full set of architectural decisions.
 
@@ -103,7 +118,6 @@ Zod schemas, not generated OpenAPI types. Generated types give a compile-time sh
 
 Deliberately deferred, with reasoning:
 
-- **Deep links.** Out of scope for the timebox; the destination resolver is already the single chokepoint a deep-link handler would hang off, so adding it later doesn't require re-plumbing navigation.
 - **Generated OpenAPI types.** Rejected outright, not deferred — see Types strategy above.
 - **End-to-end testing.** Component and unit tests cover behaviour a guest can observe; a full E2E suite (Detox/Maestro) was judged lower value than breadth of unit/component coverage inside the timebox.
 - **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
@@ -112,7 +126,7 @@ Deliberately deferred, with reasoning:
 - **iOS "glass" and Android Material bonus visual treatments.** Explicitly a bonus in the original spec; core functionality and accessibility were prioritized first and the timebox didn't extend to platform-specific visual flourish beyond what `ADR 0010` already covers (native back gestures, safe areas, dark mode).
 - **Reservations.** A local placeholder screen — no reservation API is documented for this contract version.
 
-With more time, in priority order: a crash-reporting SDK at the app root, deep-link handling on top of the existing resolver, E2E coverage of the resilience paths (offline, expired content, unsupported contract version), and the bonus platform-specific visual treatments.
+With more time, in priority order: a crash-reporting SDK at the app root, E2E coverage of the resilience paths (offline, expired content, unsupported contract version), and the bonus platform-specific visual treatments.
 
 ## Production observability
 
