@@ -121,4 +121,9 @@ dependencies {
 
 // Wraps the JS bundle task to upload source maps to Sentry on release builds
 // (org/project read from ./sentry.properties, auth token from SENTRY_AUTH_TOKEN).
-apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+// Only wired up when a token is present: sentry-cli fails the whole build if it
+// runs without credentials, which would make `assembleRelease` unusable for
+// anyone who just wants a binary.
+if (System.getenv("SENTRY_AUTH_TOKEN")) {
+    apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+}
