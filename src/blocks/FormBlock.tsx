@@ -206,6 +206,7 @@ const FormFieldInput = ({ field, value, error, onChange }: FieldProps) => {
         </View>
       ) : (
         <TextInput
+          testID={`form-field-${field.name}`}
           accessibilityLabel={label}
           value={value ?? ''}
           onChangeText={onChange}

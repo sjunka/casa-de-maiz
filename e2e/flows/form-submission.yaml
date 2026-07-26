@@ -8,10 +8,13 @@ appId: ${APP_ID}
 - tapOn: "Form (dev)"
 - assertVisible:
     id: "form-block"
-- tapOn: "Name"
+- tapOn:
+    id: "form-field-name"
 - inputText: "Guest"
-- tapOn: "Email"
+- tapOn:
+    id: "form-field-email"
 - inputText: "guest@example.com"
+- tapOn: "Topic"
 - tapOn: "Reservation"
 - tapOn:
     id: "form-block-submit"

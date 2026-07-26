@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { StatusBar, StyleSheet, View } from 'react-native';
+import { LogBox, StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { queryClient } from './src/api/queryClient';
 import { BootstrapScreen } from './src/screens/BootstrapScreen';
@@ -13,8 +13,13 @@ import { navigationRef, getCurrentRouteName, flushPendingNavigation } from './sr
 import { initDeepLinking } from './src/navigation/deepLinking';
 import { useTheme } from './src/theme/useTheme';
 import { initCrashReporting, wrapRootComponent } from './src/observability/crashReporting';
+import { DISABLE_LOGBOX_NOTIFICATIONS } from './src/api/config';
 
 initCrashReporting();
+
+if (DISABLE_LOGBOX_NOTIFICATIONS) {
+  LogBox.ignoreAllLogs(true);
+}
 
 const App = () => {
   const theme = useTheme();
