@@ -46,6 +46,12 @@ test.each(['ios', 'android'] as const)(
 
     fireEvent.press(menu);
     expect(props.navigation.navigate).toHaveBeenCalledWith('menu', undefined);
+
+    if (platform === 'android') {
+      expect(home.props.nativeBackgroundAndroid?.color).toEqual(expect.any(Number));
+    } else {
+      expect(home.props.nativeBackgroundAndroid).toBeUndefined();
+    }
   },
 );
 

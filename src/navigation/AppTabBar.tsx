@@ -55,6 +55,7 @@ export const AppTabBar = ({ state, descriptors, navigation, insets, colors, sche
               accessibilityState={{ selected: focused }}
               accessibilityLabel={options.tabBarAccessibilityLabel ?? text}
               onPress={onPress}
+              rippleColor={colors.accent}
               style={styles.item}
             >
               <View style={[styles.indicatorLine, focused && { backgroundColor: colors.accent }]} />
