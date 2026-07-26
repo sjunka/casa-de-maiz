@@ -77,6 +77,14 @@ const AlertBannerItem = ({ alert, scrollPercent, onSuppress }: ItemProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isArmed, shown]);
 
+  // Evaluator-facing banners must auto-dismiss so a fresh install can be
+  // verified without manually closing every card; a reload just re-shows it.
+  useEffect(() => {
+    if (!visible) return;
+    const timer = setTimeout(() => setExiting(true), 20000);
+    return () => clearTimeout(timer);
+  }, [visible]);
+
   if (!visible) return null;
 
   // The dismissal is recorded once the banner has finished collapsing, so the
