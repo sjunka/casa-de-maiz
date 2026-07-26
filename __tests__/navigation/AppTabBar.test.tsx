@@ -48,3 +48,13 @@ test.each(['ios', 'android'] as const)(
     expect(props.navigation.navigate).toHaveBeenCalledWith('menu', undefined);
   },
 );
+
+test('a destination flagged as highlighted shows the dot, unflagged ones do not', async () => {
+  const props = buildProps();
+  (props.descriptors['home-key'].options as { tabBarHighlighted?: boolean }).tabBarHighlighted = true;
+
+  await render(<AppTabBar {...props} colors={lightColors} scheme="light" />);
+
+  expect(screen.getByTestId('home-highlighted-dot')).toBeTruthy();
+  expect(screen.queryByTestId('menu-highlighted-dot')).toBeNull();
+});

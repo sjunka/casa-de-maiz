@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { Destination } from '@core/contract/models/bootstrap';
 import { resolveDestination } from './resolveDestination';
@@ -37,7 +37,7 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
     const options = {
       tabBarLabel: destination.label,
       tabBarAccessibilityLabel: destination.label,
-      tabBarLabelStyle: destination.highlighted ? styles.highlighted : undefined,
+      tabBarHighlighted: destination.highlighted,
     };
 
     switch (resolved.screen) {
@@ -89,7 +89,3 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  highlighted: { fontWeight: '700' },
-});

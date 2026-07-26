@@ -7,7 +7,7 @@ Domain glossary for the Casa Maiz mobile app. This app consumes the published Ca
 - **Contract version** — the `contractVersion` field (currently `1.1`) declaring the shape of a response. Compatibility is major-equal, minor-greater-or-equal.
 - **Block** — one entry in a page's `data.layout` array, identified by `blockType` (e.g. `cardGrid`, `carousel`, `promoRail`, `textBlock`, `restaurantCTA`, `imageBlock`, `formBlock`). Each block also carries its own `contractVersion` and `channels`.
 - **Block registry** — the map from `blockType` to the React component that renders it. Adding a block means adding a registry entry, not editing a screen.
-- **Destination** — a CMS-published navigation target, found in `bootstrap.navigation`. Carries a `highlighted` flag; as of the icon-only tab bar (ADR 0012) this flag has no rendered effect — tracked in [#48](https://github.com/sjunka/casa-de-maiz/issues/48).
+- **Destination** — a CMS-published navigation target, found in `bootstrap.navigation`. Carries a `highlighted` flag, rendered as a small accent dot on the tab's icon (ADR 0012).
 - **Destination resolver** — the single function that turns a path or `href` string into an internal route, an external URL, or an unsupported result.
 - **Saved content** — the last successful response, persisted locally and served as a read-only fallback when the network is unavailable. Discarded once `nextChangeAt` has passed.
 - **Alert** — a CMS-configured notice with a placement (e.g. `topBar`), a trigger (e.g. `load` with `delayMs`), a frequency policy, and optional page targeting.
