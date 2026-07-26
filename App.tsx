@@ -15,7 +15,6 @@ import { useTheme } from './src/presentation/theme/useTheme';
 import { initCrashReporting, wrapRootComponent, reportTransportError } from './src/observability/crashReporting';
 import { DISABLE_LOGBOX_NOTIFICATIONS } from './src/core/transport/config';
 import { setTransportErrorReporter } from './src/core/transport/client';
-import { PrototypeChromeProvider } from './src/presentation/prototype/PrototypeChrome';
 
 initCrashReporting();
 setTransportErrorReporter(reportTransportError);
@@ -46,18 +45,16 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <StatusBar barStyle={theme.scheme === 'dark' ? 'light-content' : 'dark-content'} />
-        <PrototypeChromeProvider>
-          <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <NavigationContainer
-              ref={navigationRef}
-              theme={navigationTheme}
-              onReady={flushPendingNavigation}
-              onStateChange={() => setCurrentRouteName(getCurrentRouteName() ?? 'home')}
-            >
-              <BootstrapScreen currentRouteName={currentRouteName} />
-            </NavigationContainer>
-          </View>
-        </PrototypeChromeProvider>
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+          <NavigationContainer
+            ref={navigationRef}
+            theme={navigationTheme}
+            onReady={flushPendingNavigation}
+            onStateChange={() => setCurrentRouteName(getCurrentRouteName() ?? 'home')}
+          >
+            <BootstrapScreen currentRouteName={currentRouteName} />
+          </NavigationContainer>
+        </View>
       </SafeAreaProvider>
     </QueryClientProvider>
   );

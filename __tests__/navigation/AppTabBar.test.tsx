@@ -2,7 +2,6 @@ import { Platform } from 'react-native';
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import { AppTabBar } from '@navigation/AppTabBar';
 import { lightColors } from '@presentation/theme/tokens';
-import { chromeFor, VARIANTS } from '@presentation/prototype/chrome';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 const buildProps = (): BottomTabBarProps => {
@@ -31,16 +30,14 @@ const buildProps = (): BottomTabBarProps => {
   };
 };
 
-test.each(VARIANTS)(
-  'variant %s marks the focused tab, keeps every tab labelled, and navigates on press',
-  async variant => {
-    Platform.OS = 'android';
+test.each(['ios', 'android'] as const)(
+  '%s: the focused tab is marked, every tab keeps an accessible name despite the icon-only rail, and pressing an unfocused tab navigates to it',
+  async platform => {
+    Platform.OS = platform;
     const props = buildProps();
 
-    await render(<AppTabBar {...props} colors={lightColors} scheme="light" chrome={chromeFor(variant)} />);
+    await render(<AppTabBar {...props} colors={lightColors} scheme="light" />);
 
-    // The icon-only rail variant still has to expose the tab name to a screen
-    // reader — the label is what disappears, not the accessible name.
     const home = screen.getByLabelText('Inicio');
     expect(home.props.accessibilityState).toEqual({ selected: true });
 

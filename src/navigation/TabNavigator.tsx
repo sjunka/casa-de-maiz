@@ -4,7 +4,6 @@ import type { Destination } from '@core/contract/models/bootstrap';
 import { resolveDestination } from './resolveDestination';
 import { isDestinationEnabled } from '@data/logic/featureFlags';
 import { AppTabBar } from './AppTabBar';
-import { useChrome } from '@presentation/prototype/chrome';
 import { useTheme } from '@presentation/theme/useTheme';
 import type { RootTabParamList } from './types';
 import { HomeScreen } from '@presentation/screens/HomeScreen';
@@ -19,7 +18,6 @@ type Props = { destinations: Destination[]; flags?: Record<string, boolean> };
 
 export const TabNavigator = ({ destinations, flags = {} }: Props) => {
   const { colors, scheme } = useTheme();
-  const chrome = useChrome();
   const screens: React.JSX.Element[] = [];
 
   for (const destination of destinations) {
@@ -85,7 +83,7 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
       // never gets its own Fiber — AppTabBar can't call hooks itself
       // (see its file comment). Theme and chrome are resolved here instead.
       // eslint-disable-next-line react/no-unstable-nested-components
-      tabBar={props => <AppTabBar {...props} colors={colors} scheme={scheme} chrome={chrome} />}
+      tabBar={props => <AppTabBar {...props} colors={colors} scheme={scheme} />}
     >
       {screens}
     </Tab.Navigator>

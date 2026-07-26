@@ -46,9 +46,9 @@ test('builds tabs only for destinations that support the running platform, in th
     </QueryClientProvider>,
   );
 
-  expect(screen.queryByText('Menu')).toBeNull();
-  expect(screen.getByText('Inicio')).toBeTruthy();
-  expect(screen.getByText('Reservar')).toBeTruthy();
+  expect(screen.queryByLabelText('Menu')).toBeNull();
+  expect(screen.getByLabelText('Inicio')).toBeTruthy();
+  expect(screen.getByLabelText('Reservar')).toBeTruthy();
 
   await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
 });
@@ -79,8 +79,8 @@ test('a feature-flag change alters which destinations appear in navigation', asy
     </QueryClientProvider>,
   );
 
-  expect(screen.getByText('Inicio')).toBeTruthy();
-  expect(screen.queryByText('Reservar')).toBeNull();
+  expect(screen.getByLabelText('Inicio')).toBeTruthy();
+  expect(screen.queryByLabelText('Reservar')).toBeNull();
   unmount();
 
   await render(
@@ -91,8 +91,8 @@ test('a feature-flag change alters which destinations appear in navigation', asy
     </QueryClientProvider>,
   );
 
-  expect(screen.getByText('Inicio')).toBeTruthy();
-  expect(screen.getByText('Reservar')).toBeTruthy();
+  expect(screen.getByLabelText('Inicio')).toBeTruthy();
+  expect(screen.getByLabelText('Reservar')).toBeTruthy();
 });
 
 test('a mapped flag missing from the response is treated as off', async () => {
@@ -118,5 +118,5 @@ test('a mapped flag missing from the response is treated as off', async () => {
     </QueryClientProvider>,
   );
 
-  expect(screen.queryByText('Reservar')).toBeNull();
+  expect(screen.queryByLabelText('Reservar')).toBeNull();
 });
