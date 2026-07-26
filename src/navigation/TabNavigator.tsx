@@ -4,6 +4,7 @@ import type { Destination } from '@core/contract/models/bootstrap';
 import { resolveDestination } from './resolveDestination';
 import { isDestinationEnabled } from '@data/logic/featureFlags';
 import { AppTabBar } from './AppTabBar';
+import { AppHeaderTitle } from './AppHeaderTitle';
 import { useTheme } from '@presentation/theme/useTheme';
 import type { RootTabParamList } from './types';
 import { HomeScreen } from '@presentation/screens/HomeScreen';
@@ -13,6 +14,12 @@ import { ReservationsScreen } from '@presentation/screens/ReservationsScreen';
 import { FormFixtureScreen } from '@presentation/screens/FormFixtureScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
+
+const HomeHeaderTitle = () => <AppHeaderTitle title="Inicio" />;
+const MenuHeaderTitle = () => <AppHeaderTitle title="Menú" />;
+const PrivacyHeaderTitle = () => <AppHeaderTitle title="Privacidad" />;
+const ReservationsHeaderTitle = () => <AppHeaderTitle title="Reservas" />;
+const FormFixtureHeaderTitle = () => <AppHeaderTitle title="Formulario" />;
 
 type Props = { destinations: Destination[]; flags?: Record<string, boolean> };
 
@@ -42,10 +49,24 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
 
     switch (resolved.screen) {
       case 'home':
-        screens.push(<Tab.Screen key="home" name="home" component={HomeScreen} options={options} />);
+        screens.push(
+          <Tab.Screen
+            key="home"
+            name="home"
+            component={HomeScreen}
+            options={{ ...options, headerTitle: HomeHeaderTitle }}
+          />,
+        );
         break;
       case 'menu':
-        screens.push(<Tab.Screen key="menu" name="menu" component={MenuScreen} options={options} />);
+        screens.push(
+          <Tab.Screen
+            key="menu"
+            name="menu"
+            component={MenuScreen}
+            options={{ ...options, headerTitle: MenuHeaderTitle }}
+          />,
+        );
         break;
       case 'privacy':
         screens.push(
@@ -54,13 +75,18 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
             name="privacy"
             component={PrivacyScreen}
             initialParams={{ legalKey: resolved.legalKey }}
-            options={options}
+            options={{ ...options, headerTitle: PrivacyHeaderTitle }}
           />,
         );
         break;
       case 'reservations':
         screens.push(
-          <Tab.Screen key="reservations" name="reservations" component={ReservationsScreen} options={options} />,
+          <Tab.Screen
+            key="reservations"
+            name="reservations"
+            component={ReservationsScreen}
+            options={{ ...options, headerTitle: ReservationsHeaderTitle }}
+          />,
         );
         break;
     }
@@ -72,7 +98,11 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
         key="formFixture"
         name="formFixture"
         component={FormFixtureScreen}
-        options={{ tabBarLabel: 'Form (dev)', tabBarAccessibilityLabel: 'Form (dev)' }}
+        options={{
+          tabBarLabel: 'Form (dev)',
+          tabBarAccessibilityLabel: 'Form (dev)',
+          headerTitle: FormFixtureHeaderTitle,
+        }}
       />,
     );
   }
@@ -87,7 +117,7 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
       // BootstrapScreen already claimed the status-bar inset for the whole
       // stack; react-navigation re-provides the window insets to its screens,
       // so the header would otherwise add it a second time.
-      screenOptions={{ headerStatusBarHeight: 0 }}
+      screenOptions={{ headerStatusBarHeight: 0, headerTitleAlign: 'center' }}
     >
       {screens}
     </Tab.Navigator>
