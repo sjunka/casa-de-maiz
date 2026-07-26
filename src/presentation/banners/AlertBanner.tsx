@@ -95,7 +95,7 @@ const AlertBannerItem = ({ alert, scrollPercent, onSuppress }: ItemProps) => {
         accent={colors.alertText}
         message={alert.message}
         dismissible={alert.dismissible}
-        dismissLabel="Dismiss alert"
+        dismissLabel="Descartar alerta"
         onDismiss={() => setExiting(true)}
         actions={alert.actions.map(action => ({
           key: action.href,
