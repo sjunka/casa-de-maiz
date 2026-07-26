@@ -90,10 +90,21 @@ npm run e2e:android
 
 The app is organized around seven boundaries, screens composed on top:
 
+```mermaid
+flowchart TD
+    A["core/transport<br/>HTTP client"] --> B["core/contract<br/>Zod schemas"]
+    B --> C["data/remote<br/>fetchers, cache"]
+    C --> D["data/logic<br/>app state"]
+    D --> E["navigation<br/>tab shell"]
+    D --> F["presentation/blocks<br/>+ banners"]
+    E --> G["presentation/screens"]
+    F --> G
+```
+
 - `src/core/transport` — HTTP client, error mapping, base-URL config
 - `src/core/contract` — supported contract version, delivery-context construction, installed app version, and `src/core/contract/models` — Zod schemas and their inferred TypeScript types
-- `src/data/repository` — endpoint fetchers, query hooks, cache and freshness policy, query client
-- `src/data/state` — alert selection and frequency policy, scroll-progress derivation, app-update decisioning, feature flags — bootstrap-driven application state. No React; enforced by lint.
+- `src/data/remote` — endpoint fetchers, query hooks, cache and freshness policy, query client
+- `src/data/logic` — alert selection and frequency policy, scroll-progress derivation, app-update decisioning, feature flags — bootstrap-driven application state. No React; enforced by lint.
 - `src/navigation` — destination resolution and the tab shell built from bootstrap
 - `src/presentation/blocks` — the block registry and block components
 - `src/presentation/banners` — the alert banner, app-update gate and operational-notice banner
