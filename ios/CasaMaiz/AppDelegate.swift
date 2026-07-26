@@ -31,6 +31,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     return true
   }
+
+  // Forwards a warm-start deep link to React Native's Linking module. Cold
+  // start already works via `launchOptions` alone; without this, the app
+  // never learns about a `casamaiz://` link that arrives while it's running.
+  func application(
+    _ app: UIApplication,
+    open url: URL,
+    options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+  ) -> Bool {
+    RCTLinkingManager.application(app, open: url, options: options)
+  }
 }
 
 class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {

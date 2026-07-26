@@ -29,7 +29,7 @@ test('fetches the legal document by key', async () => {
       envelope({
         title: 'Privacy Notice',
         summary: 'How we handle your data.',
-        body: { root: { children: [] } },
+        content: { root: { children: [] } },
       }),
     ),
   );

@@ -2,19 +2,22 @@
  * @format
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { queryClient } from './src/api/queryClient';
 import { BootstrapScreen } from './src/screens/BootstrapScreen';
-import { navigationRef, getCurrentRouteName } from './src/navigation/navigationRef';
+import { navigationRef, getCurrentRouteName, flushPendingNavigation } from './src/navigation/navigationRef';
+import { initDeepLinking } from './src/navigation/deepLinking';
 import { useTheme } from './src/theme/useTheme';
 
 const App = () => {
   const theme = useTheme();
   const [currentRouteName, setCurrentRouteName] = useState('home');
+
+  useEffect(() => initDeepLinking(), []);
 
   const navigationTheme = {
     ...(theme.scheme === 'dark' ? DarkTheme : DefaultTheme),
@@ -36,6 +39,7 @@ const App = () => {
           <NavigationContainer
             ref={navigationRef}
             theme={navigationTheme}
+            onReady={flushPendingNavigation}
             onStateChange={() => setCurrentRouteName(getCurrentRouteName() ?? 'home')}
           >
             <BootstrapScreen currentRouteName={currentRouteName} />

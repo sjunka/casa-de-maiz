@@ -46,7 +46,7 @@ test('fetches the legal document by key and renders its title, summary and body'
       envelope({
         title: 'Privacy Notice',
         summary: 'How we handle your data.',
-        body: {
+        content: {
           root: {
             children: [{ type: 'paragraph', children: [{ type: 'text', text: 'We respect your privacy.' }] }],
           },
@@ -70,7 +70,7 @@ test('a failed load shows a retry that works', async () => {
     .mockResolvedValueOnce(jsonResponse({}, 500))
     .mockResolvedValueOnce(
       jsonResponse(
-        envelope({ title: 'Privacy Notice', body: { root: { children: [] } } }),
+        envelope({ title: 'Privacy Notice', content: { root: { children: [] } } }),
       ),
     );
   globalThis.fetch = fetchMock as unknown as typeof fetch;
@@ -89,7 +89,7 @@ test('an external link opens through Linking after resolving to an https destina
     jsonResponse(
       envelope({
         title: 'Privacy Notice',
-        body: {
+        content: {
           root: {
             children: [
               {
