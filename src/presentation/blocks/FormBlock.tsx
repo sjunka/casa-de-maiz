@@ -130,6 +130,16 @@ export const FormBlock = ({ block }: Props) => {
     </Text>
   ) : null;
 
+  // The footer is its own region, set off from the fields by a hairline and
+  // extra top space, so "submit" reads as the form's closing action rather
+  // than just the last item in a list.
+  const footer = (
+    <View style={[styles.footer, { borderTopColor: colors.border }]}>
+      {submitErrorText}
+      {submitButton}
+    </View>
+  );
+
   if (Platform.OS === 'ios') {
     return (
       <KeyboardAvoidingView style={styles.fill} behavior="padding">
@@ -150,8 +160,7 @@ export const FormBlock = ({ block }: Props) => {
                   onChange={v => setValue(field.name, v)}
                 />
               ))}
-              {submitErrorText}
-              {submitButton}
+              {footer}
             </View>
           </View>
         </ScrollView>
@@ -170,8 +179,7 @@ export const FormBlock = ({ block }: Props) => {
           onChange={v => setValue(field.name, v)}
         />
       ))}
-      {submitErrorText}
-      {submitButton}
+      {footer}
     </ScrollView>
   );
 };
@@ -326,35 +334,39 @@ const OutlinedField = ({ field, value, error, onChange }: FieldProps) => {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  container: { padding: 16 },
-  field: { marginBottom: 18 },
-  label: { fontSize: 12, fontWeight: '700', letterSpacing: 0.4, textTransform: 'uppercase', marginBottom: 6 },
-  checkboxRow: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginBottom: 18 },
-  checkboxLabel: { marginLeft: 10, fontSize: 15 },
+  container: { padding: 24 },
+  field: { marginBottom: 26 },
+  label: { fontSize: 13, fontWeight: '700', letterSpacing: 0.4, textTransform: 'uppercase', marginBottom: 9 },
+  checkboxRow: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginBottom: 26 },
+  checkboxLabel: { marginLeft: 12, fontSize: 15 },
   checkboxHitArea: { minHeight: 44, justifyContent: 'center', alignItems: 'flex-start' },
-  fieldError: { marginTop: 6, fontSize: 13 },
-  submit: { minHeight: 48, alignItems: 'center', justifyContent: 'center', borderRadius: 24, marginTop: 4 },
+  fieldError: { marginTop: 8, fontSize: 13 },
+  // The footer is set apart from the fields with a hairline and its own
+  // top space, so submit reads as the form's closing action, not just the
+  // last item in the list.
+  footer: { marginTop: 8, paddingTop: 24, borderTopWidth: StyleSheet.hairlineWidth },
+  submit: { minHeight: 52, alignItems: 'center', justifyContent: 'center', borderRadius: 26 },
   submitDisabled: { opacity: 0.6 },
   submitLabel: { fontSize: 16, fontWeight: '700' },
-  submitError: { marginBottom: 12, fontSize: 14 },
+  submitError: { marginBottom: 14, fontSize: 14 },
   confirmation: { fontSize: 16, textAlign: 'center' },
-  textarea: { minHeight: 84, textAlignVertical: 'top' },
-  options: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  option: { minHeight: 44, minWidth: 44, justifyContent: 'center', paddingHorizontal: 16, borderRadius: 20, borderWidth: 1.5 },
+  textarea: { minHeight: 96, textAlignVertical: 'top' },
+  options: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  option: { minHeight: 46, minWidth: 44, justifyContent: 'center', paddingHorizontal: 18, borderRadius: 23, borderWidth: 1.5 },
   optionLabel: { fontWeight: '600' },
 
   // iOS — glass ticket
-  iosPage: { padding: 16 },
+  iosPage: { padding: 20, paddingVertical: 28 },
   iosCard: { borderRadius: 28, overflow: 'hidden' },
   iosCardFill: { borderRadius: 28 },
-  iosCardContent: { padding: 22 },
-  iosInput: { minHeight: 40, borderBottomWidth: 2, paddingVertical: 6, fontSize: 16 },
+  iosCardContent: { padding: 28 },
+  iosInput: { minHeight: 46, borderBottomWidth: 2, paddingVertical: 10, fontSize: 16 },
 
   // Android — outlined + segmented
-  androidPage: { padding: 16 },
-  androidInput: { minHeight: 48, borderWidth: 1.5, borderRadius: 4, paddingHorizontal: 14, paddingVertical: 12, fontSize: 16 },
+  androidPage: { padding: 20, paddingVertical: 28 },
+  androidInput: { minHeight: 54, borderWidth: 1.5, borderRadius: 4, paddingHorizontal: 16, paddingVertical: 14, fontSize: 16 },
   segmented: { flexDirection: 'row', borderWidth: 1.5, borderRadius: 8, overflow: 'hidden' },
-  segment: { flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
+  segment: { flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center' },
   segmentDivider: { borderLeftWidth: 1 },
   segmentLabel: { fontWeight: '600' },
 });
