@@ -6,7 +6,7 @@ import { GlassSurface } from '../ui/GlassSurface';
 import { useTheme } from '../theme/useTheme';
 import type { Alert } from '../models/alert';
 import { selectActiveAlert } from './selectActiveAlert';
-import { isDismissed, recordDismissal } from './dismissal';
+import { isSuppressed, recordDismissal, recordShown } from './frequency';
 import { useScrollProgress } from './scrollProgress';
 import { openDestination } from '../navigation/openDestination';
 import { navigateToResolved } from '../navigation/navigationRef';
@@ -33,19 +33,15 @@ export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
 
     (async () => {
       const checks = await Promise.all(
-        alerts.map(async alert => {
-          const cooldownHours = alert.frequency?.cooldownHours ?? 0;
-          const dismissed = alert.dismissible && (await isDismissed(alert.id, cooldownHours));
-          return [alert.id, dismissed] as const;
-        }),
+        alerts.map(async alert => [alert.id, await isSuppressed(alert)] as const),
       );
 
       if (!cancelled) {
-        const dismissedIds = checks.reduce<string[]>((ids, [id, dismissed]) => {
-          if (dismissed) ids.push(id);
+        const suppressedIds = checks.reduce<string[]>((ids, [id, suppressed]) => {
+          if (suppressed) ids.push(id);
           return ids;
         }, []);
-        setSuppressedIds(new Set(dismissedIds));
+        setSuppressedIds(new Set(suppressedIds));
       }
     })();
 
@@ -58,7 +54,13 @@ export const AlertBanner = ({ alerts, currentPageSlug }: Props) => {
     setVisibleAlert(null);
     if (!candidate || !isArmed) return;
 
-    const timer = setTimeout(() => setVisibleAlert(candidate), candidate.trigger.delayMs ?? 0);
+    const timer = setTimeout(() => {
+      setVisibleAlert(candidate);
+      recordShown(candidate);
+      if (candidate.frequency?.type === 'once' || candidate.frequency?.type === 'session') {
+        setSuppressedIds(previous => new Set(previous).add(candidate.id));
+      }
+    }, candidate.trigger.delayMs ?? 0);
     return () => clearTimeout(timer);
     // Re-arm only when which alert is selected actually changes, not on every
     // render — `candidate` is a fresh object each render even for the same alert.
