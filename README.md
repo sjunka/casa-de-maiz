@@ -140,10 +140,11 @@ Deliberately deferred, with reasoning:
 - **End-to-end testing beyond the three resilience paths.** Offline fallback, expired content and unsupported-contract-version are covered (see End-to-end tests above); broader flows (navigation, forms, alerts) still rely on component coverage only, judged lower value than breadth of unit/component coverage inside the timebox.
 - **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
 - **A connectivity library.** Offline is derived from request failure instead, which already covers the case a connectivity library wouldn't (reachable network, unreachable API) and avoids an extra dependency.
-- **iOS "glass" and Android Material bonus visual treatments.** Explicitly a bonus in the original spec; core functionality and accessibility were prioritized first and the timebox didn't extend to platform-specific visual flourish beyond what `ADR 0010` already covers (native back gestures, safe areas, dark mode).
 - **Reservations.** A local placeholder screen — no reservation API is documented for this contract version.
 
-With more time, in priority order: source-map upload for the crash-reporting pipeline below, broader E2E coverage (navigation, forms, alerts), and the bonus platform-specific visual treatments.
+The iOS "glass" and Android Material bonus visual treatments are done — see [ADR 0012](docs/adr/0012-platform-native-presentation.md).
+
+With more time, in priority order: source-map upload for the crash-reporting pipeline below, and broader E2E coverage (navigation, forms, alerts).
 
 ## Production observability
 
