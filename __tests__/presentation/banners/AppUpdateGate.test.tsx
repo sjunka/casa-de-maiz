@@ -5,10 +5,12 @@ jest.mock('@core/contract/appVersion', () => ({
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { AppUpdateGate } from '@presentation/banners/AppUpdateGate';
+import { AppUpdateNotice } from '@presentation/banners/AppUpdateNotice';
 
-test('a recommended update shows a dismissible banner and stays usable', async () => {
+test('a recommended update shows a dismissible notice and never blocks the app', async () => {
   await render(
     <AppUpdateGate appUpdate={{ policy: 'recommended', minimumVersion: '1.5.0', message: 'Update available' }}>
+      <AppUpdateNotice appUpdate={{ policy: 'recommended', minimumVersion: '1.5.0', message: 'Update available' }} />
       <Text>App content</Text>
     </AppUpdateGate>,
   );

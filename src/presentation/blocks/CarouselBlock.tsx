@@ -13,6 +13,7 @@ import { CmsImage } from '../ui/CmsImage';
 import { AppPressable } from '../ui/AppPressable';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { useTheme, type Theme } from '../theme/useTheme';
+import { MIN_TOUCH_TARGET } from '../theme/tokens';
 import type { CarouselBlock as CarouselBlockData } from '@core/contract/models/block';
 
 type Slide = CarouselBlockData['slides'][number];
@@ -124,8 +125,8 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   button: {
-    minWidth: 44,
-    minHeight: 44,
+    minWidth: MIN_TOUCH_TARGET,
+    minHeight: MIN_TOUCH_TARGET,
     alignItems: 'center',
     justifyContent: 'center',
   },

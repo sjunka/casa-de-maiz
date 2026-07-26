@@ -1,17 +1,18 @@
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAppVersion } from '@core/contract/appVersion';
 import { decideAppUpdate } from '@data/logic/decideAppUpdate';
 import { useTheme } from '../theme/useTheme';
-import { NoticeCard } from './NoticeCard';
 import type { AppUpdate } from '@core/contract/models/operationalControls';
 
 type Props = { appUpdate?: AppUpdate; children: ReactNode };
 
+// Blocks the app when the CMS says the installed version is below the required
+// minimum. A merely recommended update is a dismissible notice instead — see
+// AppUpdateNotice (ADR 0007).
 export const AppUpdateGate = ({ appUpdate, children }: Props) => {
   const { colors } = useTheme();
-  const [dismissed, setDismissed] = useState(false);
   const decision = decideAppUpdate(appUpdate, getAppVersion());
 
   if (decision.kind === 'required') {
@@ -23,23 +24,7 @@ export const AppUpdateGate = ({ appUpdate, children }: Props) => {
     );
   }
 
-  return (
-    <View style={styles.fill}>
-      {decision.kind === 'recommended' && !dismissed && (
-        <NoticeCard
-          testID="app-update-recommended"
-          icon="update"
-          tint={colors.warningBackground}
-          accent={colors.warningText}
-          message={decision.message}
-          dismissible
-          dismissLabel="Descartar mensaje de actualización"
-          onDismiss={() => setDismissed(true)}
-        />
-      )}
-      {children}
-    </View>
-  );
+  return <View style={styles.fill}>{children}</View>;
 };
 
 const styles = StyleSheet.create({

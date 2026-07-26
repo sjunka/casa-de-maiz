@@ -73,6 +73,11 @@ export const darkColors: ColorTokens = {
   errorText: '#ff6b6b',
 };
 
+// Smallest tappable size each platform asks for: 44pt on iOS (HIG), 48dp on
+// Android (Material). Controls too small to hit it on their own make up the
+// difference with `hitSlop`.
+export const MIN_TOUCH_TARGET = Platform.OS === 'android' ? 48 : 44;
+
 // Android conveys elevation with a tonal surface and `elevation`; iOS conveys
 // it with a hairline border and a soft shadow (ADR 0010, ADR 0012).
 export const getElevatedSurfaceStyle = (colors: ColorTokens): ViewStyle =>
