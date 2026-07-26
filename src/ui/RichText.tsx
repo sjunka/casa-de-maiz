@@ -14,13 +14,18 @@ type Props = {
   onLinkPress: (href: string) => void;
 };
 
+// The CMS's Lexical-derived AST carries no stable node id. Content is static
+// per fetch (never client-reordered/filtered), so a content hash is a safe,
+// position-independent key — unlike the array index it replaces.
+const nodeKey = (node: RichTextNode): string => JSON.stringify(node);
+
 export const RichText = ({ document, onLinkPress }: Props) => {
   const { colors } = useTheme();
 
   return (
     <View>
-      {document.root.children.map((node, index) => (
-        <RichTextBlock key={index} node={node} onLinkPress={onLinkPress} colors={colors} />
+      {document.root.children.map(node => (
+        <RichTextBlock key={nodeKey(node)} node={node} onLinkPress={onLinkPress} colors={colors} />
       ))}
     </View>
   );
@@ -50,7 +55,7 @@ const RichTextBlock = ({ node, onLinkPress, colors }: NodeProps): ReactNode => {
       return (
         <View style={styles.list}>
           {(node.children ?? []).map((item, index) => (
-            <View key={index} style={styles.listItemRow}>
+            <View key={nodeKey(item)} style={styles.listItemRow}>
               <Text style={[styles.paragraph, { color: colors.text }]}>
                 {node.listType === 'number' ? `${index + 1}.` : '•'}
               </Text>
@@ -67,8 +72,8 @@ const RichTextBlock = ({ node, onLinkPress, colors }: NodeProps): ReactNode => {
       }
       return (
         <>
-          {node.children.map((child, index) => (
-            <RichTextBlock key={index} node={child} onLinkPress={onLinkPress} colors={colors} />
+          {node.children.map(child => (
+            <RichTextBlock key={nodeKey(child)} node={child} onLinkPress={onLinkPress} colors={colors} />
           ))}
         </>
       );
@@ -76,11 +81,11 @@ const RichTextBlock = ({ node, onLinkPress, colors }: NodeProps): ReactNode => {
 };
 
 const renderInline = (nodes: RichTextNode[], onLinkPress: (href: string) => void, colors: Theme['colors']): ReactNode =>
-  nodes.map((node, index) => {
+  nodes.map(node => {
     switch (node.type) {
       case 'text':
         return (
-          <Text key={index} style={textFormatStyle(node.format)}>
+          <Text key={nodeKey(node)} style={textFormatStyle(node.format)}>
             {node.text}
           </Text>
         );
@@ -90,7 +95,7 @@ const renderInline = (nodes: RichTextNode[], onLinkPress: (href: string) => void
         const href = node.fields?.url;
         return (
           <Text
-            key={index}
+            key={nodeKey(node)}
             style={[styles.link, { color: colors.link }]}
             accessibilityRole="link"
             onPress={href ? () => onLinkPress(href) : undefined}
@@ -101,7 +106,7 @@ const renderInline = (nodes: RichTextNode[], onLinkPress: (href: string) => void
       }
       default:
         return node.children?.length ? (
-          <Text key={index}>{renderInline(node.children, onLinkPress, colors)}</Text>
+          <Text key={nodeKey(node)}>{renderInline(node.children, onLinkPress, colors)}</Text>
         ) : null;
     }
   });

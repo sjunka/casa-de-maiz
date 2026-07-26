@@ -8,6 +8,7 @@ A React Native CLI app, TypeScript throughout, that renders the Casa Maiz guest 
 - Xcode 26.5+ and CocoaPods 1.16+ for iOS.
 - Android Studio (SDK, platform-tools, an emulator image) and a JDK 17 for Android. `JAVA_HOME` must point at a JDK 17 install (e.g. `brew install openjdk@17`).
 - Ruby + Bundler for CocoaPods (`bundle install`).
+- [Maestro CLI](https://maestro.mobile.dev) for the E2E suite — `curl -Ls "https://get.maestro.mobile.dev" | bash`.
 
 ## Configuration
 
@@ -71,6 +72,20 @@ npm test            # jest, with React Native Testing Library and an in-memory A
 
 All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 152 tests green.
 
+### End-to-end tests
+
+Three resilience scenarios that depend on real navigation, persistence and timing rather than a scripted `fetch` — offline fallback, expired content, an unsupported contract version. Maestro-driven, against a local mock content server; see [ADR 0015](docs/adr/0015-e2e-testing-framework.md).
+
+```sh
+npm run e2e:mock-server    # terminal 1 — mock CMS content API on :4001
+
+npm run e2e:build:ios      # terminal 2 — build & launch pointed at the mock (once per change)
+npm run e2e:ios            # run the flows against the iOS Simulator
+
+npm run e2e:build:android  # Android emulator must already be running
+npm run e2e:android
+```
+
 ## Architecture overview
 
 The app is organized around seven boundaries, screens composed on top:
@@ -122,13 +137,13 @@ Zod schemas, not generated OpenAPI types. Generated types give a compile-time sh
 Deliberately deferred, with reasoning:
 
 - **Generated OpenAPI types.** Rejected outright, not deferred — see Types strategy above.
-- **End-to-end testing.** Component and unit tests cover behaviour a guest can observe; a full E2E suite (Detox/Maestro) was judged lower value than breadth of unit/component coverage inside the timebox.
+- **End-to-end testing beyond the three resilience paths.** Offline fallback, expired content and unsupported-contract-version are covered (see End-to-end tests above); broader flows (navigation, forms, alerts) still rely on component coverage only, judged lower value than breadth of unit/component coverage inside the timebox.
 - **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
 - **A connectivity library.** Offline is derived from request failure instead, which already covers the case a connectivity library wouldn't (reachable network, unreachable API) and avoids an extra dependency.
 - **iOS "glass" and Android Material bonus visual treatments.** Explicitly a bonus in the original spec; core functionality and accessibility were prioritized first and the timebox didn't extend to platform-specific visual flourish beyond what `ADR 0010` already covers (native back gestures, safe areas, dark mode).
 - **Reservations.** A local placeholder screen — no reservation API is documented for this contract version.
 
-With more time, in priority order: source-map upload for the crash-reporting pipeline below, E2E coverage of the resilience paths (offline, expired content, unsupported contract version), and the bonus platform-specific visual treatments.
+With more time, in priority order: source-map upload for the crash-reporting pipeline below, broader E2E coverage (navigation, forms, alerts), and the bonus platform-specific visual treatments.
 
 ## Production observability
 
