@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBootstrap } from '@data/remote/useBootstrap';
 import { TabNavigator } from '@navigation/TabNavigator';
 import { flattenNavigation } from '@core/contract/models/bootstrap';
+import { seedNotices } from '@data/logic/seedNotices';
 import { AlertBanner } from '../banners/AlertBanner';
 import { OperationalNoticeBanner } from '../banners/OperationalNoticeBanner';
 import { AppUpdateGate } from '../banners/AppUpdateGate';
@@ -46,14 +47,16 @@ export const BootstrapScreen = ({ currentRouteName }: Props) => {
     return null;
   }
 
+  const notices = seedNotices(data.data.operationalControls, data.data.alerts);
+
   return (
     // The status-bar inset is claimed once, here. Everything below — banners
     // and the navigator's own header — then measures from zero instead of each
     // adding the inset again and stacking up dead space above the content.
     <SafeAreaView edges={['top']} style={styles.fill} testID="bootstrap-success">
-      <AppUpdateGate appUpdate={data.data.operationalControls?.appUpdate}>
-        <OperationalNoticeBanner operationalControls={data.data.operationalControls} />
-        <AlertBanner alerts={data.data.alerts} currentPageSlug={currentRouteName} />
+      <AppUpdateGate appUpdate={notices.operationalControls.appUpdate}>
+        <OperationalNoticeBanner operationalControls={notices.operationalControls} />
+        <AlertBanner alerts={notices.alerts} currentPageSlug={currentRouteName} />
         <TabNavigator destinations={flattenNavigation(data.data.navigation)} flags={data.data.featureFlags} />
       </AppUpdateGate>
     </SafeAreaView>

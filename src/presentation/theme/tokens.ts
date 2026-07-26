@@ -19,6 +19,11 @@ export type ColorTokens = {
   warningText: string;
   infoBackground: string;
   infoText: string;
+  // The third notice tint, so an editorial alert is visibly a different kind of
+  // thing from an app update (warning) or a service notice (info) without any
+  // of the three raising its voice.
+  alertBackground: string;
+  alertText: string;
   errorText: string;
 };
 
@@ -40,6 +45,10 @@ export const lightColors: ColorTokens = {
   // notice belongs to the room, not to the operating system.
   infoBackground: '#f6e3de',
   infoText: '#5c2317',
+  // Husk green — the other half of the maize palette, and the only cool tint in
+  // the set, so it separates cleanly from the two warm ones.
+  alertBackground: '#e9efe5',
+  alertText: '#3b5133',
   errorText: '#cc0000',
 };
 
@@ -59,6 +68,8 @@ export const darkColors: ColorTokens = {
   warningText: '#ffe58a',
   infoBackground: '#3d241c',
   infoText: '#f0d9d1',
+  alertBackground: '#26301f',
+  alertText: '#cfe0c4',
   errorText: '#ff6b6b',
 };
 

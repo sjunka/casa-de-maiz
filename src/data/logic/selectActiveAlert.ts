@@ -9,16 +9,14 @@ const isSupported = (alert: Alert): boolean =>
 const targetsPage = (alert: Alert, pageSlug: string): boolean =>
   alert.pageSlugs.length === 0 || alert.pageSlugs.includes(pageSlug);
 
-// Unsupported placements/triggers render nothing rather than guessing; competing
-// alerts for the same placement are ordered by priority.
-export const selectActiveAlert = (
+// Unsupported placements/triggers render nothing rather than guessing. The
+// topBar stack shows every qualifying alert at once (ordered by priority),
+// not just the top one — each one gets its own card.
+export const selectActiveAlerts = (
   alerts: Alert[],
   pageSlug: string,
   suppressedIds: ReadonlySet<string>,
-): Alert | null => {
-  const candidates = alerts
+): Alert[] =>
+  alerts
     .filter(alert => isSupported(alert) && targetsPage(alert, pageSlug) && !suppressedIds.has(alert.id))
     .sort((a, b) => b.priority - a.priority);
-
-  return candidates[0] ?? null;
-};

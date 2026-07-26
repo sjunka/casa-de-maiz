@@ -11,7 +11,6 @@ import { MenuScreen } from '@presentation/screens/MenuScreen';
 import { PrivacyScreen } from '@presentation/screens/PrivacyScreen';
 import { ReservationsScreen } from '@presentation/screens/ReservationsScreen';
 import { FormFixtureScreen } from '@presentation/screens/FormFixtureScreen';
-import { NoticeBannerPrototypeScreen } from '@presentation/screens/NoticeBannerPrototypeScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -74,14 +73,6 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
         name="formFixture"
         component={FormFixtureScreen}
         options={{ tabBarLabel: 'Form (dev)', tabBarAccessibilityLabel: 'Form (dev)' }}
-      />,
-    );
-    screens.push(
-      <Tab.Screen
-        key="noticeBannerPrototype"
-        name="noticeBannerPrototype"
-        component={NoticeBannerPrototypeScreen}
-        options={{ tabBarLabel: 'Banner (dev)', tabBarAccessibilityLabel: 'Banner (dev)' }}
       />,
     );
   }
