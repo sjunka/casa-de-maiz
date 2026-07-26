@@ -17,6 +17,9 @@ Three layers, each one directory: `src/core`, `src/data`, `src/presentation`. Th
 
 The dependency rule the folder tree encodes: `core` depends on nothing internal, `data` depends only on `core`, `presentation` depends on `data` and `core`. The one rule with a lint gate behind it is narrower than the full graph: `data` must hold no React — no `react` or `react-native` import, enforced by an ESLint `no-restricted-imports` override scoped to `src/data/**` (`.eslintrc.js`) — because `data` is the cache, freshness policy and application state, consumed by presentation rather than rendering itself. Type-only imports are exempted since they vanish at compile time and carry no runtime React dependency.
 
+## Test file layout
+Test files live under `src/__tests__`, mirroring the layer tree rather than sitting beside the module they cover (`src/__tests__/core/contract/appVersion.test.ts`, not `src/core/contract/appVersion.test.ts`). A test's same-folder import of its module is written through the module's layer alias (`@core/contract/appVersion`) instead of a relative `./` path, since the test file no longer lives next to what it tests. This is the default for new tests going forward.
+
 ## Consequences
 The allowed dependency direction is visible in the directory tree itself rather than only documented in prose, and a `data` module that starts importing `react` fails lint immediately instead of drifting until a later review catches it. A reviewer checking the boundary list against the filesystem finds a real directory for each of the seven, one level down from three top folders instead of seven.
 
