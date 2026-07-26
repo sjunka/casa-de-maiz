@@ -19,10 +19,24 @@ module.exports = {
           'error',
           {
             paths: [
-              { name: 'react', allowTypeImports: true },
-              { name: 'react-native', allowTypeImports: true },
+              {
+                name: 'react',
+                allowTypeImports: true,
+                message: 'The data layer holds no React — see ADR 0016 (source layout).',
+              },
+              {
+                name: 'react-native',
+                allowTypeImports: true,
+                message: 'The data layer holds no React — see ADR 0016 (source layout).',
+              },
             ],
-            patterns: [{ group: ['react-native/*'], allowTypeImports: true }],
+            patterns: [
+              {
+                group: ['react-native/*'],
+                allowTypeImports: true,
+                message: 'The data layer holds no React — see ADR 0016 (source layout).',
+              },
+            ],
           },
         ],
       },
