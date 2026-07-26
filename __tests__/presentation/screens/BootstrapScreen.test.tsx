@@ -75,5 +75,5 @@ test('renders the operational banner and navigation when there is no blocking up
 
   await waitFor(() => expect(screen.getByTestId('operational-notice-banner')).toBeTruthy());
   expect(screen.getByText('Hoy cerramos cocina a las 22:30.')).toBeTruthy();
-  expect(screen.getByText('Inicio')).toBeTruthy();
+  expect(screen.getByLabelText('Inicio')).toBeTruthy();
 });
