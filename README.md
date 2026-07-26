@@ -70,7 +70,7 @@ npm run lint        # eslint .
 npm test            # jest, with React Native Testing Library and an in-memory AsyncStorage mock
 ```
 
-All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 152 tests green.
+All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 164 tests green.
 
 ### End-to-end tests
 
@@ -138,6 +138,7 @@ Zod schemas, not generated OpenAPI types. Generated types give a compile-time sh
 Deliberately deferred, with reasoning:
 
 - **Generated OpenAPI types.** Rejected outright, not deferred — see Types strategy above.
+- **Five block types on a best-effort renderer.** `restaurantHero`, `cta`, `content`, `mediaBlock` and `archive` are declared by the OpenAPI contract but the contract publishes no field shapes for them — no live Home or Menu payload has ever served one to check a shape against. Each renders through `GenericBlock`, which reads only generically-named optional fields (`heading`/`title`, `richText`/`content`, `media`/`image`, `link`/`href`, `label`) and renders nothing if none are present, rather than guessing at an unpublished schema (see [ADR 0008](docs/adr/0008-block-fallback.md)).
 - **Alert triggers beyond `load` and `scrollPercent`.** Both are implemented. `scrollPercent` is unverified against live content — the CMS currently publishes only a `load` trigger, so the field name (`trigger.scrollPercent`) is taken from the contract and covered by tests rather than by a real payload. Any further trigger type falls through to the same "render nothing" path as an unsupported placement.
 - **A connectivity library.** Offline is derived from request failure instead, which already covers the case a connectivity library wouldn't (reachable network, unreachable API) and avoids an extra dependency.
 - **Reservations.** A local placeholder screen — no reservation API is documented for this contract version.
