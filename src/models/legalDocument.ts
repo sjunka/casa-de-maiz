@@ -5,7 +5,7 @@ export const legalDocumentDataSchema = z
   .object({
     title: z.string(),
     summary: z.string().optional(),
-    body: richTextSchema,
+    content: richTextSchema,
   })
   .passthrough();
 

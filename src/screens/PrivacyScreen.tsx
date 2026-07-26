@@ -52,7 +52,7 @@ export const PrivacyScreen = ({ route }: Props) => {
           {data.data.summary}
         </Text>
       ) : null}
-      <RichText document={data.data.body} onLinkPress={navigateTo} />
+      <RichText document={data.data.content} onLinkPress={navigateTo} />
     </ScrollView>
   );
 };
