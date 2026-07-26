@@ -4,8 +4,8 @@ jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
   default: () => mockUseColorScheme(),
 }));
 
-import { renderHook } from '@testing-library/react-native';
-import { useTheme } from '@presentation/theme/useTheme';
+import { act, renderHook } from '@testing-library/react-native';
+import { toggleSchemeOverride, useTheme } from '@presentation/theme/useTheme';
 import { darkColors, lightColors } from '@presentation/theme/tokens';
 
 test('follows the system scheme into light tokens', async () => {
@@ -25,5 +25,17 @@ test('follows the system scheme into dark tokens', async () => {
 test('falls back to light when the system reports no preference', async () => {
   mockUseColorScheme.mockReturnValue(null);
   const { result } = await renderHook(() => useTheme());
+  expect(result.current.scheme).toBe('light');
+});
+
+test('a manual override wins over the system scheme, and toggles back', async () => {
+  mockUseColorScheme.mockReturnValue('light');
+  const { result } = await renderHook(() => useTheme());
+
+  await act(async () => toggleSchemeOverride(result.current.scheme));
+  expect(result.current.scheme).toBe('dark');
+  expect(result.current.colors).toEqual(darkColors);
+
+  await act(async () => toggleSchemeOverride(result.current.scheme));
   expect(result.current.scheme).toBe('light');
 });
