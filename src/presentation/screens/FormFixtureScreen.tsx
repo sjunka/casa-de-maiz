@@ -11,17 +11,17 @@ const FORM_FIXTURE_LAYOUT: BlockEnvelope[] = [
     channels: ['ios', 'android'],
     form: {
       id: 'fixture-contact-form',
-      submitButtonLabel: 'Send message',
-      confirmationMessage: 'Thanks! We received your message.',
+      submitButtonLabel: 'Enviar mensaje',
+      confirmationMessage: '¡Gracias! Recibimos tu mensaje.',
       fields: [
-        { blockType: 'text', name: 'name', label: 'Name', required: true },
-        { blockType: 'email', name: 'email', label: 'Email', required: true },
-        { blockType: 'select', name: 'topic', label: 'Topic', required: true, options: [
-          { label: 'Reservation', value: 'reservation' },
-          { label: 'Feedback', value: 'feedback' },
+        { blockType: 'text', name: 'name', label: 'Nombre', required: true },
+        { blockType: 'email', name: 'email', label: 'Correo electrónico', required: true },
+        { blockType: 'select', name: 'topic', label: 'Asunto', required: true, options: [
+          { label: 'Reserva', value: 'reservation' },
+          { label: 'Comentarios', value: 'feedback' },
         ] },
-        { blockType: 'textarea', name: 'message', label: 'Message', required: false },
-        { blockType: 'checkbox', name: 'subscribe', label: 'Send me updates', required: false },
+        { blockType: 'textarea', name: 'message', label: 'Mensaje', required: false },
+        { blockType: 'checkbox', name: 'subscribe', label: 'Quiero recibir novedades', required: false },
       ],
     },
   },

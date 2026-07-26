@@ -32,9 +32,9 @@ type Status = 'idle' | 'submitting' | 'success' | 'error';
 // Dev-only test data so the form is ready to submit without typing on every
 // reload — never bundled into a release build.
 const DEV_PREFILL: Partial<Record<string, string>> = {
-  text: 'Jhon Smith',
-  email: 'jhonsmith@email.com',
-  textarea: 'I would like to reserve a table for 2 Friday 8pm',
+  text: 'Juan Pérez',
+  email: 'juanperez@email.com',
+  textarea: 'Quisiera reservar una mesa para 2 el viernes a las 8pm',
 };
 
 // Platform look-and-feel decided via mattpocock-skills:prototype (see

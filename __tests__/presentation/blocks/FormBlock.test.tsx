@@ -93,7 +93,7 @@ test('closing the confirmation returns to a cleared, idle form', async () => {
 
   expect(screen.getByTestId('form-block')).toBeTruthy();
   // `__DEV__` prefill reappears rather than the typed-over 'Ana'.
-  expect(screen.getByLabelText('Name').props.value).toBe('Jhon Smith');
+  expect(screen.getByLabelText('Name').props.value).toBe('Juan Pérez');
 });
 
 test('a submission failure shows the error user message and keeps the form on screen', async () => {
