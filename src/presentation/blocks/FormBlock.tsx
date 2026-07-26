@@ -27,6 +27,14 @@ const REQUIRED_MESSAGE = 'This field is required.';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
+// Dev-only test data so the form is ready to submit without typing on every
+// reload — never bundled into a release build.
+const DEV_PREFILL: Partial<Record<string, string>> = {
+  text: 'Jhon Smith',
+  email: 'jhonsmith@email.com',
+  textarea: 'I would like to reserve a table for 2 Friday 8pm',
+};
+
 // Platform look-and-feel decided via mattpocock-skills:prototype (see
 // docs/adr/0012-platform-native-presentation.md for the wider pattern):
 // iOS gets a raised glass "ticket" card (GlassSurface); Android gets
@@ -45,7 +53,11 @@ export const FormBlock = ({ block }: Props) => {
     const defaults: Record<string, string> = {};
     for (const field of fields) {
       const firstOption = field.blockType === 'select' ? field.options?.[0]?.value : undefined;
-      if (firstOption) defaults[field.name] = firstOption;
+      if (firstOption) {
+        defaults[field.name] = firstOption;
+      } else if (__DEV__ && DEV_PREFILL[field.blockType]) {
+        defaults[field.name] = DEV_PREFILL[field.blockType]!;
+      }
     }
     return defaults;
   });

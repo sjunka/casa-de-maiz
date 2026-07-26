@@ -54,6 +54,8 @@ test('renders every supported field type and skips an unrecognised one', async (
 test('blocks submission and shows an error when a required field is empty', async () => {
   await render(<FormBlock block={block} />);
 
+  // `__DEV__` prefills `name`; clear it back out to exercise validation.
+  await fireEvent.changeText(screen.getByLabelText('Name'), '');
   await fireEvent.press(screen.getByLabelText('Send message'));
 
   // `topic` defaults to its first option (Reservation), so only `name` is
