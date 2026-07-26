@@ -137,16 +137,16 @@ export const FormBlock = ({ block }: Props) => {
         rippleColor={colors.border}
         testID="form-block-success-close"
       >
-        <MaterialDesignIcons name="close" size={22} color={colors.textSecondary} />
+        <MaterialDesignIcons name="close" size={28} color={colors.textSecondary} />
       </AppPressable>
     );
 
     const successBody = (
       <>
         <View style={[styles.successSeal, { backgroundColor: colors.accentContainer }]}>
-          <MaterialDesignIcons name="seal-variant" size={40} color={colors.accent} />
+          <MaterialDesignIcons name="seal-variant" size={64} color={colors.accent} />
         </View>
-        <Text style={[styles.confirmation, { color: colors.text }]}>
+        <Text style={[styles.confirmation, styles.successConfirmation, { color: colors.text }]}>
           {block.form.confirmationMessage ?? 'Thanks! We received your submission.'}
         </Text>
       </>
@@ -431,9 +431,10 @@ const styles = StyleSheet.create({
   successPage: { flex: 1, padding: 20 },
   successCard: { flex: 1, borderRadius: 28, overflow: 'hidden' },
   successCardFill: { borderRadius: 28 },
-  successCardContent: { flex: 1, padding: 32, alignItems: 'center', justifyContent: 'center' },
+  successCardContent: { flex: 1, paddingHorizontal: 32, paddingVertical: 12, alignItems: 'center', justifyContent: 'center' },
   successClose: { position: 'absolute', top: 8, right: 8, minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 22 },
-  successSeal: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
+  successSeal: { width: 104, height: 104, borderRadius: 52, alignItems: 'center', justifyContent: 'center', marginBottom: 24 },
+  successConfirmation: { fontSize: 19 },
   textarea: { minHeight: 96, textAlignVertical: 'top' },
   options: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   option: { minHeight: 46, minWidth: 44, justifyContent: 'center', paddingHorizontal: 18, borderRadius: 23, borderWidth: 1.5 },
