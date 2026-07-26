@@ -8,7 +8,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { resolveImageSource } from '@data/repository/media';
+import { resolveImageSource } from '@data/remote/media';
 import type { MediaAsset } from '@core/contract/models/media';
 
 type Props = {

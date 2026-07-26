@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react-native';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { resetScrollProgress, trackScrollProgress } from '@data/state/scrollProgress';
+import { resetScrollProgress, trackScrollProgress } from '@data/logic/scrollProgress';
 import { useScrollProgress } from '@presentation/banners/useScrollProgress';
 
 const scrollEvent = (offsetY: number, contentHeight = 2000, viewportHeight = 1000) =>

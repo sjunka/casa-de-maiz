@@ -3,7 +3,7 @@ jest.mock('react-native-config', () => ({
   FEATURE_FLAG_OVERRIDES: 'enable_new_home=false',
 }));
 
-import { isDestinationEnabled } from '@data/state/featureFlags';
+import { isDestinationEnabled } from '@data/logic/featureFlags';
 
 test('a local override demonstrates the gate in the opposite direction from the live response', () => {
   // Live response says the flag is on; the local override forces it off.

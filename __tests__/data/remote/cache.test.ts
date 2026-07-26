@@ -8,7 +8,7 @@ jest.mock('react-native', () => ({
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { z } from 'zod';
-import { fetchWithCache } from '@data/repository/cache';
+import { fetchWithCache } from '@data/remote/cache';
 
 const dataSchema = z.object({ title: z.string() });
 const supported = { major: 1, minor: 1 };

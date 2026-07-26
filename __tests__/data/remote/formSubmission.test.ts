@@ -1,4 +1,4 @@
-import { submitFormSubmission } from '@data/repository/formSubmission';
+import { submitFormSubmission } from '@data/remote/formSubmission';
 
 const request = { form: 'fixture-contact-form', submissionData: [{ field: 'name', value: 'Ana' }] };
 
@@ -31,21 +31,21 @@ describe('with live submissions enabled', () => {
   test('a 201 response resolves', async () => {
     globalThis.fetch = jest.fn().mockResolvedValue({ status: 201 }) as unknown as typeof fetch;
 
-    const { submitFormSubmission: liveSubmit } = require('@data/repository/formSubmission');
+    const { submitFormSubmission: liveSubmit } = require('@data/remote/formSubmission');
     await expect(liveSubmit(request)).resolves.toBeUndefined();
   });
 
   test('a non-201 response maps to a user-safe message', async () => {
     globalThis.fetch = jest.fn().mockResolvedValue({ status: 500 }) as unknown as typeof fetch;
 
-    const { submitFormSubmission: liveSubmit } = require('@data/repository/formSubmission');
+    const { submitFormSubmission: liveSubmit } = require('@data/remote/formSubmission');
     await expect(liveSubmit(request)).rejects.toMatchObject({ kind: 'http' });
   });
 
   test('a network failure maps to a user-safe message', async () => {
     globalThis.fetch = jest.fn().mockRejectedValue(new Error('offline')) as unknown as typeof fetch;
 
-    const { submitFormSubmission: liveSubmit } = require('@data/repository/formSubmission');
+    const { submitFormSubmission: liveSubmit } = require('@data/remote/formSubmission');
     await expect(liveSubmit(request)).rejects.toMatchObject({ kind: 'network' });
   });
 });

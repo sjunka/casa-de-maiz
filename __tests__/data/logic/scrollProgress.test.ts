@@ -1,5 +1,5 @@
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { resetScrollProgress, scrollPercentOf } from '@data/state/scrollProgress';
+import { resetScrollProgress, scrollPercentOf } from '@data/logic/scrollProgress';
 
 const scrollEvent = (offsetY: number, contentHeight = 2000, viewportHeight = 1000) =>
   ({

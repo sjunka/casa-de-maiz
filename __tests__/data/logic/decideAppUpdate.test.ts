@@ -1,4 +1,4 @@
-import { decideAppUpdate } from '@data/state/decideAppUpdate';
+import { decideAppUpdate } from '@data/logic/decideAppUpdate';
 
 test('no app-update configuration decides none', () => {
   expect(decideAppUpdate(undefined, '1.0.0')).toEqual({ kind: 'none' });

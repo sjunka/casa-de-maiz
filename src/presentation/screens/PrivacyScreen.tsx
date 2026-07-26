@@ -2,10 +2,10 @@ import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, View } from 'r
 import type { RouteProp } from '@react-navigation/native';
 import type { RootTabParamList } from '@navigation/types';
 import { useDestinationNavigation } from '@navigation/useDestinationNavigation';
-import { useLegalDocument } from '@data/repository/useLegalDocument';
+import { useLegalDocument } from '@data/remote/useLegalDocument';
 import { RichText } from '../ui/RichText';
 import { useTheme } from '../theme/useTheme';
-import { trackScrollProgress } from '@data/state/scrollProgress';
+import { trackScrollProgress } from '@data/logic/scrollProgress';
 
 type Props = { route: RouteProp<RootTabParamList, 'privacy'> };
 

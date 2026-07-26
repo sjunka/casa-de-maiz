@@ -1,4 +1,4 @@
-import { isDestinationEnabled } from '@data/state/featureFlags';
+import { isDestinationEnabled } from '@data/logic/featureFlags';
 
 test('a destination with no mapped flag is always visible', () => {
   expect(isDestinationEnabled('home', {})).toBe(true);

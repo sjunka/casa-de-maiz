@@ -15,8 +15,8 @@ const config = {
     extraNodeModules: {
       '@core/transport': path.resolve(__dirname, 'src/core/transport'),
       '@core/contract': path.resolve(__dirname, 'src/core/contract'),
-      '@data/repository': path.resolve(__dirname, 'src/data/repository'),
-      '@data/state': path.resolve(__dirname, 'src/data/state'),
+      '@data/remote': path.resolve(__dirname, 'src/data/remote'),
+      '@data/logic': path.resolve(__dirname, 'src/data/logic'),
       '@presentation/blocks': path.resolve(__dirname, 'src/presentation/blocks'),
       '@presentation/banners': path.resolve(__dirname, 'src/presentation/banners'),
       '@presentation/ui': path.resolve(__dirname, 'src/presentation/ui'),

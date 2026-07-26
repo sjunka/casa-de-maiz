@@ -1,4 +1,4 @@
-import { resolveImageSource, resolveMediaUrl } from '@data/repository/media';
+import { resolveImageSource, resolveMediaUrl } from '@data/remote/media';
 import type { MediaAsset } from '@core/contract/models/media';
 
 test('passes an absolute CDN URL through unchanged', () => {

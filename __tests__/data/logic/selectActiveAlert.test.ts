@@ -1,4 +1,4 @@
-import { selectActiveAlert } from '@data/state/selectActiveAlert';
+import { selectActiveAlert } from '@data/logic/selectActiveAlert';
 import type { Alert } from '@core/contract/models/alert';
 
 const alert = (overrides: Partial<Alert>): Alert => ({

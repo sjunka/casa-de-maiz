@@ -1,9 +1,9 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-import { useHome } from '@data/repository/useHome';
-import { useBootstrap } from '@data/repository/useBootstrap';
+import { useHome } from '@data/remote/useHome';
+import { useBootstrap } from '@data/remote/useBootstrap';
 import { BlockList } from '../blocks/BlockList';
 import { ContentStatus, SavedContentBanner } from '../ui/ContentStatus';
-import { trackScrollProgress } from '@data/state/scrollProgress';
+import { trackScrollProgress } from '@data/logic/scrollProgress';
 
 export const HomeScreen = () => {
   const { data, error, isLoading, isFetching, refetch } = useHome();

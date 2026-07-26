@@ -8,7 +8,7 @@ import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { act, render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AlertBanner } from '@presentation/banners/AlertBanner';
-import { resetScrollProgress, trackScrollProgress } from '@data/state/scrollProgress';
+import { resetScrollProgress, trackScrollProgress } from '@data/logic/scrollProgress';
 import type { Alert } from '@core/contract/models/alert';
 
 const scrollTo = (owner: string, percent: number) =>
