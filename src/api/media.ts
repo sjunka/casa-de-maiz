@@ -1,5 +1,5 @@
-import { API_BASE_URL } from './config';
-import type { MediaAsset } from '../models/media';
+import { API_BASE_URL } from '@core/transport/config';
+import type { MediaAsset } from '@core/contract/models/media';
 
 const ABSOLUTE_URL = /^https?:\/\//i;
 

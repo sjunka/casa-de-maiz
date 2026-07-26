@@ -1,5 +1,5 @@
-import { API_BASE_URL, ENABLE_LIVE_FORM_SUBMISSIONS } from './config';
-import { ApiError, httpError, networkError } from './apiError';
+import { API_BASE_URL, ENABLE_LIVE_FORM_SUBMISSIONS } from '@core/transport/config';
+import { ApiError, httpError, networkError } from '@core/transport/apiError';
 
 export type FormSubmissionRequest = {
   form: string | number;

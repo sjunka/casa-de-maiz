@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, type Theme } from '../theme/useTheme';
-import type { RichTextDocument, RichTextNode } from '../models/richText';
+import type { RichTextDocument, RichTextNode } from '@core/contract/models/richText';
 
 const FORMAT_BOLD = 1;
 const FORMAT_ITALIC = 2;

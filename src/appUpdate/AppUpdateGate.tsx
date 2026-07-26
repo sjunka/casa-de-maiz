@@ -1,11 +1,11 @@
 import { useState, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getAppVersion } from '../api/appVersion';
+import { getAppVersion } from '@core/contract/appVersion';
 import { decideAppUpdate } from './decideAppUpdate';
 import { useTheme } from '../theme/useTheme';
 import { AppPressable } from '../ui/AppPressable';
-import type { AppUpdate } from '../models/operationalControls';
+import type { AppUpdate } from '@core/contract/models/operationalControls';
 
 type Props = { appUpdate?: AppUpdate; children: ReactNode };
 

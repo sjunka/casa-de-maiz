@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../theme/useTheme';
-import type { TextBlock as TextBlockData } from '../models/block';
+import type { TextBlock as TextBlockData } from '@core/contract/models/block';
 
 type Props = { block: TextBlockData };
 

@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { z } from 'zod';
-import { fetchEnvelope } from './client';
-import { buildDeliveryContext, type DeliveryContext } from './deliveryContext';
-import type { ApiError } from './apiError';
-import type { ContractVersion } from '../models/contractVersion';
-import type { envelopeSchema } from '../models/envelope';
+import { fetchEnvelope } from '@core/transport/client';
+import { buildDeliveryContext, type DeliveryContext } from '@core/contract/deliveryContext';
+import type { ApiError } from '@core/transport/apiError';
+import type { ContractVersion } from '@core/contract/models/contractVersion';
+import type { envelopeSchema } from '@core/contract/models/envelope';
 
 type CacheEntry = {
   envelope: unknown;

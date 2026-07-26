@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
 import { RestaurantCtaBlock } from './RestaurantCtaBlock';
-import type { RestaurantCtaBlock as RestaurantCtaBlockData } from '../models/block';
+import type { RestaurantCtaBlock as RestaurantCtaBlockData } from '@core/contract/models/block';
 
 const Tab = createBottomTabNavigator();
 

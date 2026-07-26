@@ -90,8 +90,9 @@ npm run e2e:android
 
 The app is organized around seven boundaries, screens composed on top:
 
-- `src/api` — transport, delivery-context construction, envelope/contract-version validation, config (base URL, app version)
-- `src/models` — Zod schemas and their inferred TypeScript types
+- `src/core/transport` — HTTP client, error mapping, base-URL config
+- `src/core/contract` — supported contract version, delivery-context construction, installed app version, and `src/core/contract/models` — Zod schemas and their inferred TypeScript types
+- `src/api` — endpoint fetchers, query hooks, cache and freshness policy
 - `src/repository` *(folded into `src/api` hooks + `src/api/cache.ts`)* — cache and freshness policy
 - `src/state` *(covered by `src/alerts`, `src/appUpdate`, `src/operational`, `src/navigation/featureFlags`)* — bootstrap-driven application state
 - `src/navigation` — destination resolution and the tab shell built from bootstrap
@@ -147,9 +148,9 @@ With more time: broader E2E coverage beyond navigation, forms and alerts (deep-l
 
 ## Production observability
 
-- **Crashes.** `@sentry/react-native` is initialised at the app root (`src/observability/crashReporting.ts`, wired in `App.tsx`) and reports native and JS crashes with the installed app version and platform attached, both read from the existing single-source modules (`src/api/appVersion.ts`, `src/api/deliveryContext.ts`). Disabled by default — see Configuration below.
+- **Crashes.** `@sentry/react-native` is initialised at the app root (`src/observability/crashReporting.ts`, wired in `App.tsx`) and reports native and JS crashes with the installed app version and platform attached, both read from the existing single-source modules (`src/core/contract/appVersion.ts`, `src/core/contract/deliveryContext.ts`). Disabled by default — see Configuration below.
 - **Source maps.** Release builds upload JS source maps to Sentry automatically — Android via `apply from: "sentry.gradle"` in `android/app/build.gradle` (wraps the bundle task), iOS via the `sentry-xcode.sh` wrapper on the "Bundle React Native code and images" build phase. Both read org/project from `ios/sentry.properties` and `android/sentry.properties` (placeholders — fill in the real Sentry org/project slugs) and the upload auth token from a `SENTRY_AUTH_TOKEN` environment variable on the build machine, never committed. Debug builds skip the upload.
-- **Content failures.** Transport failures are mapped at the boundary (`src/api/client.ts`, `src/api/apiError.ts`) to a user-safe message plus retained technical context (endpoint, status, error kind — never full payloads, so production logs can't leak editorial or PII content), and forwarded into the same Sentry pipeline. Unknown or invalid content blocks ([ADR 0008](docs/adr/0008-block-fallback.md)) are recorded as breadcrumbs carrying only the block type.
+- **Content failures.** Transport failures are mapped at the boundary (`src/core/transport/client.ts`, `src/core/transport/apiError.ts`) to a user-safe message plus retained technical context (endpoint, status, error kind — never full payloads, so production logs can't leak editorial or PII content), and forwarded into the same Sentry pipeline. Unknown or invalid content blocks ([ADR 0008](docs/adr/0008-block-fallback.md)) are recorded as breadcrumbs carrying only the block type.
 - **Performance.** Not built. Screen transitions and first-content timing would be measured via the CMS-fetch boundary already isolated behind the repository/query layer — a single place to time "time to first content" and "time to interactive" without instrumenting every screen individually.
 
 See [ADR 0014](docs/adr/0014-crash-reporting-sdk.md) for the SDK choice and rejected alternatives.

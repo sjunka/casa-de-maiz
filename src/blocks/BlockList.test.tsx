@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { BlockList } from './BlockList';
-import type { BlockEnvelope } from '../models/block';
+import type { BlockEnvelope } from '@core/contract/models/block';
 
 // Shaped after a real /api/content/v1/pages/home response from the Casa Maiz CMS.
 const realHomePayload: BlockEnvelope[] = [

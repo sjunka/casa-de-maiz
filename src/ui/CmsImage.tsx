@@ -9,7 +9,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { resolveImageSource } from '../api/media';
-import type { MediaAsset } from '../models/media';
+import type { MediaAsset } from '@core/contract/models/media';
 
 type Props = {
   image?: MediaAsset | null;

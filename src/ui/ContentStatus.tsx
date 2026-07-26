@@ -1,6 +1,6 @@
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../theme/useTheme';
-import type { ApiError } from '../api/apiError';
+import type { ApiError } from '@core/transport/apiError';
 
 type Props = {
   title: string;

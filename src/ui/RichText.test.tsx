@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import { RichText } from './RichText';
-import type { RichTextDocument } from '../models/richText';
+import type { RichTextDocument } from '@core/contract/models/richText';
 
 test('renders paragraphs, headings, formatted text and lists', async () => {
   const document: RichTextDocument = {

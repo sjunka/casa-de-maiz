@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { API_BASE_URL } from './config';
-import { buildDeliveryContext } from './deliveryContext';
+import { buildDeliveryContext } from '../contract/deliveryContext';
 import {
   ApiError,
   httpError,
@@ -9,9 +9,19 @@ import {
   parseError,
   unsupportedContractError,
 } from './apiError';
-import { envelopeSchema } from '../models/envelope';
-import { isContractVersionCompatible, type ContractVersion } from '../models/contractVersion';
-import { reportTransportError } from '../observability/crashReporting';
+import { envelopeSchema } from '../contract/models/envelope';
+import { isContractVersionCompatible, type ContractVersion } from '../contract/models/contractVersion';
+
+export type TransportErrorReporter = (
+  error: ApiError,
+  context: { endpoint: string; status?: number; kind: string },
+) => void;
+
+let reportTransportError: TransportErrorReporter = () => {};
+
+export const setTransportErrorReporter = (reporter: TransportErrorReporter): void => {
+  reportTransportError = reporter;
+};
 
 const buildUrl = (path: string): string => {
   const params = new URLSearchParams({ ...buildDeliveryContext() });

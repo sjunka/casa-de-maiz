@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { AccessibilityInfo, FlatList } from 'react-native';
 import { CarouselBlock } from './CarouselBlock';
-import type { CarouselBlock as CarouselBlockData } from '../models/block';
+import type { CarouselBlock as CarouselBlockData } from '@core/contract/models/block';
 
 const block: CarouselBlockData = {
   blockType: 'carousel',
