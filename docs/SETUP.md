@@ -27,6 +27,8 @@ Crash reporting (`SENTRY_DSN`, `SENTRY_ENVIRONMENT`) is configured the same way.
 - **iOS Simulator**: reaches the public API directly over `https`; no setup beyond the base URL.
 - **Android emulator**: the emulator's virtual network reaches the public API directly over `https`; no host-mapping is needed for this deployment. (Only a machine-local server, addressed as `10.0.2.2`, would need special-casing — not the case here.)
 - **Physical device**: same as the emulator, since the base URL is a public `https` endpoint rather than a machine-local server. iOS needs the device registered to a signing team in Xcode; Android needs USB debugging enabled and the device authorized (`adb devices` should list it).
+  - Enable USB debugging: Settings → About phone → tap Build number 7x to unlock Developer Options → enable USB Debugging.
+  - Connect via USB, accept the "Allow USB debugging?" prompt on the device, then confirm with `adb devices` (status must read `device`, not `unauthorized`).
 
 ## Install
 
@@ -47,7 +49,8 @@ Physical device:
 
 ```sh
 npx react-native run-ios --device "Your iPhone Name"
-npx react-native run-android --device <adb-device-id>   # id from `adb devices`
+npm run android   # with one device authorized in `adb devices`, no flag needed
+npx react-native run-android --device <adb-device-id>   # multiple devices/emulators attached
 ```
 
 ## Prebuilt Android APK
