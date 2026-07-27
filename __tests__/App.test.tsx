@@ -8,6 +8,7 @@ jest.mock('react-native-device-info', () => ({
 
 import { render, screen, waitFor, fireEvent } from '@testing-library/react-native';
 import App from '../App';
+import { queryClient } from '../src/data/remote/queryClient';
 
 const envelope = (overrides: Record<string, unknown> = {}) => ({
   contractVersion: '1.1',
@@ -44,6 +45,7 @@ const jsonResponse = (body: unknown, status = 200) => ({
 beforeEach(() => {
   jest.restoreAllMocks();
   jest.spyOn(console, 'error').mockImplementation(() => {});
+  queryClient.clear();
 });
 
 test('shows a loading state on launch, then the success state once bootstrap is validated', async () => {

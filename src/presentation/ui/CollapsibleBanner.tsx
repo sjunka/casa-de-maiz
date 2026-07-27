@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { StyleSheet } from 'react-native';
-import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { useReducedMotion } from '../theme/useReducedMotion';
 
 // Leaving reads in three beats: the banner gives up its ink, then lifts and
@@ -50,7 +51,7 @@ export const CollapsibleBanner = ({ visible, onExited, children }: Props) => {
     collapse.value = withDelay(
       (RISE_DELAY + RISE_MS * 0.4) * scale,
       withTiming(0, { duration: COLLAPSE_MS * scale, easing: Easing.inOut(Easing.cubic) }, finished => {
-        if (finished && onExited) runOnJS(onExited)();
+        if (finished && onExited) scheduleOnRN(onExited);
       }),
     );
   }, [visible, contentHeight, reducedMotion, fade, lift, collapse, onExited]);

@@ -32,6 +32,10 @@ jest.mock('react-native-reanimated', () => {
   };
 });
 
+jest.mock('react-native-worklets', () => ({
+  scheduleOnRN: (fn, ...args) => fn(...args),
+}));
+
 jest.mock('react-native-config', () => ({
   API_BASE_URL: 'https://payload-cms-poc-seven.vercel.app',
 }));
