@@ -109,15 +109,31 @@ adb install casa-maiz-1.0.0-arm64.apk
 
 ## Quick start
 
+Node 22, Xcode 26.5+ / Android Studio with a JDK 17.
+
 ```sh
 cp .env.example .env          # API_BASE_URL defaults to the published deployment
 npm install
-bundle install && (cd ios && bundle exec pod install)
-npm run ios                   # or: npm run android (emulator must be running)
 ```
 
-Node 22, Xcode 26.5+ / Android Studio with a JDK 17. Physical devices, emulator
-networking and deep links: [Setup](docs/SETUP.md).
+**iOS** (one-time CocoaPods setup, then run):
+
+```sh
+bundle install && (cd ios && bundle exec pod install)
+npm run ios
+```
+
+**Android** (emulator must already be running):
+
+```sh
+npm run android
+```
+
+Either command builds a debug app and starts it against the Metro dev server —
+that's what a reviewer sees by default. For a release-mode build with the JS
+bundled in, see the [prebuilt APK](docs/SETUP.md#prebuilt-android-apk) or
+`docs/SETUP.md`. Physical devices, emulator networking and deep links:
+[Setup](docs/SETUP.md).
 
 ## Quality
 
