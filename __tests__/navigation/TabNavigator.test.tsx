@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TabNavigator } from '@navigation/components/TabNavigator';
 import type { Destination } from '@core/contract/models/screens/bootstrap';
 
-const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
 
 const destination = (overrides: Partial<Destination>): Destination => ({
   key: 'home',

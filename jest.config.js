@@ -1,7 +1,6 @@
 module.exports = {
   preset: '@react-native/jest-preset',
   setupFiles: ['./jest.setup.js'],
-  forceExit: true,
   moduleNameMapper: {
     // The icon package `require`s its own .ttf so the native side can register
     // the font; jest has no loader for binary assets.
