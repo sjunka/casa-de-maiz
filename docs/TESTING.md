@@ -11,6 +11,11 @@ npm test            # jest, con React Native Testing Library y un AsyncStorage m
 Los tres pasan en `main`: cero errores de tipos, cero errores de lint y 187
 pruebas en 46 suites en verde.
 
+La corrida termina sola, sin `forceExit` y sin warnings de teardown. Los
+clientes de React Query que crean las pruebas usan `gcTime: 0`: el valor por
+defecto son cinco minutos, y ese temporizador mantenía vivo el event loop del
+worker de Jest. El cliente de producción conserva su `gcTime` real.
+
 El renderer de rich text suprime `no-bitwise` de forma local
 (`RichText.tsx`): los flags bitwise son el formato del propio Lexical. Lint
 sale limpio, sin warnings.
