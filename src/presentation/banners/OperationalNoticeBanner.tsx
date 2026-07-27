@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CollapsibleBanner } from '../ui/CollapsibleBanner';
 import { NoticeCard } from './NoticeCard';
 import { useTheme } from '../theme/useTheme';
+import { BANNER_AUTO_DISMISS_MS } from '../theme/motion';
 import type { OperationalControls } from '@core/contract/models/bootstrap/operationalControls';
 
 type Props = { operationalControls?: OperationalControls };
@@ -17,7 +18,7 @@ export const OperationalNoticeBanner = ({ operationalControls }: Props) => {
   // verified without manually closing every card; a reload just re-shows it.
   useEffect(() => {
     if (!hasNotice) return;
-    const timer = setTimeout(() => setDismissed(true), 8000);
+    const timer = setTimeout(() => setDismissed(true), BANNER_AUTO_DISMISS_MS);
     return () => clearTimeout(timer);
   }, [hasNotice]);
 

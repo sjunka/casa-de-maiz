@@ -78,6 +78,20 @@ export const darkColors: ColorTokens = {
 // difference with `hitSlop`.
 export const MIN_TOUCH_TARGET = Platform.OS === 'android' ? 48 : 44;
 
+// 4pt grid. Most spacing in this codebase already lands on one of these
+// values; new call sites should reach for a name here before writing a number.
+export const spacing = { xs: 4, sm: 8, md: 16, lg: 24 } as const;
+
+// Named type roles rather than raw sizes, so a screen picks a role and the
+// scale stays closed. `fontSize`/`lineHeight` pairs, not just size — RN never
+// derives one from the other.
+export const typeScale = {
+  caption: { fontSize: 13, lineHeight: 18 },
+  body: { fontSize: 15, lineHeight: 22 },
+  title: { fontSize: 20, lineHeight: 26 },
+  display: { fontSize: 24, lineHeight: 30 },
+} as const;
+
 // Android conveys elevation with a tonal surface and `elevation`; iOS conveys
 // it with a hairline border and a soft shadow.
 export const getElevatedSurfaceStyle = (colors: ColorTokens): ViewStyle =>

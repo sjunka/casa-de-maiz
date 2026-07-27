@@ -3,16 +3,12 @@ import { StyleSheet } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { useReducedMotion } from '../theme/useReducedMotion';
-
-// Leaving reads in three beats: the banner gives up its ink, then lifts and
-// accelerates out of the top, and only then does the slot close — so the page
-// settles after the banner has left rather than being dragged up with it.
-// Arriving replays the same beats in reverse, unhurried, so it reads as
-// something coming to rest.
-const FADE_MS = 130;
-const RISE_MS = 240;
-const RISE_DELAY = 70;
-const COLLAPSE_MS = 260;
+import {
+  BANNER_COLLAPSE_MS as COLLAPSE_MS,
+  BANNER_FADE_MS as FADE_MS,
+  BANNER_RISE_DELAY_MS as RISE_DELAY,
+  BANNER_RISE_MS as RISE_MS,
+} from '../theme/motion';
 
 type Props = { visible: boolean; onExited?: () => void; children: ReactNode };
 

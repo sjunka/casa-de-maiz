@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CollapsibleBanner } from '../ui/CollapsibleBanner';
 import { NoticeCard } from './NoticeCard';
 import { useTheme } from '../theme/useTheme';
+import { BANNER_AUTO_DISMISS_MS } from '../theme/motion';
 import type { Alert } from '@core/contract/models/bootstrap/alert';
 import { selectActiveAlerts } from '@data/logic/alerts/selectActiveAlert';
 import { isSuppressed, recordDismissal, recordShown } from '@data/logic/alerts/frequency';
@@ -81,7 +82,7 @@ const AlertBannerItem = ({ alert, scrollPercent, onSuppress }: ItemProps) => {
   // verified without manually closing every card; a reload just re-shows it.
   useEffect(() => {
     if (!visible) return;
-    const timer = setTimeout(() => setExiting(true), 8000);
+    const timer = setTimeout(() => setExiting(true), BANNER_AUTO_DISMISS_MS);
     return () => clearTimeout(timer);
   }, [visible]);
 

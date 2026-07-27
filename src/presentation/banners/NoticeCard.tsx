@@ -5,17 +5,13 @@ import MaterialDesignIcons from '@react-native-vector-icons/material-design-icon
 import { AppPressable } from '../ui/AppPressable';
 import { useTheme } from '../theme/useTheme';
 import { MIN_TOUCH_TARGET } from '../theme/tokens';
+import { UNDO_MS } from '../theme/motion';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { noticeCardStrings } from './noticeCardStrings';
 
 type Glyph = React.ComponentProps<typeof MaterialDesignIcons>['name'];
 
 type Action = { key: string; label: string; onPress: () => void };
-
-// How long a dismissed notice waits in its own slot before the dismissal
-// becomes real. Long enough to catch a mis-tap, short enough that the notice
-// is not still sitting there when the guest has moved on.
-const UNDO_MS = 4000;
 
 // The close glyph is small on purpose; `hitSlop` is what carries it up to the
 // platform minimum tap target.
