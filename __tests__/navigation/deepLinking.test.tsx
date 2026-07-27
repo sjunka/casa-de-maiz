@@ -30,7 +30,7 @@ test('a link arriving before the tab navigator mounts is held and replayed once 
   const view = await render(<TestApp ready={false} />);
 
   await act(() => handleDeepLink('casamaiz://menu'));
-  view.rerender(<TestApp ready />);
+  await act(() => view.rerender(<TestApp ready />));
 
   await waitFor(() => expect(screen.getByText('screen-menu')).toBeTruthy());
   view.unmount();
