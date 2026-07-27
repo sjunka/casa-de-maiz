@@ -1,5 +1,11 @@
 # Guest fills the dev-only form fixture and submits it (mocked locally, see
 # ENABLE_LIVE_FORM_SUBMISSIONS in .env.e2e.*); the confirmation state renders.
+#
+# The fields arrive prefilled (DEV_PREFILL in FormBlock, __DEV__ only) and the
+# `select` already defaults to its first option per ADR 0019, so the text
+# fields are erased before typing and the topic is left at its default.
+# `hideKeyboard` between fields is load-bearing: with the keyboard up, the tap
+# on the email field lands on the keyboard and both inputs go to the name.
 appId: ${APP_ID}
 ---
 - runScript: reset-normal.js
@@ -10,12 +16,21 @@ appId: ${APP_ID}
     id: "form-block"
 - tapOn:
     id: "form-field-name"
+- eraseText
 - inputText: "Guest"
+- hideKeyboard
 - tapOn:
     id: "form-field-email"
+- eraseText
 - inputText: "guest@example.com"
-- tapOn: "Topic"
-- tapOn: "Reservation"
+- hideKeyboard
+# Submit sits below the fold; without scrolling to it first the tap clamps to
+# the bottom of the screen and lands on the tab bar instead.
+- scrollUntilVisible:
+    element:
+      id: "form-block-submit"
+    direction: DOWN
+    centerElement: true
 - tapOn:
     id: "form-block-submit"
 - assertVisible:

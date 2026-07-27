@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -232,7 +231,11 @@ export const FormBlock = ({ block }: Props) => {
   if (Platform.OS === 'ios') {
     return (
       <KeyboardAvoidingView style={styles.fill} behavior="padding">
-        <ScrollView style={styles.fill} contentContainerStyle={styles.iosPage} testID="form-block">
+        {/* A plain View, not a ScrollView: every block renders inside the
+            hosting screen's ScrollView (BlockList), and a second scroll view
+            nested in it is unbounded — it never scrolls, so the footer ran off
+            the bottom of the screen and the submit button was untappable. */}
+        <View style={styles.iosPage} testID="form-block">
           <View style={styles.iosCard}>
             <GlassSurface
               style={styles.iosCardFill}
@@ -252,7 +255,7 @@ export const FormBlock = ({ block }: Props) => {
               {footer}
             </View>
           </View>
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     );
   }
