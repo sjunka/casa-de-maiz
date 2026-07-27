@@ -1,50 +1,75 @@
-# Quality and testing
+# Calidad y pruebas
 
-## Commands
+## Comandos
 
 ```sh
 npm run typecheck   # tsc --noEmit
 npm run lint        # eslint .
-npm test            # jest, with React Native Testing Library and an in-memory AsyncStorage mock
+npm test            # jest, con React Native Testing Library y un AsyncStorage mockeado en memoria
 ```
 
-All three pass on `main`: no type errors, no lint errors (five pre-existing `no-bitwise` warnings in the Lexical rich-text renderer, where bitwise flags are the format Lexical itself uses), 182 tests across 44 suites green.
+Los tres pasan en `main`: cero errores de tipos, cero errores de lint y 187
+pruebas en 46 suites en verde.
 
-Tests assert user-observable behaviour through stable selectors (accessibility roles, labels and test IDs) rather than private implementation details.
+Quedan cinco warnings previos de `no-bitwise` en el renderer de rich text de
+Lexical, donde los flags bitwise son el formato que usa el propio Lexical.
 
-## Required coverage
+Las pruebas verifican comportamiento observable por el usuario a través de
+selectores estables (roles de accesibilidad, labels y test IDs), no detalles
+internos de implementación.
 
-The assessment names six minimum cases. Each maps to a test file:
+## Cobertura exigida
 
-| Required case | Covered by |
+El assessment nombra seis casos mínimos. Cada uno mapea a un archivo:
+
+| Caso exigido | Cubierto por |
 |---|---|
-| Required query-context construction | `__tests__/core/contract/deliveryContext.test.ts`, `appVersion.test.ts` |
-| Contract-version validation | `__tests__/core/contract/models/contractVersion.test.ts` |
-| One successful CMS block-rendering path | `__tests__/presentation/screens/HomeScreen.test.tsx`, `presentation/blocks/BlockList.test.tsx` |
-| Unknown-block handling | `__tests__/presentation/blocks/UnknownBlock.test.tsx` |
-| One cache / error / offline fallback scenario | `__tests__/data/remote/cache.test.ts`, `core/transport/client.test.ts` |
-| One bootstrap-driven behaviour | `__tests__/data/logic/selectActiveAlert.test.ts`, `featureFlags.test.ts`, `decideAppUpdate.test.ts`, `navigation/TabNavigator.test.tsx` |
+| Construcción del query context requerido | `__tests__/core/contract/deliveryContext.test.ts`, `appVersion.test.ts` |
+| Validación de versión de contrato | `__tests__/core/contract/models/contractVersion.test.ts` |
+| Un camino exitoso de render de blocks del CMS | `__tests__/presentation/screens/HomeScreen.test.tsx`, `presentation/blocks/BlockList.test.tsx` |
+| Manejo de block desconocido | `__tests__/presentation/blocks/UnknownBlock.test.tsx` |
+| Un escenario de cache, error o fallback offline | `__tests__/data/remote/cache.test.ts`, `core/transport/client.test.ts` |
+| Un comportamiento derivado de bootstrap | `__tests__/data/logic/selectActiveAlert.test.ts`, `featureFlags.test.ts`, `decideAppUpdate.test.ts`, `navigation/TabNavigator.test.tsx` |
 
-Beyond the minimum: alert frequency policy, scroll-progress triggers, destination resolution, deep linking, media URL resolution, form submission, rich text, theming, reduced motion, reduce transparency, and crash reporting.
+Más allá del mínimo: política de frecuencia de alertas, triggers por progreso
+de scroll, resolución de destinos, deep linking, resolución de URLs de media,
+envío de formulario, rich text, theming, reduced motion, reduce transparency y
+crash reporting.
 
-## End-to-end tests
+## Pruebas end-to-end
 
-Scenarios that depend on real navigation, persistence and timing rather than a scripted `fetch`: offline fallback, expired content, an unsupported contract version, tab navigation, a CMS-published alert, and a form submission. Maestro-driven, against a local mock content server.
+Cubren escenarios que dependen de navegación, persistencia y tiempo reales, no
+de un `fetch` scripteado: fallback offline, contenido expirado, versión de
+contrato no soportada, navegación por tabs, una alerta publicada por el CMS y
+un envío de formulario.
+
+Corren con Maestro contra un servidor de contenido mockeado local.
 
 ```sh
-npm run e2e:mock-server    # terminal 1 — mock CMS content API on :4001
+npm run e2e:mock-server    # terminal 1: API de contenido mockeada en :4001
 
-npm run e2e:build:ios      # terminal 2 — build & launch pointed at the mock (once per change)
-npm run e2e:ios            # run the flows against the iOS Simulator
+npm run e2e:build:ios      # terminal 2: compila y levanta apuntando al mock (una vez por cambio)
+npm run e2e:ios            # corre los flows contra el simulador de iOS
 
-npm run e2e:build:android  # Android emulator must already be running
+npm run e2e:build:android  # el emulador de Android ya debe estar corriendo
 npm run e2e:android
 ```
 
-Flows live in `e2e/flows/`. The `.js` files in that directory drive the mock server's state (a failing home endpoint, a near-expiry `nextChangeAt`, an unsupported contract version, a top-bar alert) so each flow starts from a known server condition.
+Los flows viven en `e2e/flows/`. Los archivos `.js` de ese directorio manejan
+el estado del mock server (un endpoint de home que falla, un `nextChangeAt`
+casi vencido, una versión de contrato no soportada, una alerta de top bar) para
+que cada flow arranque desde una condición conocida.
 
-## Accessibility checks
+## Verificaciones de accesibilidad
 
-Interactive elements expose roles, labels, states and a minimum touch target through `AppPressable` (`__tests__/presentation/ui/AppPressable.test.tsx`). Dynamic type, dark mode, Reduce Motion and Reduce Transparency each have a hook with its own test under `__tests__/presentation/theme/`.
+Los elementos interactivos exponen rol, label, estado y un área táctil mínima a
+través de `AppPressable`
+(`__tests__/presentation/ui/AppPressable.test.tsx`).
 
-Measured results — accessibility-tree labels, touch-target sizes, and both platforms at their largest text settings — are in [Profiling and accessibility notes](PROFILING.md), including two findings the tests do not catch.
+Dynamic type, dark mode, Reduce Motion y Reduce Transparency tienen cada uno su
+hook con prueba propia bajo `__tests__/presentation/theme/`.
+
+Los resultados medidos (labels del árbol de accesibilidad, tamaños de área
+táctil y ambas plataformas en su tipografía más grande) están en
+[Profiling y accesibilidad](PROFILING.md), incluyendo dos hallazgos que las
+pruebas no detectan.

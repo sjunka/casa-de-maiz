@@ -1,164 +1,173 @@
 # Casa Maiz
 
-A React Native CLI app, TypeScript throughout, that renders the Casa Maiz guest
-experience — Home, Menu, Privacy, navigation, alerts, notices and app-update
-gating — entirely from the published Payload CMS contract (v1.1). Nothing
-editorial is hardcoded.
+App de React Native CLI, TypeScript de punta a punta.
 
-> **Reviewing this submission?** [**Architecture and trade-offs**](docs/ARCHITECTURE.md) ·
-> [**Setup**](docs/SETUP.md) · [**Testing**](docs/TESTING.md) ·
-> [**Limitations**](docs/LIMITATIONS.md)
+Toda la experiencia de invitado (Home, Menu, Privacy, navegación, alertas,
+avisos y gating de actualización) sale del contrato publicado del CMS Payload
+(v1.1). Nada editorial está hardcodeado.
+
+> **¿Vienes a evaluar esto?** [**Arquitectura y trade-offs**](docs/ARCHITECTURE.md) ·
+> [**Setup**](docs/SETUP.md) · [**Pruebas**](docs/TESTING.md) ·
+> [**Limitaciones**](docs/LIMITATIONS.md)
 
 ## Demo
 
 <p align="center">
-  <img src="docs/media/demo.gif" width="300" alt="Demo: the CMS-driven Home blocks, the Menu tab, the privacy legal document, the reservations placeholder and the CMS form" />
+  <img src="docs/media/demo.gif" width="300" alt="Demo: los blocks de Home servidos por el CMS, la pestaña Menu, el documento legal de privacidad, el placeholder de reservas y el formulario del CMS" />
 </p>
 
-> 🎬 Prefer video? [Watch the MP4](docs/media/demo.mp4)
+> ¿Prefieres video? [Ver el MP4](docs/media/demo.mp4)
 
-## Both platforms
+## Las dos plataformas
 
-Same content contract, deliberately different chrome: a real
-`UIVisualEffectView` behind the iOS tab bar, Material tonal surfaces and
-elevation on Android.
+Mismo contrato de contenido, chrome distinto a propósito. En iOS hay un
+`UIVisualEffectView` real detrás del tab bar. En Android, superficies tonales
+de Material y elevación.
 
-| Home | Menu | Privacy | Reservations | CMS form | Dark |
+| Home | Menu | Privacy | Reservas | Form del CMS | Dark |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| ![iOS home](docs/media/ios-01-home.png) | ![iOS menu](docs/media/ios-02-menu.png) | ![iOS privacy](docs/media/ios-03-privacy.png) | ![iOS reservations](docs/media/ios-04-reservations.png) | ![iOS form](docs/media/ios-05-form.png) | ![iOS dark](docs/media/ios-06-home-dark.png) |
-| ![Android home](docs/media/android-01-home.png) | ![Android menu](docs/media/android-02-menu.png) | ![Android privacy](docs/media/android-03-privacy.png) | ![Android reservations](docs/media/android-04-reservations.png) | ![Android form](docs/media/android-05-form.png) | ![Android dark](docs/media/android-06-home-dark.png) |
+| ![iOS home](docs/media/ios-01-home.png) | ![iOS menu](docs/media/ios-02-menu.png) | ![iOS privacy](docs/media/ios-03-privacy.png) | ![iOS reservas](docs/media/ios-04-reservations.png) | ![iOS form](docs/media/ios-05-form.png) | ![iOS dark](docs/media/ios-06-home-dark.png) |
+| ![Android home](docs/media/android-01-home.png) | ![Android menu](docs/media/android-02-menu.png) | ![Android privacy](docs/media/android-03-privacy.png) | ![Android reservas](docs/media/android-04-reservations.png) | ![Android form](docs/media/android-05-form.png) | ![Android dark](docs/media/android-06-home-dark.png) |
 
-*Top row iOS, bottom row Android.*
+*Fila de arriba iOS, fila de abajo Android.*
 
-Dark mode follows system appearance. Debug builds also carry a gear in the
-top-right of the dev-only **Form (dev)** tab that flips the scheme in place, so
-it can be seen without leaving the app for system settings. Release builds,
-including the downloadable APK below, have neither the tab nor the gear.
+El dark mode sigue la apariencia del sistema. Los builds de debug además traen
+un engrane arriba a la derecha en la pestaña **Form (dev)** que cambia el
+esquema en el momento, para verlo sin salir de la app. Los builds de release,
+incluido el APK descargable, no tienen ni la pestaña ni el engrane.
 
-## Requirements coverage
+## Cobertura de requisitos
 
-Every core requirement in the assessment, and where it lives:
+Cada requisito central del assessment y dónde vive:
 
-| # | Requirement | Where |
+| # | Requisito | Dónde |
 |---|---|---|
-| 1 | Foundation with clear boundaries, configurable base URL | `src/core`, `src/data`, `src/presentation` ([layout](docs/ARCHITECTURE.md)) |
-| 2 | Typed CMS client: four context params, `Platform.OS`, installed version, contract 1.1, media URLs, dedupe, cancellation | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` |
-| 3 | Block registry rendering every live Home and Menu block; unknown blocks fail safe | `presentation/blocks/registry.tsx` |
-| 4 | Bootstrap as configuration: navigation, promotions, feature flags, operational notice, update gate, alerts with placement/trigger/frequency/dismissal/targeting | `data/logic/`, `presentation/banners/` |
-| 5 | Navigation from `bootstrap.navigation`, one destination resolver, validated external links, native back | `navigation/resolveDestination.ts`, `navigation/TabNavigator.tsx` |
-| 6 | Loading, empty, error+retry, pull-to-refresh, offline/stale, unsupported contract, not found; `nextChangeAt` as a hard expiry | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` |
-| 7 | Absolute and relative media, aspect ratio held, alt text | `data/remote/media.ts`, `presentation/ui/CmsImage.tsx` |
-| 8 | Safe areas, platform back, touch targets, dynamic type, dark mode, reduced motion, keyboard avoidance | `presentation/theme/`, `presentation/ui/AppPressable.tsx` |
-| 9 | Automated tests for all six required cases; typecheck, lint and test all pass | 182 tests, 6 Maestro flows ([Testing](docs/TESTING.md)) |
+| 1 | Base con fronteras claras, base URL configurable | `src/core`, `src/data`, `src/presentation` ([mapa](docs/ARCHITECTURE.md)) |
+| 2 | Cliente tipado del CMS: cuatro parámetros de contexto, `Platform.OS`, versión instalada, contrato 1.1, URLs de media, dedupe, cancelación | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` |
+| 3 | Block registry que renderiza todos los blocks vivos de Home y Menu; los desconocidos fallan seguro | `presentation/blocks/registry.tsx` |
+| 4 | Bootstrap como configuración: navegación, promociones, feature flags, aviso operativo, update gate, alertas con placement, trigger, frecuencia, dismissal y targeting | `data/logic/`, `presentation/banners/` |
+| 5 | Navegación desde `bootstrap.navigation`, un solo resolver de destinos, links externos validados, back nativo | `navigation/destinations/resolveDestination.ts`, `navigation/components/TabNavigator.tsx` |
+| 6 | Loading, vacío, error con retry, pull-to-refresh, offline/stale, contrato no soportado, not found; `nextChangeAt` como expiración dura | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` |
+| 7 | Media absoluta y relativa, aspect ratio respetado, texto alternativo | `data/remote/fetchers/media.ts`, `presentation/ui/CmsImage.tsx` |
+| 8 | Safe areas, back por plataforma, áreas táctiles, dynamic type, dark mode, reduced motion, teclado | `presentation/theme/`, `presentation/ui/AppPressable.tsx` |
+| 9 | Pruebas automatizadas de los seis casos exigidos; typecheck, lint y test en verde | 187 pruebas, 6 flows de Maestro ([Pruebas](docs/TESTING.md)) |
 
-Bonus, all three categories: **iOS glass** (`presentation/ui/GlassSurface.tsx`,
-gated on Reduce Transparency) · **distinct Android Material** (tonal surfaces,
-elevation, ripple) · **advanced work** — `casamaiz://` deep links, mocked form
-submission, runtime Zod validation, complete alert-frequency behaviour
-(`always` / `once` / `session` with cooldown and a 4-second undo window),
-Sentry crash reporting with source maps
-([Observability](docs/OBSERVABILITY.md)), and Maestro E2E flows.
+Los tres bonus están cubiertos. **Glass de iOS**
+(`presentation/ui/GlassSurface.tsx`, condicionado a Reduce Transparency).
+**Material propio de Android** (superficies tonales, elevación, ripple).
+Y el bloque de trabajo avanzado: deep links `casamaiz://`, envío de formulario
+mockeado, validación Zod en runtime, la política completa de frecuencia de
+alertas (`always`, `once`, `session`, con cooldown y ventana de undo de 4
+segundos), crash reporting con Sentry y source maps
+([Observabilidad](docs/OBSERVABILITY.md)), y flows E2E con Maestro.
 
-## Bonus work, on screen
+## El bonus, en pantalla
 
 <p align="center">
-  <img src="docs/media/bonus.gif" width="620" alt="iOS and Android side by side: content scrolling under the translucent iOS tab bar next to Android's tonal Material bar, a casamaiz:// deep link opening the privacy screen, and a mocked CMS form submission" />
+  <img src="docs/media/bonus.gif" width="620" alt="iOS y Android lado a lado: contenido pasando bajo el tab bar traslúcido de iOS junto a la barra tonal de Android, un deep link casamaiz:// abriendo la pantalla de privacidad, y el envío mockeado del formulario del CMS" />
 </p>
 
-> 🎬 [Watch the MP4](docs/media/bonus.mp4) — iOS left, Android right, same flow.
+> [Ver el MP4](docs/media/bonus.mp4). iOS a la izquierda, Android a la derecha, mismo flujo.
 
-| iOS glass | Android Material | Deep link (iOS) | Deep link (Android) | Mocked form (iOS) | Mocked form (Android) |
+| Glass iOS | Material Android | Deep link (iOS) | Deep link (Android) | Form mockeado (iOS) | Form mockeado (Android) |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| ![iOS glass](docs/media/ios-bonus-glass.png) | ![Android Material](docs/media/android-bonus-material.png) | ![iOS deep link](docs/media/ios-bonus-deeplink.png) | ![Android deep link](docs/media/android-bonus-deeplink.png) | ![iOS form success](docs/media/ios-bonus-form.png) | ![Android form success](docs/media/android-bonus-form.png) |
+| ![Glass iOS](docs/media/ios-bonus-glass.png) | ![Material Android](docs/media/android-bonus-material.png) | ![Deep link iOS](docs/media/ios-bonus-deeplink.png) | ![Deep link Android](docs/media/android-bonus-deeplink.png) | ![Form iOS](docs/media/ios-bonus-form.png) | ![Form Android](docs/media/android-bonus-form.png) |
 
-- **iOS glass** — a real `UIVisualEffectView` behind the tab bar
-  (`presentation/ui/GlassSurface.tsx`); content stays legible as it scrolls
-  under it, and the effect drops to an opaque surface under Reduce
-  Transparency.
-- **Android Material** — the same tab bar with tonal surfaces and elevation
-  instead of blur, tonal cards, and ripple press feedback.
-- **Deep links** — `xcrun simctl openurl booted casamaiz://legal/privacy_policy`
-  (and the `adb` equivalent) routes through the same destination resolver the
-  CMS uses, landing on the legal document fetched from `/legal/privacy_policy`.
-- **Mocked form submission** — `formBlock` submits through a mocked network
-  boundary and renders the CMS `confirmationMessage`. Nothing is written to the
-  shared API unless `ENABLE_LIVE_FORM_SUBMISSIONS=true`.
+- **Glass iOS.** Un `UIVisualEffectView` real detrás del tab bar
+  (`presentation/ui/GlassSurface.tsx`). El contenido se sigue leyendo mientras
+  pasa por debajo, y con Reduce Transparency el efecto cae a una superficie
+  opaca.
+- **Material Android.** El mismo tab bar con superficies tonales y elevación en
+  vez de blur, cards tonales y ripple al presionar.
+- **Deep links.** `xcrun simctl openurl booted casamaiz://legal/privacy_policy`
+  (y su equivalente en `adb`) pasa por el mismo resolver de destinos que usa el
+  CMS, y aterriza en el documento legal traído de `/legal/privacy_policy`.
+- **Envío de formulario mockeado.** El `formBlock` envía contra una frontera de
+  red mockeada y pinta el `confirmationMessage` del CMS. No se escribe nada en
+  la API compartida salvo que `ENABLE_LIVE_FORM_SUBMISSIONS=true`.
 
-### Feature flags gating navigation
+### Feature flags que apagan navegación
 
-`bootstrap.featureFlags.enable_new_home` gates the Reservations destination.
-Same build, same CMS, flag flipped locally with
-`FEATURE_FLAG_OVERRIDES=enable_new_home=false` — the destination is dropped
-before the navigator is built, so the tab disappears with no per-screen
-conditionals anywhere (`data/logic/featureFlags.ts`,
-`navigation/TabNavigator.tsx`).
+`bootstrap.featureFlags.enable_new_home` controla el destino de Reservas. Mismo
+build, mismo CMS, flag apagado en local con
+`FEATURE_FLAG_OVERRIDES=enable_new_home=false`.
+
+El destino se descarta antes de construir el navegador, así que la pestaña
+desaparece sin un solo condicional dentro de las pantallas
+(`data/logic/featureFlags.ts`, `navigation/components/TabNavigator.tsx`).
 
 | `enable_new_home: true` | `enable_new_home: false` |
 |:---:|:---:|
-| ![Tab bar with Reservations](docs/media/ios-flag-on.png) | ![Tab bar without Reservations](docs/media/ios-flag-off.png) |
+| ![Tab bar con Reservas](docs/media/ios-flag-on.png) | ![Tab bar sin Reservas](docs/media/ios-flag-off.png) |
 
-## Try it without building
+## Probarla sin compilar
 
-[**Download the Android APK**](https://github.com/sjunka/casa-de-maiz/releases/latest) —
-33 MB, arm64-v8a, JS bundled in, pointed at the published CMS. Signed with the
-React Native debug keystore, so Android will warn about an unknown developer.
-Verified on a physical Android device (Redmi Note 8 Pro) — 2026-07-26.
+[**Descargar el APK de Android**](https://github.com/sjunka/casa-de-maiz/releases/latest).
+33 MB, arm64-v8a, JS incluido en el binario, apuntando al CMS publicado.
+
+Va firmado con el debug keystore de React Native, así que Android avisará de un
+desarrollador desconocido. Verificado en un dispositivo físico (Redmi Note 8
+Pro) el 2026-07-26.
 
 ```sh
 adb install casa-maiz-1.0.0-arm64.apk
 ```
 
-## Quick start
+## Arranque rápido
 
-Node 22, Xcode 26.5+ / Android Studio with a JDK 17.
+Node 22, Xcode 26.5+ o Android Studio con un JDK 17.
 
 ```sh
-cp .env.example .env          # API_BASE_URL defaults to the published deployment
+cp .env.example .env          # API_BASE_URL ya apunta al deployment publicado
 npm install
 ```
 
-**iOS** (one-time CocoaPods setup, then run):
+**iOS** (CocoaPods una vez, luego correr):
 
 ```sh
 bundle install && (cd ios && bundle exec pod install)
 npm run ios
 ```
 
-**Android** (emulator must already be running):
+**Android** (el emulador ya debe estar corriendo):
 
 ```sh
 npm run android
 ```
 
-Either command builds a debug app and starts it against the Metro dev server —
-that's what a reviewer sees by default. For a release-mode build with the JS
-bundled in, see the [prebuilt APK](docs/SETUP.md#prebuilt-android-apk) or
-`docs/SETUP.md`. Physical devices, emulator networking and deep links:
-[Setup](docs/SETUP.md).
+Cualquiera de los dos compila un build de debug y lo levanta contra el dev
+server de Metro. Eso es lo que ve un evaluador por defecto.
 
-## Quality
+Para un build de release con el JS empaquetado, mira el
+[APK precompilado](docs/SETUP.md#apk-precompilado-de-android). Dispositivos
+físicos, red del emulador y deep links están en [Setup](docs/SETUP.md).
+
+## Calidad
 
 ```sh
 npm run typecheck && npm run lint && npm test
 ```
 
-182 tests across 44 suites, plus 6 Maestro end-to-end flows covering offline
-fallback, expired content, an unsupported contract version, navigation, a
-CMS-published alert and a form submission. See [Testing](docs/TESTING.md).
+187 pruebas en 46 suites, más 6 flows end-to-end de Maestro que cubren
+fallback offline, contenido expirado, versión de contrato no soportada,
+navegación, una alerta publicada por el CMS y un envío de formulario. Detalle
+en [Pruebas](docs/TESTING.md).
 
-## Known limitations
+## Limitaciones conocidas
 
-What was deliberately left out and why — five best-effort block types the
-contract declares but never publishes a shape for, a placeholder Reservations
-screen with no API behind it, performance instrumentation that stops at the
-timing boundary, and no screen-reader pass. All of it, with the reasoning, in
-[**Known limitations and next steps**](docs/LIMITATIONS.md).
+Lo que quedó fuera a propósito y por qué: cinco tipos de block que el contrato
+declara pero de los que nunca publica una forma, una pantalla de Reservas sin
+API detrás, instrumentación de performance que se queda en la frontera de
+medición, y ninguna pasada con lector de pantalla.
 
-## Docs
+Todo eso, con el razonamiento, en
+[**Limitaciones conocidas y siguientes pasos**](docs/LIMITATIONS.md).
 
-- [Architecture, trade-offs, dependency choices, types strategy](docs/ARCHITECTURE.md)
-- [Setup: prerequisites, configuration, run commands, deep links](docs/SETUP.md)
-- [Quality and testing](docs/TESTING.md)
-- [Profiling and accessibility notes](docs/PROFILING.md) — measured startup, scroll and touch-target numbers
-- [Production observability](docs/OBSERVABILITY.md)
-- [Known limitations and next steps](docs/LIMITATIONS.md)
+## Documentación
+
+- [Arquitectura, trade-offs, dependencias y estrategia de tipos](docs/ARCHITECTURE.md)
+- [Setup: prerrequisitos, configuración, comandos, deep links](docs/SETUP.md)
+- [Calidad y pruebas](docs/TESTING.md)
+- [Profiling y accesibilidad](docs/PROFILING.md), con números medidos de arranque, scroll y áreas táctiles
+- [Observabilidad en producción](docs/OBSERVABILITY.md)
+- [Limitaciones conocidas y siguientes pasos](docs/LIMITATIONS.md)

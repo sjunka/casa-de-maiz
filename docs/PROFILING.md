@@ -1,153 +1,174 @@
-# Profiling and accessibility notes
+# Profiling y accesibilidad
 
-Measurements, not claims. Everything below was captured on 26 July 2026 against
-the release build and the live CMS, with the commands shown so it can be
-re-run.
+Mediciones, no afirmaciones. Todo lo de abajo se capturó el 26 de julio de 2026
+contra el build de release y el CMS vivo, con los comandos a la vista para que
+se pueda repetir.
 
-**Setup:** Android — release APK (`arm64-v8a`, JS bundled) on a Pixel-class
-emulator (`neotox`, 1080×2400, 420 dpi, Android 16). iOS — iPhone 17 Pro
-simulator, iOS 26.2. Both are emulated hardware, so treat the numbers as
-relative rather than as device-accurate; a simulator does not model thermal
-throttling, real GPU limits, or a cold page cache.
+**Equipo:** en Android, el APK de release (`arm64-v8a`, JS empaquetado) sobre
+un emulador tipo Pixel (`neotox`, 1080×2400, 420 dpi, Android 16). En iOS, el
+simulador de iPhone 17 Pro con iOS 26.2.
 
-## Startup
+Los dos son hardware emulado, así que trata los números como relativos y no
+como propios de un dispositivo. Un simulador no modela throttling térmico,
+límites reales de GPU ni un page cache frío.
 
-Cold launch to first frame, `adb shell am start -W`, app force-stopped between
-runs:
+## Arranque
+
+Cold launch hasta el primer frame, con `adb shell am start -W` y la app forzada
+a cerrar entre corridas:
 
 ```sh
 adb shell am force-stop com.casamaiz
 adb shell am start -W -n com.casamaiz/.MainActivity
 ```
 
-| Run | 1 | 2 | 3 | 4 | 5 | Median |
+| Corrida | 1 | 2 | 3 | 4 | 5 | Mediana |
 |---|---|---|---|---|---|---|
 | TotalTime (ms) | 349 | 220 | 234 | 320 | 235 | **235** |
 
-That is launch to first frame, which is the loading state — not content. Time
-to first content is that plus the CMS round trip, measured separately below,
-because the app has no startup instrumentation to report a single end-to-end
-number. Adding one (an `os_signpost` on iOS, a trace section on Android, fired
-when the first block renders) is the obvious next step and is what the
-[repository/query boundary](ARCHITECTURE.md) exists to make easy.
+Eso es arranque hasta el primer frame, que es el estado de loading, no
+contenido. El tiempo hasta el primer contenido es eso más el viaje al CMS,
+medido aparte abajo, porque la app no tiene instrumentación de arranque que
+reporte un solo número de punta a punta.
 
-## CMS latency
+Agregarla (un `os_signpost` en iOS, una trace section en Android, disparada
+cuando se renderiza el primer block) es el siguiente paso obvio, y es
+justamente lo que la [frontera de repositorio y query](ARCHITECTURE.md) existe
+para facilitar.
 
-Three runs per endpoint from the development machine, with the required
-delivery-context parameters:
+## Latencia del CMS
+
+Tres corridas por endpoint desde la máquina de desarrollo, con los parámetros
+de delivery context requeridos:
 
 ```sh
 curl -s -o /dev/null -w "ttfb=%{time_starttransfer}s total=%{time_total}s size=%{size_download}B\n" \
   "$BASE/api/content/v1/bootstrap?platform=android&market=MX&audience=guest&appVersion=1.0.0"
 ```
 
-| Endpoint | TTFB (best–worst) | Payload |
+| Endpoint | TTFB (mejor a peor) | Payload |
 |---|---|---|
-| `/bootstrap` | 0.32 – 0.55 s | 12.1 KB |
-| `/pages/home` | 0.31 – 0.40 s | 20.7 KB |
-| `/pages/menu` | 0.32 – 0.51 s | 19.1 KB |
-| `/legal/privacy_policy` | 0.31 – 0.34 s | 1.0 KB |
+| `/bootstrap` | 0.32 a 0.55 s | 12.1 KB |
+| `/pages/home` | 0.31 a 0.40 s | 20.7 KB |
+| `/pages/menu` | 0.32 a 0.51 s | 19.1 KB |
+| `/legal/privacy_policy` | 0.31 a 0.34 s | 1.0 KB |
 
-The first request of a run is consistently the slowest, which is the Vercel
-deployment waking rather than anything in the app. Practical consequence: first
-content lands roughly 0.5–0.9 s after launch on a warm network, and the
-persisted last-good response is what covers the cold or offline case.
+La primera petición de cada corrida es siempre la más lenta, que es el
+deployment de Vercel despertando y no algo de la app.
 
-## Scroll performance
+Consecuencia práctica: el primer contenido aterriza entre 0.5 y 0.9 s después
+del arranque con red tibia, y la respuesta guardada es lo que cubre el caso
+frío u offline.
 
-`dumpsys gfxinfo` reset immediately before each interaction, read immediately
-after. The frame budget is 16.7 ms at 60 Hz.
+## Performance de scroll
+
+`dumpsys gfxinfo` reseteado justo antes de cada interacción y leído justo
+después. El presupuesto de frame es 16.7 ms a 60 Hz.
 
 ```sh
 adb shell dumpsys gfxinfo com.casamaiz reset
-# ...interact...
+# ...interactuar...
 adb shell dumpsys gfxinfo com.casamaiz
 ```
 
-| Surface | Frames | Janky | p50 | p90 | p95 | p99 |
+| Superficie | Frames | Janky | p50 | p90 | p95 | p99 |
 |---|---|---|---|---|---|---|
 | Home, vertical (18 swipes) | 833 | 4.2% | 17 ms | 18 ms | 22 ms | 26 ms |
 | Menu, vertical (10 swipes) | 372 | 5.4% | 17 ms | 17 ms | 18 ms | 19 ms |
-| Carousel, horizontal paging (10 swipes) | 291 | 7.2% | 17 ms | 17 ms | 18 ms | 23 ms |
+| Carousel, paginado horizontal (10 swipes) | 291 | 7.2% | 17 ms | 17 ms | 18 ms | 23 ms |
 
-No missed vsyncs and no slow bitmap uploads on any run, which is the signal
-worth watching given how image-heavy the CMS content is. The p99 on Home (26 ms)
-comes from the frames where new cards with images enter the viewport.
+Ninguna corrida perdió vsyncs ni reportó subidas lentas de bitmaps, que es la
+señal que importa vigilar con contenido tan cargado de imágenes. El p99 de Home
+(26 ms) sale de los frames donde entran cards nuevas con imagen.
 
-One measurement to discard rather than believe: swiping horizontally on the
-promo rail reported 50% janky frames over a sample of **16 frames**. The rail
-currently has a single card, so there was nothing to scroll and the sample is
-just idle noise. Recorded here because a 50% figure with no sample size next to
-it is exactly the kind of number that gets repeated out of context.
+Una medición para descartar en vez de creer: el swipe horizontal en el promo
+rail reportó 50% de frames janky sobre una muestra de **16 frames**. El rail
+hoy tiene una sola card, así que no había nada que scrollear y la muestra es
+ruido en reposo.
 
-## Memory and size
+Queda anotado porque un 50% sin el tamaño de muestra al lado es exactamente el
+tipo de número que se repite fuera de contexto.
 
-After launch plus the scroll runs above (`adb shell dumpsys meminfo`):
+## Memoria y tamaño
 
-| Metric | Value |
+Después del arranque más las corridas de scroll de arriba
+(`adb shell dumpsys meminfo`):
+
+| Métrica | Valor |
 |---|---|
 | Total PSS | 253 MB |
 | Total RSS | 353 MB |
 | Native heap | 154 MB |
 | Dalvik heap | 9 MB |
-| Release APK (arm64-v8a) | 32.0 MB |
-| iOS release JS bundle | 5.3 MB |
+| APK de release (arm64-v8a) | 32.0 MB |
+| Bundle JS de release en iOS | 5.3 MB |
 
-Native heap dominates, which is expected for Hermes plus the image decoding
-buffers.
+El native heap domina, que es lo esperado con Hermes más los buffers de
+decodificación de imágenes.
 
-## Accessibility
+## Accesibilidad
 
-### Labels and touch targets
+### Labels y áreas táctiles
 
-The Android accessibility tree was dumped with `adb exec-out uiautomator dump`
-on Home and every clickable node measured (420 dpi, so 1 dp = 2.625 px):
+El árbol de accesibilidad de Android se volcó con
+`adb exec-out uiautomator dump` en Home, y se midió cada nodo clickeable (a 420
+dpi, 1 dp = 2.625 px):
 
-| Control | Before | After |
+| Control | Antes | Después |
 |---|---|---|
-| Tab bar items | 82–103 × 52 dp | unchanged, already over both minimums |
-| Notice actions ("Ir a menú") | 36 dp tall | **48 dp** |
-| Carousel previous/next | 44 × 44 dp | **48 × 48 dp** on Android, 44 on iOS |
-| Notice dismiss | 20 dp visual + `hitSlop={12}` = 44 dp | 20 dp visual + `hitSlop` = **48 dp** on Android, 44 on iOS |
+| Ítems del tab bar | 82 a 103 × 52 dp | sin cambio, ya pasaba ambos mínimos |
+| Acciones de aviso ("Ir a menú") | 36 dp de alto | **48 dp** |
+| Anterior y siguiente del carousel | 44 × 44 dp | **48 × 48 dp** en Android, 44 en iOS |
+| Cerrar aviso | 20 dp visuales + `hitSlop={12}` = 44 dp | 20 dp visuales + `hitSlop` = **48 dp** en Android, 44 en iOS |
 
-Every clickable node has an accessibility label — none were missing.
+Todos los nodos clickeables tienen label de accesibilidad. No faltaba ninguno.
 
-The original sweep found three controls sized to the iOS 44 pt minimum on both
-platforms, where Material specifies 48 dp, and notice action pills at just
-36 dp. All of them now resolve through one `MIN_TOUCH_TARGET` token
-(`src/presentation/theme/tokens.ts`) that returns 48 on Android and 44 on iOS,
-alongside the other platform divergences.
+La revisión original encontró tres controles dimensionados al mínimo de 44 pt
+de iOS en ambas plataformas, donde Material pide 48 dp, y pills de acción de
+aviso en apenas 36 dp.
 
-Note that `uiautomator` reports visual bounds and cannot see React Native's
-`hitSlop`, so the dismiss button still reads as 20 dp in a raw dump. Its
-effective target is asserted in
-`__tests__/presentation/banners/noticeTouchTarget.test.tsx` instead, which is
-the only place the glyph size and the slop are checked together.
+Ahora todos resuelven contra un solo token `MIN_TOUCH_TARGET`
+(`src/presentation/theme/tokens.ts`) que devuelve 48 en Android y 44 en iOS,
+junto al resto de divergencias por plataforma.
 
-### Large text
+Ojo con una cosa: `uiautomator` reporta límites visuales y no ve el `hitSlop`
+de React Native, así que el botón de cerrar sigue leyéndose como 20 dp en un
+volcado crudo.
 
-Android was tested at `settings put system font_scale 1.3` and `2.0`; iOS at
+Su área efectiva se verifica en
+`__tests__/presentation/banners/noticeTouchTarget.test.tsx`, que es el único
+lugar donde el tamaño del glifo y el slop se revisan juntos.
+
+### Texto grande
+
+Android se probó con `settings put system font_scale 1.3` y `2.0`. iOS con
 `simctl ui booted content_size accessibility-extra-extra-extra-large`.
 
-At Android 2.0×, everything reflows: notice text wraps to three lines, card
-titles and descriptions grow, prices stay visible, and nothing is clipped or
-overlapped. The tab bar keeps its icon-only layout, which is exactly why it has
-no labels to overflow.
+A 2.0× en Android todo refluye: el texto del aviso pasa a tres líneas, títulos
+y descripciones de cards crecen, los precios siguen visibles y nada se corta ni
+se encima. El tab bar mantiene su layout de solo íconos, que es justamente por
+qué no tiene labels que desborden.
 
-The original sweep found the notice stack dominating the viewport at those
-sizes: with three notices active (app update, operational notice, alert) it took
-roughly half the screen at Android 2.0× and filled it entirely at the iOS
-`accessibility-extra-extra-extra-large` size, leaving Home reachable only after
-dismissing them. The three notices now share one container
-(`src/presentation/banners/NoticeStack.tsx`) capped at 40% of the screen that
-scrolls internally past that point. Re-checked at both settings afterwards:
-Home content and the tab bar stay reachable, the stack scrolls to reveal the
-rest, and nothing changes at default text sizes.
+La revisión original encontró que el stack de avisos se comía la pantalla a
+esos tamaños. Con tres avisos activos (actualización de app, aviso operativo y
+alerta) ocupaba como media pantalla a 2.0× en Android y la llenaba entera en el
+tamaño `accessibility-extra-extra-extra-large` de iOS, dejando Home alcanzable
+solo después de descartarlos.
 
-### What was not tested
+Los tres avisos ahora comparten un contenedor
+(`src/presentation/banners/NoticeStack.tsx`) topado al 40% de la pantalla, que
+a partir de ahí scrollea por dentro.
 
-No screen-reader pass. TalkBack and VoiceOver cannot be driven from the command
-line, and reading labels out of the accessibility tree — which is what was done
-above — is not the same as confirming the announcement order and focus movement
-a real screen reader produces. That needs a manual pass on a device and is the
-first thing to do with more time.
+Se volvió a revisar en ambos ajustes: el contenido de Home y el tab bar siguen
+alcanzables, el stack scrollea para mostrar el resto, y a tamaños de texto por
+defecto no cambia nada.
+
+### Qué no se probó
+
+Ninguna pasada con lector de pantalla. TalkBack y VoiceOver no se pueden
+manejar desde la línea de comandos, y leer labels del árbol de accesibilidad
+(que es lo que se hizo arriba) no es lo mismo que confirmar el orden de anuncio
+y el movimiento de foco que produce un lector real.
+
+Eso requiere una pasada manual en dispositivo y es lo primero que haría con más
+tiempo.

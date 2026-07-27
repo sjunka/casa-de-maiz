@@ -1,90 +1,110 @@
 # Setup
 
-Prerequisites, configuration, install, run commands, and deep links for both platforms.
+Prerrequisitos, configuración, instalación, comandos y deep links para ambas
+plataformas.
 
-## Prerequisites
+## Prerrequisitos
 
-- Node 22.23.1 — pinned in `.nvmrc`. If you use `nvm`, run `nvm use`.
-- Xcode 26.5+ and CocoaPods 1.16+ for iOS.
-- Android Studio (SDK, platform-tools, an emulator image) and a JDK 17 for Android. `JAVA_HOME` must point at a JDK 17 install (e.g. `brew install openjdk@17`).
-- Ruby + Bundler for CocoaPods (`bundle install`).
-- [Maestro CLI](https://maestro.mobile.dev) for the E2E suite — `curl -Ls "https://get.maestro.mobile.dev" | bash`.
+- Node 22.23.1, fijado en `.nvmrc`. Con `nvm`, corre `nvm use`.
+- Xcode 26.5+ y CocoaPods 1.16+ para iOS.
+- Android Studio (SDK, platform-tools, una imagen de emulador) y un JDK 17.
+  `JAVA_HOME` debe apuntar a un JDK 17 (por ejemplo `brew install openjdk@17`).
+- Ruby y Bundler para CocoaPods (`bundle install`).
+- [Maestro CLI](https://maestro.mobile.dev) para la suite E2E:
+  `curl -Ls "https://get.maestro.mobile.dev" | bash`.
 
-## Configuration
+## Configuración
 
-Base URL is read from `react-native-config` and must never be hardcoded.
+La base URL se lee con `react-native-config` y nunca va hardcodeada.
 
 ```sh
 cp .env.example .env
 ```
 
-`.env.example` defaults `API_BASE_URL` to the published deployment. `.env` is git-ignored — no secrets or machine-specific values are committed.
+`.env.example` deja `API_BASE_URL` apuntando al deployment publicado. `.env`
+está en `.gitignore`: no se commitea ningún secreto ni valor local.
 
-Crash reporting (`SENTRY_DSN`, `SENTRY_ENVIRONMENT`) is configured the same way. `SENTRY_DSN` is blank by default, which keeps crash reporting disabled locally — set it to a real DSN to enable it.
+El crash reporting (`SENTRY_DSN`, `SENTRY_ENVIRONMENT`) se configura igual.
+`SENTRY_DSN` viene vacío, lo que mantiene el reporte apagado en local. Ponle un
+DSN real para encenderlo.
 
-### Networking per target
+### Red según el destino
 
-- **iOS Simulator**: reaches the public API directly over `https`; no setup beyond the base URL.
-- **Android emulator**: the emulator's virtual network reaches the public API directly over `https`; no host-mapping is needed for this deployment. (Only a machine-local server, addressed as `10.0.2.2`, would need special-casing — not the case here.)
-- **Physical device**: same as the emulator, since the base URL is a public `https` endpoint rather than a machine-local server. iOS needs the device registered to a signing team in Xcode; Android needs USB debugging enabled and the device authorized (`adb devices` should list it).
-  - Enable USB debugging: Settings → About phone → tap Build number 7x to unlock Developer Options → enable USB Debugging.
-  - Connect via USB, accept the "Allow USB debugging?" prompt on the device, then confirm with `adb devices` (status must read `device`, not `unauthorized`).
+- **Simulador de iOS**: llega a la API pública por `https` directo. No hace
+  falta nada más que la base URL.
+- **Emulador de Android**: su red virtual también llega por `https` directo. No
+  se necesita mapear el host. Solo un servidor local de la máquina, en
+  `10.0.2.2`, requeriría un caso especial, y aquí no aplica.
+- **Dispositivo físico**: igual que el emulador, porque la base URL es un
+  endpoint público. En iOS hay que registrar el dispositivo en un signing team
+  desde Xcode. En Android hay que habilitar USB debugging y autorizar el
+  dispositivo (`adb devices` debe listarlo).
+  - Habilitar USB debugging: Ajustes, Acerca del teléfono, toca Número de
+    compilación 7 veces para desbloquear Opciones de desarrollador, y activa
+    Depuración USB.
+  - Conecta por USB, acepta el diálogo "¿Permitir depuración USB?" en el
+    dispositivo y confirma con `adb devices`. El estado debe decir `device`, no
+    `unauthorized`.
 
-## Install
+## Instalación
 
 ```sh
 npm install
-bundle install                # once, for CocoaPods
+bundle install                # una vez, para CocoaPods
 (cd ios && bundle exec pod install)
 ```
 
-## Run
+## Correr
 
 ```sh
-npm run ios       # iOS Simulator
-npm run android   # Android emulator (must be running first)
+npm run ios       # Simulador de iOS
+npm run android   # Emulador de Android, ya debe estar corriendo
 ```
 
-Physical device:
+En dispositivo físico:
 
 ```sh
-npx react-native run-ios --device "Your iPhone Name"
-npm run android   # with one device authorized in `adb devices`, no flag needed
-npx react-native run-android --device <adb-device-id>   # multiple devices/emulators attached
+npx react-native run-ios --device "Nombre de tu iPhone"
+npm run android   # con un solo dispositivo autorizado en `adb devices`, sin flag
+npx react-native run-android --device <adb-device-id>   # varios dispositivos o emuladores conectados
 ```
 
-## Prebuilt Android APK
+## APK precompilado de Android
 
-To try the app without a toolchain, install the APK from the
-[latest release](https://github.com/sjunka/casa-de-maiz/releases/latest):
+Para probar la app sin toolchain, instala el APK del
+[último release](https://github.com/sjunka/casa-de-maiz/releases/latest):
 
 ```sh
 adb install casa-maiz-1.0.0-arm64.apk
 ```
 
-arm64-v8a only, JS bundled into the binary, pointed at the published CMS. It is
-signed with the React Native debug keystore, so Android warns about an unknown
-developer. Verified installing and running on a physical Android device
-(Redmi Note 8 Pro) — 2026-07-26. Rebuild it with:
+Solo arm64-v8a, con el JS empaquetado en el binario y apuntando al CMS
+publicado. Va firmado con el debug keystore de React Native, así que Android
+avisa de un desarrollador desconocido.
+
+Verificado instalando y corriendo en un dispositivo físico (Redmi Note 8 Pro)
+el 2026-07-26. Para recompilarlo:
 
 ```sh
 (cd android && ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a)
 ```
 
-Sentry's source-map upload only joins the build when `SENTRY_AUTH_TOKEN` is set,
-so a release build needs no Sentry credentials — see
-[Observability](OBSERVABILITY.md).
+La subida de source maps de Sentry solo se engancha al build cuando
+`SENTRY_AUTH_TOKEN` está definido, así que un build de release no necesita
+credenciales. Ver [Observabilidad](OBSERVABILITY.md).
 
 ## Deep links
 
-The app registers the `casamaiz://` scheme. Destinations match the CMS-published paths, e.g. `casamaiz://menu`, `casamaiz://legal/privacy_policy`, `casamaiz://reservas`.
+La app registra el scheme `casamaiz://`. Los destinos coinciden con los paths
+publicados por el CMS, por ejemplo `casamaiz://menu`,
+`casamaiz://legal/privacy_policy`, `casamaiz://reservas`.
 
 ```sh
-# iOS Simulator
+# Simulador de iOS
 xcrun simctl openurl booted casamaiz://menu
 
-# Android emulator/device
+# Emulador o dispositivo Android
 adb shell am start -W -a android.intent.action.VIEW -d "casamaiz://menu"
 ```
 
-An unsupported path lands on Home; any other scheme is rejected.
+Un path no soportado aterriza en Home. Cualquier otro scheme se rechaza.
