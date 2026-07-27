@@ -1,6 +1,8 @@
 # Limitaciones conocidas y siguientes pasos
 
-Lo que se aplazó a propósito, con su razón:
+## Lo que quedó fuera a propósito
+
+Con su razón:
 
 - **Tipos generados de OpenAPI.** Descartados, no aplazados. Ver
   [Estrategia de tipos](ARCHITECTURE.md#estrategia-de-tipos).
@@ -38,6 +40,39 @@ Lo que se aplazó a propósito, con su razón:
   cuya propiedad el assessment nos permita verificar. El scheme propio
   `casamaiz://` sí está implementado.
 
-Con más tiempo: ampliar la cobertura E2E más allá de navegación, formularios y
-alertas (deep linking, capturas de estados de error), y snapshots de regresión
-visual en ambas plataformas.
+## Qué mejoraría con más tiempo
+
+En este orden, por lo que cada cosa compra:
+
+1. **Verificar las formas que hoy son suposiciones.** El `formBlock` está
+   modelado sobre el plugin form-builder de Payload y los cinco block genéricos
+   leen campos de nombre probable, porque ningún payload vivo sirve uno
+   ([ADR 0011](adr/0011-form-block-modelling.md)). Con un payload real o un
+   schema de block en el OpenAPI, esos schemas dejan de ser una apuesta. Es lo
+   único de esta lista que puede estar mal hoy en vez de solo faltar.
+2. **Una pasada real de lector de pantalla.** VoiceOver y TalkBack sobre los
+   cinco flujos, verificando orden de anuncio y movimiento del foco, no solo el
+   árbol de accesibilidad.
+3. **CI.** No hay pipeline: `typecheck`, `lint` y `test` corren a mano. Una
+   GitHub Action con los tres más un build de debug por plataforma convierte la
+   sección de Calidad en algo que un evaluador no tiene que ejecutar para
+   creerse.
+4. **Cerrar el lazo de performance.** La frontera de medición existe pero no
+   reporta a ningún backend ([Observabilidad](OBSERVABILITY.md)), así que el
+   tiempo hasta el primer contenido sigue siendo dos números sumados a mano.
+   Conectarla convierte el profiling puntual de
+   [Profiling](PROFILING.md) en una serie de tiempo.
+5. **Ampliar E2E.** Hoy son 6 flows. Faltan deep linking, capturas de los
+   estados de error y snapshots de regresión visual en ambas plataformas —
+   justamente lo que las pruebas de componente no pueden probar.
+6. **Sacar los strings locales de la app.** `noticeCardStrings` ("Aviso
+   descartado", "Deshacer") es la única copy que la app se inventa
+   ([ADR 0018](adr/0018-notice-dismissal.md)), y está en español hardcodeado. O
+   la publica el CMS, o entra en una capa de i18n; hoy no está en ninguna de las
+   dos.
+7. **Reunir las constantes de dismissal.** `UNDO_MS` en `NoticeCard` y los
+   tiempos de salida en `CollapsibleBanner` son una sola sensación repartida en
+   dos archivos.
+8. **Reservas y Universal Links.** Ambos esperan a algo externo: una API de
+   reservas documentada y un dominio cuya propiedad podamos verificar. Ninguno
+   es trabajo de app hasta entonces.
