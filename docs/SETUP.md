@@ -11,7 +11,9 @@ plataformas.
   `JAVA_HOME` debe apuntar a un JDK 17 (por ejemplo `brew install openjdk@17`).
 - Ruby y Bundler para CocoaPods (`bundle install`).
 - [Maestro CLI](https://maestro.mobile.dev) para la suite E2E:
-  `curl -Ls "https://get.maestro.mobile.dev" | bash`.
+  `curl -Ls "https://get.maestro.mobile.dev" | bash`. El instalador deja el
+  binario en `~/.maestro/bin` y agrega esa ruta al perfil de bash/zsh; en fish
+  hay que agregarla a mano (`fish_add_path -a $HOME/.maestro/bin`).
 
 ## Configuración
 
