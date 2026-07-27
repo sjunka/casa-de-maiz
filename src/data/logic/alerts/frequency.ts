@@ -23,6 +23,15 @@ export const resetDismissals = async (): Promise<void> => {
 // banner can never read a stale record before the reset lands.
 const launchReset = resetDismissals();
 
+// Test-only: `shownThisSession` is module state with no equivalent at
+// runtime (the app never restarts a session without restarting the
+// process). Without this, an alert recorded `shown` by one test file stays
+// suppressed for every test that runs after it in the same module registry.
+export const resetSessionStateForTests = (): void => {
+  shownThisSession.clear();
+  warnedFrequencyTypes.clear();
+};
+
 const readRecord = async (alertId: string): Promise<AlertRecord> => {
   const raw = await AsyncStorage.getItem(storageKey(alertId));
   if (!raw) return {};

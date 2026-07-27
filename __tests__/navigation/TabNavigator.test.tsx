@@ -78,6 +78,7 @@ test('the header title comes from the bootstrap label, not a hardcoded literal',
 
   expect(screen.getByText('Casa de Maíz')).toBeTruthy();
   expect(screen.queryByText('Inicio')).toBeNull();
+  await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
 });
 
 const flagDestinations = [
