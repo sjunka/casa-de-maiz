@@ -53,6 +53,33 @@ test('builds tabs only for destinations that support the running platform, in th
   await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
 });
 
+test('the header title comes from the bootstrap label, not a hardcoded literal', async () => {
+  const destinations = [destination({ key: 'home', path: '/', label: 'Casa de Maíz' })];
+
+  globalThis.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      contractVersion: '1.1',
+      data: { layout: [] },
+      nextChangeAt: null,
+      preview: false,
+      resolvedContext: {},
+    }),
+  }) as unknown as typeof fetch;
+
+  await render(
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <TabNavigator destinations={destinations} />
+      </NavigationContainer>
+    </QueryClientProvider>,
+  );
+
+  expect(screen.getByText('Casa de Maíz')).toBeTruthy();
+  expect(screen.queryByText('Inicio')).toBeNull();
+});
+
 test('a feature-flag change alters which destinations appear in navigation', async () => {
   const destinations = [
     destination({ key: 'home', path: '/', label: 'Inicio' }),

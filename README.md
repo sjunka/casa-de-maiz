@@ -43,14 +43,14 @@ Cada requisito central del assessment y dónde vive:
 | # | Requisito | Dónde |
 |---|---|---|
 | 1 | Base con fronteras claras, base URL configurable | `src/core`, `src/data`, `src/presentation` ([mapa](docs/ARCHITECTURE.md)) |
-| 2 | Cliente tipado del CMS: cuatro parámetros de contexto, `Platform.OS`, versión instalada, contrato 1.1, URLs de media, dedupe, cancelación | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` |
+| 2 | Cliente tipado del CMS: cuatro parámetros de contexto, `Platform.OS`, versión instalada, contrato 1.1, URLs de media, dedupe, respuestas obsoletas descartadas | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` |
 | 3 | Block registry que renderiza todos los blocks vivos de Home y Menu; los desconocidos fallan seguro | `presentation/blocks/registry.tsx` |
 | 4 | Bootstrap como configuración: navegación, promociones, feature flags, aviso operativo, update gate, alertas con placement, trigger, frecuencia, dismissal y targeting | `data/logic/`, `presentation/banners/` |
 | 5 | Navegación desde `bootstrap.navigation`, un solo resolver de destinos, links externos validados, back nativo | `navigation/destinations/resolveDestination.ts`, `navigation/components/TabNavigator.tsx` |
 | 6 | Loading, vacío, error con retry, pull-to-refresh, offline/stale, contrato no soportado, not found; `nextChangeAt` como expiración dura | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` |
 | 7 | Media absoluta y relativa, aspect ratio respetado, texto alternativo | `data/remote/fetchers/media.ts`, `presentation/ui/CmsImage.tsx` |
 | 8 | Safe areas, back por plataforma, áreas táctiles, dynamic type, dark mode, reduced motion, teclado | `presentation/theme/`, `presentation/ui/AppPressable.tsx` |
-| 9 | Pruebas automatizadas de los seis casos exigidos; typecheck, lint y test en verde | 187 pruebas, 6 flows de Maestro ([Pruebas](docs/TESTING.md)) |
+| 9 | Pruebas automatizadas de los seis casos exigidos; typecheck, lint y test en verde | 186 pruebas, 6 flows de Maestro ([Pruebas](docs/TESTING.md)) |
 
 Los tres bonus están cubiertos. **Glass de iOS**
 (`presentation/ui/GlassSurface.tsx`, condicionado a Reduce Transparency).
@@ -148,7 +148,7 @@ físicos, red del emulador y deep links están en [Setup](docs/SETUP.md).
 npm run typecheck && npm run lint && npm test
 ```
 
-187 pruebas en 46 suites, más 6 flows end-to-end de Maestro que cubren
+186 pruebas en 46 suites, más 6 flows end-to-end de Maestro que cubren
 fallback offline, contenido expirado, versión de contrato no soportada,
 navegación, una alerta publicada por el CMS y un envío de formulario. Detalle
 en [Pruebas](docs/TESTING.md).
