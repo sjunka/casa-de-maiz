@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { mediaAssetSchema } from './media';
+import { mediaAssetSchema } from '../primitives/media';
 
 export const bootstrapPromotionSchema = z
   .object({

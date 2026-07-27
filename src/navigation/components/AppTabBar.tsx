@@ -5,7 +5,7 @@ import { GlassSurface } from '@presentation/ui/GlassSurface';
 import { getElevatedSurfaceStyle } from '@presentation/theme/tokens';
 import type { Theme } from '@presentation/theme/useTheme';
 import { TabIcon } from './TabIcon';
-import type { TabOptions } from './types';
+import type { TabOptions } from '../types';
 
 type Props = BottomTabBarProps & { colors: Theme['colors']; scheme: Theme['scheme'] };
 

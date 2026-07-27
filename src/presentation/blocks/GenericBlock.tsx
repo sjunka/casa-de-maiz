@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { useDestinationNavigation } from '@navigation/useDestinationNavigation';
+import { useDestinationNavigation } from '@navigation/destinations/useDestinationNavigation';
 import { useTheme } from '../theme/useTheme';
 import { AppPressable } from '../ui/AppPressable';
 import { CmsImage } from '../ui/CmsImage';
 import { RichText } from '../ui/RichText';
-import type { GenericBlock as GenericBlockData } from '@core/contract/models/block';
+import type { GenericBlock as GenericBlockData } from '@core/contract/models/blocks/block';
 
 type Props = { block: GenericBlockData };
 

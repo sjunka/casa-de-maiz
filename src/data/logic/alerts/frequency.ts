@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Alert } from '@core/contract/models/alert';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
 
 const storageKey = (alertId: string) => `alert-dismissed:${alertId}`;
 

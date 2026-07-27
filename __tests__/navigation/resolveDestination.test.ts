@@ -1,4 +1,4 @@
-import { resolveDestination } from '@navigation/resolveDestination';
+import { resolveDestination } from '@navigation/destinations/resolveDestination';
 
 test('resolves the four known internal paths', () => {
   expect(resolveDestination('/')).toEqual({ kind: 'internal', screen: 'home' });

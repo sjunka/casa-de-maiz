@@ -1,4 +1,4 @@
-import { isBelowMinimumVersion } from '@data/logic/compareVersions';
+import { isBelowMinimumVersion } from '@data/logic/appUpdate/compareVersions';
 
 test('an installed version below the minimum is below', () => {
   expect(isBelowMinimumVersion('1.0.0', '1.5.0')).toBe(true);

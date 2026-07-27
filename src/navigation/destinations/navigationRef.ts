@@ -1,5 +1,5 @@
 import { createNavigationContainerRef } from '@react-navigation/native';
-import type { RootTabParamList } from './types';
+import type { RootTabParamList } from '../types';
 import type { ResolvedDestination } from './resolveDestination';
 
 export const navigationRef = createNavigationContainerRef<RootTabParamList>();

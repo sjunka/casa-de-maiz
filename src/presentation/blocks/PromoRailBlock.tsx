@@ -3,8 +3,8 @@ import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react
 import { CmsImage } from '../ui/CmsImage';
 import { Surface } from '../ui/Surface';
 import { useTheme, type Theme } from '../theme/useTheme';
-import type { PromoRailBlock as PromoRailBlockData } from '@core/contract/models/block';
-import type { BootstrapPromotion } from '@core/contract/models/promotion';
+import type { PromoRailBlock as PromoRailBlockData } from '@core/contract/models/blocks/block';
+import type { BootstrapPromotion } from '@core/contract/models/bootstrap/promotion';
 
 type Promotion = PromoRailBlockData['promotions'][number];
 type Props = { block: PromoRailBlockData; fallbackPromotions?: BootstrapPromotion[] };

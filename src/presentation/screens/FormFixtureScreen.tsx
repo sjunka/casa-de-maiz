@@ -6,7 +6,7 @@ import { AppPressable } from '../ui/AppPressable';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { useTheme, toggleSchemeOverride } from '../theme/useTheme';
 import { MIN_TOUCH_TARGET } from '../theme/tokens';
-import type { BlockEnvelope } from '@core/contract/models/block';
+import type { BlockEnvelope } from '@core/contract/models/blocks/block';
 
 // Dev-only: no live page serves a formBlock yet,
 // so this fixture is the only way to see and exercise the block.

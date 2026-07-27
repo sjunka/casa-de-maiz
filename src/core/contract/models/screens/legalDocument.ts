@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { richTextSchema } from './richText';
+import { richTextSchema } from '../primitives/richText';
 
 export const legalDocumentDataSchema = z
   .object({

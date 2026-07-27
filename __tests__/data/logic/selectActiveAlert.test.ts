@@ -1,5 +1,5 @@
-import { selectActiveAlerts } from '@data/logic/selectActiveAlert';
-import type { Alert } from '@core/contract/models/alert';
+import { selectActiveAlerts } from '@data/logic/alerts/selectActiveAlert';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
 
 const alert = (overrides: Partial<Alert>): Alert => ({
   id: 'alert-1',

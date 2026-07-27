@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { CollapsibleBanner } from '../ui/CollapsibleBanner';
 import { NoticeCard } from './NoticeCard';
 import { useTheme } from '../theme/useTheme';
-import type { Alert } from '@core/contract/models/alert';
-import { selectActiveAlerts } from '@data/logic/selectActiveAlert';
-import { isSuppressed, recordDismissal, recordShown } from '@data/logic/frequency';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
+import { selectActiveAlerts } from '@data/logic/alerts/selectActiveAlert';
+import { isSuppressed, recordDismissal, recordShown } from '@data/logic/alerts/frequency';
 import { useScrollProgress } from './useScrollProgress';
-import { openDestination } from '@navigation/openDestination';
-import { navigateToResolved } from '@navigation/navigationRef';
+import { openDestination } from '@navigation/destinations/openDestination';
+import { navigateToResolved } from '@navigation/destinations/navigationRef';
 
 type Props = { alerts: Alert[]; currentPageSlug: string };
 

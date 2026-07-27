@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { fetchEnvelope } from '@core/transport/client';
 import { buildDeliveryContext, type DeliveryContext } from '@core/contract/deliveryContext';
 import type { ApiError } from '@core/transport/apiError';
-import type { ContractVersion } from '@core/contract/models/contractVersion';
-import type { envelopeSchema } from '@core/contract/models/envelope';
+import type { ContractVersion } from '@core/contract/models/primitives/contractVersion';
+import type { envelopeSchema } from '@core/contract/models/primitives/envelope';
 
 type CacheEntry = {
   envelope: unknown;

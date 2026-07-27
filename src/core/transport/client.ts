@@ -9,8 +9,8 @@ import {
   parseError,
   unsupportedContractError,
 } from './apiError';
-import { envelopeSchema } from '../contract/models/envelope';
-import { isContractVersionCompatible, type ContractVersion } from '../contract/models/contractVersion';
+import { envelopeSchema } from '../contract/models/primitives/envelope';
+import { isContractVersionCompatible, type ContractVersion } from '../contract/models/primitives/contractVersion';
 
 export type TransportErrorReporter = (
   error: ApiError,

@@ -1,7 +1,7 @@
-import type { Alert } from '@core/contract/models/alert';
-import type { OperationalControls } from '@core/contract/models/operationalControls';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
+import type { OperationalControls } from '@core/contract/models/bootstrap/operationalControls';
 import { getAppVersion } from '@core/contract/appVersion';
-import { decideAppUpdate } from './decideAppUpdate';
+import { decideAppUpdate } from '../appUpdate/decideAppUpdate';
 
 // This build opens with the full notice stack on every launch, so each of the
 // three kinds is guaranteed a card. Backend content always wins: a seed only

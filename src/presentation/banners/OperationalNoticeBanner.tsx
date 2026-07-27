@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { CollapsibleBanner } from '../ui/CollapsibleBanner';
 import { NoticeCard } from './NoticeCard';
 import { useTheme } from '../theme/useTheme';
-import type { OperationalControls } from '@core/contract/models/operationalControls';
+import type { OperationalControls } from '@core/contract/models/bootstrap/operationalControls';
 
 type Props = { operationalControls?: OperationalControls };
 

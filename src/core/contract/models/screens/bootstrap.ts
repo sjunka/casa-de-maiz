@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { alertSchema } from './alert';
-import { operationalControlsSchema } from './operationalControls';
-import { bootstrapPromotionSchema } from './promotion';
+import { alertSchema } from '../bootstrap/alert';
+import { operationalControlsSchema } from '../bootstrap/operationalControls';
+import { bootstrapPromotionSchema } from '../bootstrap/promotion';
 
 export const cmsDestinationSchema = z.object({
   key: z.string(),

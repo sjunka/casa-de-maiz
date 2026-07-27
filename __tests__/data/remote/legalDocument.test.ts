@@ -6,7 +6,7 @@ jest.mock('react-native', () => ({
   Platform: { OS: 'ios' },
 }));
 
-import { fetchLegalDocument } from '@data/remote/legalDocument';
+import { fetchLegalDocument } from '@data/remote/fetchers/legalDocument';
 
 const envelope = (data: unknown) => ({
   contractVersion: '1.1',

@@ -1,10 +1,10 @@
 import { ActivityIndicator, Button, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useBootstrap } from '@data/remote/useBootstrap';
-import { TabNavigator } from '@navigation/TabNavigator';
-import { flattenNavigation } from '@core/contract/models/bootstrap';
-import { seedNotices } from '@data/logic/seedNotices';
-import { resolveNoticeSources } from '@data/logic/resolveNoticeSource';
+import { useBootstrap } from '@data/remote/hooks/useBootstrap';
+import { TabNavigator } from '@navigation/components/TabNavigator';
+import { flattenNavigation } from '@core/contract/models/screens/bootstrap';
+import { seedNotices } from '@data/logic/alerts/seedNotices';
+import { resolveNoticeSources } from '@data/logic/alerts/resolveNoticeSource';
 import { AlertBanner } from '../banners/AlertBanner';
 import { OperationalNoticeBanner } from '../banners/OperationalNoticeBanner';
 import { AppUpdateGate } from '../banners/AppUpdateGate';

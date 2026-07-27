@@ -14,10 +14,23 @@ flowchart TD
 ```
 
 - `src/core/transport` — HTTP client, error mapping, base-URL config
-- `src/core/contract` — supported contract version, delivery-context construction, installed app version, and `src/core/contract/models` — Zod schemas and their inferred TypeScript types
-- `src/data/remote` — endpoint fetchers, query hooks, cache and freshness policy, query client
-- `src/data/logic` — alert selection and frequency policy, scroll-progress derivation, app-update decisioning, feature flags — bootstrap-driven application state. No React; enforced by lint.
-- `src/navigation` — destination resolution and the tab shell built from bootstrap
+- `src/core/contract` — supported contract version, delivery-context construction, installed app version, and `src/core/contract/models` — Zod schemas and their inferred TypeScript types, grouped by what references what:
+  - `models/primitives` — media, rich text, envelope, contract version — no dependency on any other model
+  - `models/blocks` — the block union, depends on `primitives`
+  - `models/bootstrap` — alert, promotion, operational controls — the pieces `bootstrap` assembles
+  - `models/screens` — per-screen payloads (`home`, `menu`, `legalDocument`, `bootstrap`), depends on `blocks` and `bootstrap`
+- `src/data/remote` — endpoint fetchers, query hooks, cache and freshness policy, query client:
+  - `remote/fetchers` — one function per endpoint, returns validated data
+  - `remote/hooks` — a `useQuery` wrapper per fetcher
+  - `cache.ts`, `queryClient.ts` stay at the root — shared by every fetcher/hook
+- `src/data/logic` — bootstrap-driven application state, no React, enforced by lint:
+  - `logic/alerts` — alert selection, frequency policy, notice-source resolution
+  - `logic/appUpdate` — version comparison and update decisioning
+  - `featureFlags.ts`, `scrollProgress.ts` stay at the root — single-purpose, unrelated to either group
+- `src/navigation` — destination resolution and the tab shell built from bootstrap:
+  - `navigation/components` — the tab bar, tab icon, header title, tab navigator
+  - `navigation/destinations` — destination resolution, deep linking, navigation ref
+  - `types.ts` stays at the root — shared by both groups
 - `src/presentation/blocks` — the block registry and block components
 - `src/presentation/banners` — the alert banner, app-update gate and operational-notice banner
 - `src/presentation/ui` / `src/presentation/theme` — shared presentation, tokens, dark mode, reduced motion

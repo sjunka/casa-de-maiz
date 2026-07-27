@@ -1,12 +1,12 @@
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import type { Destination } from '@core/contract/models/bootstrap';
-import { resolveDestination } from './resolveDestination';
+import type { Destination } from '@core/contract/models/screens/bootstrap';
+import { resolveDestination } from '../destinations/resolveDestination';
 import { isDestinationEnabled } from '@data/logic/featureFlags';
 import { AppTabBar } from './AppTabBar';
 import { AppHeaderTitle } from './AppHeaderTitle';
 import { useTheme } from '@presentation/theme/useTheme';
-import type { RootTabParamList } from './types';
+import type { RootTabParamList } from '../types';
 import { HomeScreen } from '@presentation/screens/HomeScreen';
 import { MenuScreen } from '@presentation/screens/MenuScreen';
 import { PrivacyScreen } from '@presentation/screens/PrivacyScreen';

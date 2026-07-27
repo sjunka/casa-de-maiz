@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import { renderBlock } from './registry';
 import { SourceMarker, type DataSource } from '../ui/SourceMarker';
-import type { BlockEnvelope } from '@core/contract/models/block';
-import type { BootstrapPromotion } from '@core/contract/models/promotion';
+import type { BlockEnvelope } from '@core/contract/models/blocks/block';
+import type { BootstrapPromotion } from '@core/contract/models/bootstrap/promotion';
 
 type Props = { layout: BlockEnvelope[]; fallbackPromotions?: BootstrapPromotion[]; source?: DataSource };
 

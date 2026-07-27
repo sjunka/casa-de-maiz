@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import { render, screen, fireEvent } from '@testing-library/react-native';
-import { AppTabBar } from '@navigation/AppTabBar';
+import { AppTabBar } from '@navigation/components/AppTabBar';
 import { lightColors } from '@presentation/theme/tokens';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 

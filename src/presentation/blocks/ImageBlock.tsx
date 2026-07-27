@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { CmsImage } from '../ui/CmsImage';
 import { useTheme } from '../theme/useTheme';
-import type { ImageBlock as ImageBlockData } from '@core/contract/models/block';
+import type { ImageBlock as ImageBlockData } from '@core/contract/models/blocks/block';
 
 type Props = { block: ImageBlockData };
 

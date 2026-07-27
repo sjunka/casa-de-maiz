@@ -1,6 +1,6 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-import { useHome } from '@data/remote/useHome';
-import { useBootstrap } from '@data/remote/useBootstrap';
+import { useHome } from '@data/remote/hooks/useHome';
+import { useBootstrap } from '@data/remote/hooks/useBootstrap';
 import { BlockList } from '../blocks/BlockList';
 import { ContentStatus, SavedContentBanner } from '../ui/ContentStatus';
 import { trackScrollProgress } from '@data/logic/scrollProgress';

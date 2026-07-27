@@ -14,7 +14,7 @@ import { AppPressable } from '../ui/AppPressable';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { useTheme, type Theme } from '../theme/useTheme';
 import { MIN_TOUCH_TARGET } from '../theme/tokens';
-import type { CarouselBlock as CarouselBlockData } from '@core/contract/models/block';
+import type { CarouselBlock as CarouselBlockData } from '@core/contract/models/blocks/block';
 
 type Slide = CarouselBlockData['slides'][number];
 type Props = { block: CarouselBlockData };

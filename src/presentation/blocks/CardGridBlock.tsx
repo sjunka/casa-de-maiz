@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, View, type ListRenderItemInfo } from 'react
 import { CmsImage } from '../ui/CmsImage';
 import { Surface } from '../ui/Surface';
 import { useTheme, type Theme } from '../theme/useTheme';
-import type { CardGridBlock as CardGridBlockData } from '@core/contract/models/block';
+import type { CardGridBlock as CardGridBlockData } from '@core/contract/models/blocks/block';
 
 type Card = CardGridBlockData['cards'][number];
 type Props = { block: CardGridBlockData };

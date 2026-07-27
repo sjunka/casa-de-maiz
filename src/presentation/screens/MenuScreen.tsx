@@ -1,5 +1,5 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-import { useMenu } from '@data/remote/useMenu';
+import { useMenu } from '@data/remote/hooks/useMenu';
 import { BlockList } from '../blocks/BlockList';
 import { ContentStatus, SavedContentBanner } from '../ui/ContentStatus';
 import { trackScrollProgress } from '@data/logic/scrollProgress';

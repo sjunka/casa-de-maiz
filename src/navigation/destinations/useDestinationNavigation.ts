@@ -1,6 +1,6 @@
 import { useNavigation, type NavigationProp } from '@react-navigation/native';
 import { openDestination } from './openDestination';
-import type { RootTabParamList } from './types';
+import type { RootTabParamList } from '../types';
 
 export const useDestinationNavigation = () => {
   const navigation = useNavigation<NavigationProp<RootTabParamList>>();

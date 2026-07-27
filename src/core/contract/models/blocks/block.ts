@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { mediaAssetSchema } from './media';
-import { richTextSchema } from './richText';
+import { mediaAssetSchema } from '../primitives/media';
+import { richTextSchema } from '../primitives/richText';
 
 const blockBaseSchema = z.object({
   contractVersion: z.string(),

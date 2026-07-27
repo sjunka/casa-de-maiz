@@ -1,8 +1,8 @@
 import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { RouteProp } from '@react-navigation/native';
 import type { RootTabParamList } from '@navigation/types';
-import { useDestinationNavigation } from '@navigation/useDestinationNavigation';
-import { useLegalDocument } from '@data/remote/useLegalDocument';
+import { useDestinationNavigation } from '@navigation/destinations/useDestinationNavigation';
+import { useLegalDocument } from '@data/remote/hooks/useLegalDocument';
 import { RichText } from '../ui/RichText';
 import { SourceMarker } from '../ui/SourceMarker';
 import { useTheme } from '../theme/useTheme';

@@ -1,5 +1,5 @@
-import { resolveNoticeSources } from '@data/logic/resolveNoticeSource';
-import type { Alert } from '@core/contract/models/alert';
+import { resolveNoticeSources } from '@data/logic/alerts/resolveNoticeSource';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
 
 const alert: Alert = {
   id: 'from-backend',

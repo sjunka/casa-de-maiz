@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { blockEnvelopeSchema } from './block';
+import { blockEnvelopeSchema } from '../blocks/block';
 
 export const homeDataSchema = z
   .object({

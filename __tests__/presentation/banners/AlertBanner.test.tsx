@@ -9,7 +9,7 @@ import { act, render, screen, fireEvent, waitFor } from '@testing-library/react-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AlertBanner } from '@presentation/banners/AlertBanner';
 import { resetScrollProgress, trackScrollProgress } from '@data/logic/scrollProgress';
-import type { Alert } from '@core/contract/models/alert';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
 
 const scrollTo = (owner: string, percent: number) =>
   trackScrollProgress(owner)({

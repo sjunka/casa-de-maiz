@@ -1,5 +1,5 @@
-import type { Alert } from '@core/contract/models/alert';
-import type { OperationalControls } from '@core/contract/models/operationalControls';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
+import type { OperationalControls } from '@core/contract/models/bootstrap/operationalControls';
 
 type DataSource = 'cms' | 'mock';
 

@@ -1,7 +1,7 @@
 jest.mock('@core/contract/appVersion', () => ({ getAppVersion: () => '1.0.0' }));
 
-import { seedNotices } from '@data/logic/seedNotices';
-import type { Alert } from '@core/contract/models/alert';
+import { seedNotices } from '@data/logic/alerts/seedNotices';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
 
 const alert = (overrides: Partial<Alert> = {}): Alert => ({
   id: 'from-backend',

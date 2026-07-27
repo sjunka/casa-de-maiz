@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react-native';
 import { PromoRailBlock } from '@presentation/blocks/PromoRailBlock';
-import type { PromoRailBlock as PromoRailBlockData } from '@core/contract/models/block';
-import type { BootstrapPromotion } from '@core/contract/models/promotion';
+import type { PromoRailBlock as PromoRailBlockData } from '@core/contract/models/blocks/block';
+import type { BootstrapPromotion } from '@core/contract/models/bootstrap/promotion';
 
 const block = (promotions: PromoRailBlockData['promotions']): PromoRailBlockData => ({
   blockType: 'promoRail',

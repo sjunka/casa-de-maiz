@@ -1,5 +1,5 @@
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
-import type { RootTabParamList } from './types';
+import type { RootTabParamList } from '../types';
 
 type Glyph = React.ComponentProps<typeof MaterialDesignIcons>['name'];
 

@@ -16,10 +16,10 @@ import { FlashList } from '@shopify/flash-list';
 import { useTheme } from '../theme/useTheme';
 import { getElevatedSurfaceStyle } from '../theme/tokens';
 import { GlassSurface } from '../ui/GlassSurface';
-import { submitFormSubmission } from '@data/remote/formSubmission';
+import { submitFormSubmission } from '@data/remote/fetchers/formSubmission';
 import { ApiError } from '@core/transport/apiError';
 import { AppPressable } from '../ui/AppPressable';
-import type { FormBlock as FormBlockData, FormField } from '@core/contract/models/block';
+import type { FormBlock as FormBlockData, FormField } from '@core/contract/models/blocks/block';
 
 type Props = { block: FormBlockData };
 

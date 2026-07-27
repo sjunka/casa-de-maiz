@@ -5,8 +5,8 @@ jest.mock('react-native-device-info', () => ({
 import { render, screen, waitFor } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { TabNavigator } from '@navigation/TabNavigator';
-import type { Destination } from '@core/contract/models/bootstrap';
+import { TabNavigator } from '@navigation/components/TabNavigator';
+import type { Destination } from '@core/contract/models/screens/bootstrap';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 

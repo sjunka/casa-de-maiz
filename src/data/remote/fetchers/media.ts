@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '@core/transport/config';
-import type { MediaAsset } from '@core/contract/models/media';
+import type { MediaAsset } from '@core/contract/models/primitives/media';
 
 const ABSOLUTE_URL = /^https?:\/\//i;
 

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { getAppVersion } from '@core/contract/appVersion';
-import { decideAppUpdate } from '@data/logic/decideAppUpdate';
+import { decideAppUpdate } from '@data/logic/appUpdate/decideAppUpdate';
 import { useTheme } from '../theme/useTheme';
 import { NoticeCard } from './NoticeCard';
-import type { AppUpdate } from '@core/contract/models/operationalControls';
+import type { AppUpdate } from '@core/contract/models/bootstrap/operationalControls';
 
 type Props = { appUpdate?: AppUpdate };
 

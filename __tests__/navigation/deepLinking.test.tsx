@@ -2,8 +2,8 @@ import { Linking, Text } from 'react-native';
 import { act, render, screen, waitFor } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { navigationRef, flushPendingNavigation } from '@navigation/navigationRef';
-import { handleDeepLink, initDeepLinking } from '@navigation/deepLinking';
+import { navigationRef, flushPendingNavigation } from '@navigation/destinations/navigationRef';
+import { handleDeepLink, initDeepLinking } from '@navigation/destinations/deepLinking';
 import type { RootTabParamList } from '@navigation/types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();

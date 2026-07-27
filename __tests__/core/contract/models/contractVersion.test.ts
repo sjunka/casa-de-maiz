@@ -1,4 +1,4 @@
-import { isContractVersionCompatible } from '@core/contract/models/contractVersion';
+import { isContractVersionCompatible } from '@core/contract/models/primitives/contractVersion';
 
 const supported = { major: 1, minor: 1 };
 

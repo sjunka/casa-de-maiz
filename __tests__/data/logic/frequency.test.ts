@@ -4,8 +4,8 @@ jest.mock(
 );
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { isSuppressed, recordDismissal, recordShown, resetDismissals } from '@data/logic/frequency';
-import type { Alert } from '@core/contract/models/alert';
+import { isSuppressed, recordDismissal, recordShown, resetDismissals } from '@data/logic/alerts/frequency';
+import type { Alert } from '@core/contract/models/bootstrap/alert';
 
 const alert = (overrides: Partial<Alert> = {}): Alert => ({
   id: 'alert-1',

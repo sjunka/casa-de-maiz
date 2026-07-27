@@ -1,5 +1,5 @@
-import { resolveImageSource, resolveMediaUrl } from '@data/remote/media';
-import type { MediaAsset } from '@core/contract/models/media';
+import { resolveImageSource, resolveMediaUrl } from '@data/remote/fetchers/media';
+import type { MediaAsset } from '@core/contract/models/primitives/media';
 
 test('passes an absolute CDN URL through unchanged', () => {
   expect(resolveMediaUrl('https://cdn.example.com/image.jpg')).toBe(

@@ -2,9 +2,9 @@ import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAppVersion } from '@core/contract/appVersion';
-import { decideAppUpdate } from '@data/logic/decideAppUpdate';
+import { decideAppUpdate } from '@data/logic/appUpdate/decideAppUpdate';
 import { useTheme } from '../theme/useTheme';
-import type { AppUpdate } from '@core/contract/models/operationalControls';
+import type { AppUpdate } from '@core/contract/models/bootstrap/operationalControls';
 
 type Props = { appUpdate?: AppUpdate; children: ReactNode };
 
