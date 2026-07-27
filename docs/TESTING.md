@@ -8,7 +8,7 @@ npm run lint        # eslint .
 npm test            # jest, con React Native Testing Library y un AsyncStorage mockeado en memoria
 ```
 
-Los tres pasan en `main`: cero errores de tipos, cero errores de lint y 186
+Los tres pasan en `main`: cero errores de tipos, cero errores de lint y 187
 pruebas en 46 suites en verde.
 
 El renderer de rich text suprime `no-bitwise` de forma local
