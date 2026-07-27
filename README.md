@@ -160,7 +160,7 @@ declara pero de los que nunca publica una forma, una pantalla de Reservas sin
 API detrás, instrumentación de performance que se queda en la frontera de
 medición, y ninguna pasada con lector de pantalla.
 
-Todo eso, con el razonamiento, en
+Todo eso, con el razonamiento y qué mejoraría con más tiempo, en
 [**Limitaciones conocidas y siguientes pasos**](docs/LIMITATIONS.md).
 
 ## Documentación
