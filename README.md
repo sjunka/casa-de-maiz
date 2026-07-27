@@ -59,6 +59,44 @@ submission, runtime Zod validation, complete alert-frequency behaviour
 Sentry crash reporting with source maps
 ([Observability](docs/OBSERVABILITY.md)), and Maestro E2E flows.
 
+## Bonus work, on screen
+
+<p align="center">
+  <img src="docs/media/bonus.gif" width="620" alt="iOS and Android side by side: content scrolling under the translucent iOS tab bar next to Android's tonal Material bar, a casamaiz:// deep link opening the privacy screen, and a mocked CMS form submission" />
+</p>
+
+> 🎬 [Watch the MP4](docs/media/bonus.mp4) — iOS left, Android right, same flow.
+
+| iOS glass | Android Material | Deep link (iOS) | Deep link (Android) | Mocked form (iOS) | Mocked form (Android) |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| ![iOS glass](docs/media/ios-bonus-glass.png) | ![Android Material](docs/media/android-bonus-material.png) | ![iOS deep link](docs/media/ios-bonus-deeplink.png) | ![Android deep link](docs/media/android-bonus-deeplink.png) | ![iOS form success](docs/media/ios-bonus-form.png) | ![Android form success](docs/media/android-bonus-form.png) |
+
+- **iOS glass** — a real `UIVisualEffectView` behind the tab bar
+  (`presentation/ui/GlassSurface.tsx`); content stays legible as it scrolls
+  under it, and the effect drops to an opaque surface under Reduce
+  Transparency.
+- **Android Material** — the same tab bar with tonal surfaces and elevation
+  instead of blur, tonal cards, and ripple press feedback.
+- **Deep links** — `xcrun simctl openurl booted casamaiz://legal/privacy_policy`
+  (and the `adb` equivalent) routes through the same destination resolver the
+  CMS uses, landing on the legal document fetched from `/legal/privacy_policy`.
+- **Mocked form submission** — `formBlock` submits through a mocked network
+  boundary and renders the CMS `confirmationMessage`. Nothing is written to the
+  shared API unless `ENABLE_LIVE_FORM_SUBMISSIONS=true`.
+
+### Feature flags gating navigation
+
+`bootstrap.featureFlags.enable_new_home` gates the Reservations destination.
+Same build, same CMS, flag flipped locally with
+`FEATURE_FLAG_OVERRIDES=enable_new_home=false` — the destination is dropped
+before the navigator is built, so the tab disappears with no per-screen
+conditionals anywhere (`data/logic/featureFlags.ts`,
+`navigation/TabNavigator.tsx`).
+
+| `enable_new_home: true` | `enable_new_home: false` |
+|:---:|:---:|
+| ![Tab bar with Reservations](docs/media/ios-flag-on.png) | ![Tab bar without Reservations](docs/media/ios-flag-off.png) |
+
 ## Try it without building
 
 [**Download the Android APK**](https://github.com/sjunka/casa-de-maiz/releases/latest) —
