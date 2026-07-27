@@ -2,14 +2,12 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import { useReducedMotion } from '../theme/useReducedMotion';
+import { SOURCE_MARKER_FADE_MS as FADE_MS, SOURCE_MARKER_HOLD_MS as HOLD_MS } from '../theme/motion';
 
 export type DataSource = 'cms' | 'mock';
 
 const CMS_COLOR = '#1d4ed8';
 const MOCK_COLOR = '#b45309';
-
-const HOLD_MS = 5_000;
-const FADE_MS = 300;
 
 const label = (source: DataSource) => (source === 'cms' ? 'CMS' : 'MOCK');
 const color = (source: DataSource) => (source === 'cms' ? CMS_COLOR : MOCK_COLOR);
