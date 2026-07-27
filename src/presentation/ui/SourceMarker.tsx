@@ -20,9 +20,9 @@ type Props = {
   children: ReactNode;
 };
 
-// Dev-only overlay naming where a rendered surface's content came from. See
-// ADR 0020. An absolutely positioned sibling, never a container: it must not
-// change the layout of what it's marking.
+// Dev-only overlay naming where a rendered surface's content came from. An
+// absolutely positioned sibling, never a container: it must not change the
+// layout of what it's marking.
 export const SourceMarker = ({ source, note, fill, children }: Props) => {
   // Plenty of wrapped children render nothing (a notice with no content, a
   // block filtered out by platform or contract version). Measure first, mark

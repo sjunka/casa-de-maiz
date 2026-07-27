@@ -46,9 +46,9 @@ En este orden, por lo que cada cosa compra:
 
 1. **Verificar las formas que hoy son suposiciones.** El `formBlock` está
    modelado sobre el plugin form-builder de Payload y los cinco block genéricos
-   leen campos de nombre probable, porque ningún payload vivo sirve uno
-   ([ADR 0011](adr/0011-form-block-modelling.md)). Con un payload real o un
-   schema de block en el OpenAPI, esos schemas dejan de ser una apuesta. Es lo
+   leen campos de nombre probable, porque ningún payload vivo sirve uno. Con un
+   payload real o un schema de block en el OpenAPI, esos schemas dejan de ser
+   una apuesta. Es lo
    único de esta lista que puede estar mal hoy en vez de solo faltar.
 2. **Una pasada real de lector de pantalla.** VoiceOver y TalkBack sobre los
    cinco flujos, verificando orden de anuncio y movimiento del foco, no solo el
@@ -66,13 +66,9 @@ En este orden, por lo que cada cosa compra:
    estados de error y snapshots de regresión visual en ambas plataformas —
    justamente lo que las pruebas de componente no pueden probar.
 6. **Sacar los strings locales de la app.** `noticeCardStrings` ("Aviso
-   descartado", "Deshacer") es la única copy que la app se inventa
-   ([ADR 0018](adr/0018-notice-dismissal.md)), y está en español hardcodeado. O
-   la publica el CMS, o entra en una capa de i18n; hoy no está en ninguna de las
-   dos.
-7. **Reunir las constantes de dismissal.** `UNDO_MS` en `NoticeCard` y los
-   tiempos de salida en `CollapsibleBanner` son una sola sensación repartida en
-   dos archivos.
-8. **Reservas y Universal Links.** Ambos esperan a algo externo: una API de
+   descartado", "Deshacer") es la única copy que la app se inventa, y está en
+   español hardcodeado. O la publica el CMS, o entra en una capa de i18n; hoy no
+   está en ninguna de las dos.
+7. **Reservas y Universal Links.** Ambos esperan a algo externo: una API de
    reservas documentada y un dominio cuya propiedad podamos verificar. Ninguno
    es trabajo de app hasta entonces.

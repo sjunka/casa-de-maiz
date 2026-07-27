@@ -1,5 +1,5 @@
 // Every hand-tuned duration for notice/banner motion, in one place. Previously
-// split between `NoticeCard` and `CollapsibleBanner` (ADR 0018) — "how
+// split between `NoticeCard` and `CollapsibleBanner` — "how
 // dismissal feels" meant touching both files to retune. `useReducedMotion`
 // still zeroes durations at the call site; this file only names the numbers.
 
