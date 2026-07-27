@@ -35,8 +35,8 @@ const FORM_FIXTURE_LAYOUT: BlockEnvelope[] = [
 
 const WAVE_MS = 520;
 
-// Dev-only: the app follows the system scheme, so this is the only way to see
-// dark mode from inside the app. The gear turns a half-step while a single
+// Dev-only: the app defaults to light, so this is the only way to see dark
+// mode from inside the app. The gear turns a half-step while a single
 // ring rides out from under it — one shared value drives both, so the turn and
 // the wave stay in step.
 const SchemeToggle = () => {

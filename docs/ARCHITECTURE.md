@@ -189,13 +189,13 @@ entrada en el registry, con versión mala o canal excluido, el block no pinta
 nada en release y solo registra su `blockType`. En desarrollo aparece un
 marcador visible.
 
-**Sin UI kit.** `StyleSheet` más tokens de diseño locales, light y dark según
-la apariencia del sistema. Una librería de componentes Material impondría
-convenciones de Android sobre iOS.
+**Sin UI kit.** `StyleSheet` más tokens de diseño locales, light por defecto y
+dark solo por selección manual. Una librería de componentes Material
+impondría convenciones de Android sobre iOS.
 
 El costo es escribir los componentes de presentación a mano. Los builds de
 debug agregan un override de esquema en memoria detrás del engrane de la
-pestaña de formulario, para revisar dark mode sin salir de la app.
+pestaña de formulario, la única forma de cambiar a dark sin salir de la app.
 
 **Un scheme propio pasando por el resolver existente, no una segunda tabla de
 `linking`.** Los deep links `casamaiz://` se reducen a un path y se enrutan por

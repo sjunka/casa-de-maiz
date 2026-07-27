@@ -1,5 +1,4 @@
 import { useSyncExternalStore } from 'react';
-import { useColorScheme } from 'react-native';
 import { darkColors, lightColors, type ColorTokens } from './tokens';
 
 export type Theme = {
@@ -7,10 +6,9 @@ export type Theme = {
   colors: ColorTokens;
 };
 
-// Dev/demo affordance: a manual override so a reviewer can try dark mode
-// without leaving the app for system settings. Deliberately not persisted — it
-// dies with the process and the app falls back to the system scheme.
-let override: Theme['scheme'] | null = null;
+// App defaults to light. The toggle button is the only way to switch to dark —
+// deliberately not persisted, so it resets to light on next launch.
+let override: Theme['scheme'] = 'light';
 const listeners = new Set<() => void>();
 
 const subscribe = (listener: () => void) => {
@@ -26,7 +24,6 @@ export const toggleSchemeOverride = (current: Theme['scheme']) => {
 };
 
 export const useTheme = (): Theme => {
-  const systemScheme = useColorScheme() === 'dark' ? 'dark' : 'light';
-  const scheme = useSyncExternalStore(subscribe, () => override) ?? systemScheme;
+  const scheme = useSyncExternalStore(subscribe, () => override);
   return { scheme, colors: scheme === 'dark' ? darkColors : lightColors };
 };

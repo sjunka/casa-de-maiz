@@ -31,9 +31,9 @@ de Material y elevación.
 
 *Fila de arriba iOS, fila de abajo Android.*
 
-El dark mode sigue la apariencia del sistema. Los builds de debug además traen
-un engrane arriba a la derecha en la pestaña **Form (dev)** que cambia el
-esquema en el momento, para verlo sin salir de la app. Los builds de release,
+La app abre en light por defecto. Los builds de debug traen un engrane arriba
+a la derecha en la pestaña **Form (dev)** que cambia al esquema dark en el
+momento, la única forma de verlo sin salir de la app. Los builds de release,
 incluido el APK descargable, no tienen ni la pestaña ni el engrane.
 
 ## Cobertura de requisitos
