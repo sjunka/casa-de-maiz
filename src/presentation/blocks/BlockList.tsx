@@ -1,12 +1,25 @@
 import { StyleSheet, View } from 'react-native';
 import { renderBlock } from './registry';
+import { SourceMarker, type DataSource } from '../ui/SourceMarker';
 import type { BlockEnvelope } from '@core/contract/models/block';
 import type { BootstrapPromotion } from '@core/contract/models/promotion';
 
-type Props = { layout: BlockEnvelope[]; fallbackPromotions?: BootstrapPromotion[] };
+type Props = { layout: BlockEnvelope[]; fallbackPromotions?: BootstrapPromotion[]; source?: DataSource };
 
-export const BlockList = ({ layout, fallbackPromotions }: Props) => (
-  <View style={styles.container}>{layout.map((block, index) => renderBlock(block, index, { fallbackPromotions }))}</View>
+export const BlockList = ({ layout, fallbackPromotions, source = 'cms' }: Props) => (
+  <View style={styles.container}>
+    {layout.map((block, index) => {
+      const rendered = renderBlock(block, index, { fallbackPromotions });
+      // No block carries a stable id, so key on content rather than position:
+      // a key that survives the layout being filtered or reordered.
+      const key = JSON.stringify(block);
+      return rendered === null ? null : (
+        <SourceMarker key={key} source={source} note={block.blockType}>
+          {rendered}
+        </SourceMarker>
+      );
+    })}
+  </View>
 );
 
 const styles = StyleSheet.create({
