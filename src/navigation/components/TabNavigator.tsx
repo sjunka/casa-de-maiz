@@ -15,11 +15,10 @@ import { FormFixtureScreen } from '@presentation/screens/FormFixtureScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const HomeHeaderTitle = () => <AppHeaderTitle title="Inicio" />;
-const MenuHeaderTitle = () => <AppHeaderTitle title="Menú" />;
-const PrivacyHeaderTitle = () => <AppHeaderTitle title="Privacidad" />;
-const ReservationsHeaderTitle = () => <AppHeaderTitle title="Reservas" />;
-const FormFixtureHeaderTitle = () => <AppHeaderTitle title="Formulario" />;
+// One stable component for every tab: react-navigation passes the screen's
+// `title` through as `children`, so the label stays CMS-driven without minting
+// a new component type on each render.
+const HeaderTitle = ({ children }: { children?: string }) => <AppHeaderTitle title={children ?? ''} />;
 
 type Props = { destinations: Destination[]; flags?: Record<string, boolean> };
 
@@ -45,6 +44,8 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
       tabBarLabel: destination.label,
       tabBarAccessibilityLabel: destination.label,
       tabBarHighlighted: destination.highlighted,
+      title: destination.label,
+      headerTitle: HeaderTitle,
     };
 
     switch (resolved.screen) {
@@ -54,7 +55,7 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
             key="home"
             name="home"
             component={HomeScreen}
-            options={{ ...options, headerTitle: HomeHeaderTitle }}
+            options={options}
           />,
         );
         break;
@@ -64,7 +65,7 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
             key="menu"
             name="menu"
             component={MenuScreen}
-            options={{ ...options, headerTitle: MenuHeaderTitle }}
+            options={options}
           />,
         );
         break;
@@ -75,7 +76,7 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
             name="privacy"
             component={PrivacyScreen}
             initialParams={{ legalKey: resolved.legalKey }}
-            options={{ ...options, headerTitle: PrivacyHeaderTitle }}
+            options={options}
           />,
         );
         break;
@@ -85,7 +86,7 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
             key="reservations"
             name="reservations"
             component={ReservationsScreen}
-            options={{ ...options, headerTitle: ReservationsHeaderTitle }}
+            options={options}
           />,
         );
         break;
@@ -101,7 +102,9 @@ export const TabNavigator = ({ destinations, flags = {} }: Props) => {
         options={{
           tabBarLabel: 'Form (dev)',
           tabBarAccessibilityLabel: 'Form (dev)',
-          headerTitle: FormFixtureHeaderTitle,
+          // Hardcoded on purpose: debug-only fixture tab, not CMS content.
+          title: 'Formulario',
+          headerTitle: HeaderTitle,
         }}
       />,
     );

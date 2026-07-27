@@ -53,11 +53,8 @@ test('builds tabs only for destinations that support the running platform, in th
   await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
 });
 
-test('a feature-flag change alters which destinations appear in navigation', async () => {
-  const destinations = [
-    destination({ key: 'home', path: '/', label: 'Inicio' }),
-    destination({ key: 'reservations', path: '/reservas', label: 'Reservar' }),
-  ];
+test('the header title comes from the bootstrap label, not a hardcoded literal', async () => {
+  const destinations = [destination({ key: 'home', path: '/', label: 'Casa de Maíz' })];
 
   globalThis.fetch = jest.fn().mockResolvedValue({
     ok: true,
@@ -71,32 +68,82 @@ test('a feature-flag change alters which destinations appear in navigation', asy
     }),
   }) as unknown as typeof fetch;
 
-  const { unmount } = await render(
+  await render(
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <TabNavigator destinations={destinations} flags={{ enable_new_home: false }} />
+        <TabNavigator destinations={destinations} />
+      </NavigationContainer>
+    </QueryClientProvider>,
+  );
+
+  expect(screen.getByText('Casa de Maíz')).toBeTruthy();
+  expect(screen.queryByText('Inicio')).toBeNull();
+});
+
+const flagDestinations = [
+  destination({ key: 'home', path: '/', label: 'Inicio' }),
+  destination({ key: 'reservations', path: '/reservas', label: 'Reservar' }),
+];
+
+test('a destination whose feature flag is off stays out of navigation', async () => {
+  globalThis.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      contractVersion: '1.1',
+      data: { layout: [] },
+      nextChangeAt: null,
+      preview: false,
+      resolvedContext: {},
+    }),
+  }) as unknown as typeof fetch;
+
+  await render(
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <TabNavigator destinations={flagDestinations} flags={{ enable_new_home: false }} />
       </NavigationContainer>
     </QueryClientProvider>,
   );
 
   expect(screen.getByLabelText('Inicio')).toBeTruthy();
   expect(screen.queryByLabelText('Reservar')).toBeNull();
-  unmount();
+  await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
+});
+
+test('turning the same feature flag on brings its destination back', async () => {
+  globalThis.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      contractVersion: '1.1',
+      data: { layout: [] },
+      nextChangeAt: null,
+      preview: false,
+      resolvedContext: {},
+    }),
+  }) as unknown as typeof fetch;
 
   await render(
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <TabNavigator destinations={destinations} flags={{ enable_new_home: true }} />
+        <TabNavigator destinations={flagDestinations} flags={{ enable_new_home: true }} />
       </NavigationContainer>
     </QueryClientProvider>,
   );
 
   expect(screen.getByLabelText('Inicio')).toBeTruthy();
   expect(screen.getByLabelText('Reservar')).toBeTruthy();
+  await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
 });
 
 test('a mapped flag missing from the response is treated as off', async () => {
-  const destinations = [destination({ key: 'reservations', path: '/reservas', label: 'Reservar' })];
+  // Home rides along as a positive control: without it, an empty tree would
+  // satisfy the assertion below for the wrong reason.
+  const destinations = [
+    destination({ key: 'home', path: '/', label: 'Inicio' }),
+    destination({ key: 'reservations', path: '/reservas', label: 'Reservar' }),
+  ];
 
   globalThis.fetch = jest.fn().mockResolvedValue({
     ok: true,
@@ -118,5 +165,7 @@ test('a mapped flag missing from the response is treated as off', async () => {
     </QueryClientProvider>,
   );
 
+  expect(screen.getByLabelText('Inicio')).toBeTruthy();
   expect(screen.queryByLabelText('Reservar')).toBeNull();
+  await waitFor(() => expect(screen.getByTestId('content-empty')).toBeTruthy());
 });

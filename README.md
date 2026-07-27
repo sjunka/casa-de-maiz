@@ -43,7 +43,7 @@ Cada requisito central del assessment y dónde vive:
 | # | Requisito | Dónde |
 |---|---|---|
 | 1 | Base con fronteras claras, base URL configurable | `src/core`, `src/data`, `src/presentation` ([mapa](docs/ARCHITECTURE.md)) |
-| 2 | Cliente tipado del CMS: cuatro parámetros de contexto, `Platform.OS`, versión instalada, contrato 1.1, URLs de media, dedupe, cancelación | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` |
+| 2 | Cliente tipado del CMS: cuatro parámetros de contexto, `Platform.OS`, versión instalada, contrato 1.1, URLs de media, dedupe, respuestas obsoletas descartadas | `core/contract/deliveryContext.ts`, `core/transport/client.ts`, `data/remote/` |
 | 3 | Block registry que renderiza todos los blocks vivos de Home y Menu; los desconocidos fallan seguro | `presentation/blocks/registry.tsx` |
 | 4 | Bootstrap como configuración: navegación, promociones, feature flags, aviso operativo, update gate, alertas con placement, trigger, frecuencia, dismissal y targeting | `data/logic/`, `presentation/banners/` |
 | 5 | Navegación desde `bootstrap.navigation`, un solo resolver de destinos, links externos validados, back nativo | `navigation/destinations/resolveDestination.ts`, `navigation/components/TabNavigator.tsx` |

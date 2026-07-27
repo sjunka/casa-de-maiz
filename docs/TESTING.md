@@ -11,8 +11,9 @@ npm test            # jest, con React Native Testing Library y un AsyncStorage m
 Los tres pasan en `main`: cero errores de tipos, cero errores de lint y 187
 pruebas en 46 suites en verde.
 
-Quedan cinco warnings previos de `no-bitwise` en el renderer de rich text de
-Lexical, donde los flags bitwise son el formato que usa el propio Lexical.
+El renderer de rich text suprime `no-bitwise` de forma local
+(`RichText.tsx`): los flags bitwise son el formato del propio Lexical. Lint
+sale limpio, sin warnings.
 
 Las pruebas verifican comportamiento observable por el usuario a través de
 selectores estables (roles de accesibilidad, labels y test IDs), no detalles

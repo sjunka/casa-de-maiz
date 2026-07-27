@@ -164,7 +164,13 @@ adicionales e infieren los tipos de TypeScript con `z.infer`. Una respuesta mal
 formada se detecta en la frontera de la API, no dentro de un componente.
 
 **TanStack Query detrás de un repositorio delgado, no un cache propio.** Query
-se encarga del ciclo de vida de la petición: dedupe, cancelación, refetch.
+se encarga del ciclo de vida de la petición: dedupe, refetch y descarte de
+respuestas obsoletas.
+
+Descarta por key los resultados de una query superada, así que una petición en
+vuelo que pierde la carrera nunca pinta; no se añadió `AbortSignal` crudo
+porque ninguna pantalla lanza una petición cuyo costo justifique tirar el
+socket.
 
 El repositorio se encarga de la frescura: network-first, la última respuesta
 buena servida solo ante un fallo y siempre marcada como guardada, y
@@ -226,7 +232,7 @@ Cada dependencia agregada más allá del template de React Native CLI, y para qu
 | Dependencia | Para qué |
 |---|---|
 | `zod` | Validación en runtime en la frontera de la API y fuente única de los tipos. |
-| `@tanstack/react-query` | Dedupe de peticiones, cancelación de respuestas obsoletas, refetch y pull-to-refresh sin escribirlos a mano. |
+| `@tanstack/react-query` | Dedupe de peticiones, descarte de respuestas obsoletas, refetch y pull-to-refresh sin escribirlos a mano. |
 | `@react-native-async-storage/async-storage` | Persiste la última respuesta buena para el fallback offline. Es la opción estándar y con mock oficial. |
 | `react-native-config` | Lee `API_BASE_URL` del `.env` por ambiente, así la base URL se configura sin tocar código. |
 | `react-native-device-info` | Lee la versión instalada real para el parámetro `appVersion`, en vez de confiar en una constante que se desfasa del binario. |
