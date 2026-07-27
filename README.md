@@ -50,7 +50,7 @@ Cada requisito central del assessment y dónde vive:
 | 6 | Loading, vacío, error con retry, pull-to-refresh, offline/stale, contrato no soportado, not found; `nextChangeAt` como expiración dura | `data/remote/cache.ts`, `presentation/ui/ContentStatus.tsx` |
 | 7 | Media absoluta y relativa, aspect ratio respetado, texto alternativo | `data/remote/fetchers/media.ts`, `presentation/ui/CmsImage.tsx` |
 | 8 | Safe areas, back por plataforma, áreas táctiles, dynamic type, dark mode, reduced motion, teclado | `presentation/theme/`, `presentation/ui/AppPressable.tsx` |
-| 9 | Pruebas automatizadas de los seis casos exigidos; typecheck, lint y test en verde | 187 pruebas, 6 flows de Maestro ([Pruebas](docs/TESTING.md)) |
+| 9 | Pruebas automatizadas de los seis casos exigidos; typecheck, lint y test en verde | 187 pruebas, 6 flows de Maestro en verde en ambas plataformas ([Pruebas](docs/TESTING.md)) |
 
 Los tres bonus están cubiertos. **Glass de iOS**
 (`presentation/ui/GlassSurface.tsx`, condicionado a Reduce Transparency).
@@ -150,8 +150,10 @@ npm run typecheck && npm run lint && npm test
 
 187 pruebas en 46 suites, más 6 flows end-to-end de Maestro que cubren
 fallback offline, contenido expirado, versión de contrato no soportada,
-navegación, una alerta publicada por el CMS y un envío de formulario. Detalle
-en [Pruebas](docs/TESTING.md).
+navegación, una alerta publicada por el CMS y un envío de formulario. Los seis
+pasan en verde en simulador de iOS y en emulador de Android
+(`npm run e2e:ios`, `npm run e2e:android`). Detalle en
+[Pruebas](docs/TESTING.md).
 
 ## Limitaciones conocidas
 
