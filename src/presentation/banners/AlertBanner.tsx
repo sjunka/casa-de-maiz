@@ -81,7 +81,7 @@ const AlertBannerItem = ({ alert, scrollPercent, onSuppress }: ItemProps) => {
   // verified without manually closing every card; a reload just re-shows it.
   useEffect(() => {
     if (!visible) return;
-    const timer = setTimeout(() => setExiting(true), 20000);
+    const timer = setTimeout(() => setExiting(true), 8000);
     return () => clearTimeout(timer);
   }, [visible]);
 

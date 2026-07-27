@@ -82,14 +82,14 @@ test('waiting out the undo window commits the dismissal and records it', async (
   expect(await AsyncStorage.getItem('alert-dismissed:closing-notice')).toBeTruthy();
 });
 
-test('auto-dismisses 20 seconds after showing, so an evaluator never has to close it by hand', async () => {
+test('auto-dismisses 8 seconds after showing, so an evaluator never has to close it by hand', async () => {
   jest.useFakeTimers();
 
   await render(<AlertBanner alerts={[alert()]} currentPageSlug="home" />);
   await act(async () => jest.advanceTimersByTime(10));
   expect(screen.getByTestId('alert-banner')).toBeTruthy();
 
-  await act(async () => jest.advanceTimersByTime(20000));
+  await act(async () => jest.advanceTimersByTime(8000));
   await act(async () => jest.advanceTimersByTime(4000));
   expect(screen.queryByTestId('alert-banner')).toBeNull();
 });

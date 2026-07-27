@@ -10,6 +10,7 @@ import { AppUpdateGate } from '../banners/AppUpdateGate';
 import { AppUpdateNotice } from '../banners/AppUpdateNotice';
 import { NoticeStack } from '../banners/NoticeStack';
 import { useTheme } from '../theme/useTheme';
+import { SourceTag } from '../prototype/DataSourceRibbon.prototype';
 
 type Props = { currentRouteName: string };
 
@@ -50,6 +51,11 @@ export const BootstrapScreen = ({ currentRouteName }: Props) => {
   }
 
   const notices = seedNotices(data.data.operationalControls, data.data.alerts);
+  // PROTOTYPE: a notice the seed filled in is ours, not the CMS's.
+  const backend = data.data.operationalControls;
+  const updateSource = backend?.appUpdate === notices.operationalControls.appUpdate ? 'cms' : 'mock';
+  const bannerSource = backend?.bannerMessage === notices.operationalControls.bannerMessage ? 'cms' : 'mock';
+  const alertSource = data.data.alerts.length > 0 ? 'cms' : 'mock';
 
   return (
     // The status-bar inset is claimed once, here. Everything below — banners
@@ -58,9 +64,15 @@ export const BootstrapScreen = ({ currentRouteName }: Props) => {
     <SafeAreaView edges={['top']} style={styles.fill} testID="bootstrap-success">
       <AppUpdateGate appUpdate={notices.operationalControls.appUpdate}>
         <NoticeStack>
-          <AppUpdateNotice appUpdate={notices.operationalControls.appUpdate} />
-          <OperationalNoticeBanner operationalControls={notices.operationalControls} />
-          <AlertBanner alerts={notices.alerts} currentPageSlug={currentRouteName} />
+          <SourceTag source={updateSource} note="appUpdate">
+            <AppUpdateNotice appUpdate={notices.operationalControls.appUpdate} />
+          </SourceTag>
+          <SourceTag source={bannerSource} note="bannerMessage">
+            <OperationalNoticeBanner operationalControls={notices.operationalControls} />
+          </SourceTag>
+          <SourceTag source={alertSource} note="alert">
+            <AlertBanner alerts={notices.alerts} currentPageSlug={currentRouteName} />
+          </SourceTag>
         </NoticeStack>
         <TabNavigator destinations={flattenNavigation(data.data.navigation)} flags={data.data.featureFlags} />
       </AppUpdateGate>
