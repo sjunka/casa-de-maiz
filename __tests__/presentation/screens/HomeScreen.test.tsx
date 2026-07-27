@@ -42,7 +42,7 @@ const fetchRoutedBy = (responses: {
   }) as unknown as typeof fetch;
 
 const renderScreen = () => {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   return render(
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>

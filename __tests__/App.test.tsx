@@ -42,6 +42,10 @@ const jsonResponse = (body: unknown, status = 200) => ({
   json: async () => body,
 });
 
+// The app's real client is a singleton, so its default 5-minute gc timer
+// outlives the test and keeps the jest worker's event loop alive.
+queryClient.setDefaultOptions({ queries: { retry: false, gcTime: 0 } });
+
 beforeEach(() => {
   jest.restoreAllMocks();
   jest.spyOn(console, 'error').mockImplementation(() => {});
