@@ -7,6 +7,7 @@ import { render, screen, waitFor } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BootstrapScreen } from '@presentation/screens/BootstrapScreen';
+import { resetSessionStateForTests } from '@data/logic/alerts/frequency';
 
 const jsonResponse = (body: unknown, status = 200) => ({
   ok: status >= 200 && status < 300,
@@ -14,7 +15,7 @@ const jsonResponse = (body: unknown, status = 200) => ({
   json: async () => body,
 });
 
-const renderScreen = () => {
+const renderScreen = async () => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   return render(
     <QueryClientProvider client={queryClient}>
@@ -25,8 +26,11 @@ const renderScreen = () => {
   );
 };
 
+jest.useFakeTimers();
+
 beforeEach(async () => {
   jest.restoreAllMocks();
+  resetSessionStateForTests();
   await AsyncStorage.clear();
 });
 
@@ -48,7 +52,7 @@ test('shows the operational notice banner and gates a required app update', asyn
     }),
   ) as unknown as typeof fetch;
 
-  renderScreen();
+  await renderScreen();
 
   await waitFor(() => expect(screen.getByTestId('app-update-required')).toBeTruthy());
   expect(screen.getByText('Actualiza Casa Maiz.')).toBeTruthy();
@@ -71,7 +75,7 @@ test('renders the operational banner and navigation when there is no blocking up
     }),
   ) as unknown as typeof fetch;
 
-  renderScreen();
+  await renderScreen();
 
   await waitFor(() => expect(screen.getByTestId('operational-notice-banner')).toBeTruthy());
   expect(screen.getByText('Hoy cerramos cocina a las 22:30.')).toBeTruthy();
