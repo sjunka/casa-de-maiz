@@ -82,7 +82,7 @@ const SchemeToggle = () => {
 export const FormFixtureScreen = () => (
   <View style={styles.fill}>
     <ScrollView style={styles.fill} contentContainerStyle={styles.content} testID="form-fixture-screen">
-      <BlockList layout={FORM_FIXTURE_LAYOUT} />
+      <BlockList layout={FORM_FIXTURE_LAYOUT} source="mock" />
     </ScrollView>
     <SchemeToggle />
   </View>

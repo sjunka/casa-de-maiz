@@ -4,12 +4,14 @@ import { useBootstrap } from '@data/remote/useBootstrap';
 import { TabNavigator } from '@navigation/TabNavigator';
 import { flattenNavigation } from '@core/contract/models/bootstrap';
 import { seedNotices } from '@data/logic/seedNotices';
+import { resolveNoticeSources } from '@data/logic/resolveNoticeSource';
 import { AlertBanner } from '../banners/AlertBanner';
 import { OperationalNoticeBanner } from '../banners/OperationalNoticeBanner';
 import { AppUpdateGate } from '../banners/AppUpdateGate';
 import { AppUpdateNotice } from '../banners/AppUpdateNotice';
 import { NoticeStack } from '../banners/NoticeStack';
 import { useTheme } from '../theme/useTheme';
+import { SourceMarker } from '../ui/SourceMarker';
 
 type Props = { currentRouteName: string };
 
@@ -50,6 +52,7 @@ export const BootstrapScreen = ({ currentRouteName }: Props) => {
   }
 
   const notices = seedNotices(data.data.operationalControls, data.data.alerts);
+  const noticeSources = resolveNoticeSources(data.data.operationalControls, notices.operationalControls, data.data.alerts);
 
   return (
     // The status-bar inset is claimed once, here. Everything below — banners
@@ -58,9 +61,15 @@ export const BootstrapScreen = ({ currentRouteName }: Props) => {
     <SafeAreaView edges={['top']} style={styles.fill} testID="bootstrap-success">
       <AppUpdateGate appUpdate={notices.operationalControls.appUpdate}>
         <NoticeStack>
-          <AppUpdateNotice appUpdate={notices.operationalControls.appUpdate} />
-          <OperationalNoticeBanner operationalControls={notices.operationalControls} />
-          <AlertBanner alerts={notices.alerts} currentPageSlug={currentRouteName} />
+          <SourceMarker source={noticeSources.appUpdate} note="appUpdate">
+            <AppUpdateNotice appUpdate={notices.operationalControls.appUpdate} />
+          </SourceMarker>
+          <SourceMarker source={noticeSources.banner} note="bannerMessage">
+            <OperationalNoticeBanner operationalControls={notices.operationalControls} />
+          </SourceMarker>
+          <SourceMarker source={noticeSources.alert} note="alert">
+            <AlertBanner alerts={notices.alerts} currentPageSlug={currentRouteName} />
+          </SourceMarker>
         </NoticeStack>
         <TabNavigator destinations={flattenNavigation(data.data.navigation)} flags={data.data.featureFlags} />
       </AppUpdateGate>

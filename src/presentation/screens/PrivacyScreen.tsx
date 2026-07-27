@@ -4,6 +4,7 @@ import type { RootTabParamList } from '@navigation/types';
 import { useDestinationNavigation } from '@navigation/useDestinationNavigation';
 import { useLegalDocument } from '@data/remote/useLegalDocument';
 import { RichText } from '../ui/RichText';
+import { SourceMarker } from '../ui/SourceMarker';
 import { useTheme } from '../theme/useTheme';
 import { trackScrollProgress } from '@data/logic/scrollProgress';
 
@@ -44,15 +45,17 @@ export const PrivacyScreen = ({ route }: Props) => {
       onScroll={trackScrollProgress('privacy')}
       scrollEventThrottle={100}
     >
-      <Text style={[styles.title, { color: colors.text }]} selectable accessibilityRole="header">
-        {data.data.title}
-      </Text>
-      {data.data.summary ? (
-        <Text style={[styles.summary, { color: colors.textSecondary }]} selectable>
-          {data.data.summary}
+      <SourceMarker source="cms" note="legalDocument">
+        <Text style={[styles.title, { color: colors.text }]} selectable accessibilityRole="header">
+          {data.data.title}
         </Text>
-      ) : null}
-      <RichText document={data.data.content} onLinkPress={navigateTo} />
+        {data.data.summary ? (
+          <Text style={[styles.summary, { color: colors.textSecondary }]} selectable>
+            {data.data.summary}
+          </Text>
+        ) : null}
+        <RichText document={data.data.content} onLinkPress={navigateTo} />
+      </SourceMarker>
     </ScrollView>
   );
 };

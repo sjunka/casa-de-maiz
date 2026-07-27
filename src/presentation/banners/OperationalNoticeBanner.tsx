@@ -17,7 +17,7 @@ export const OperationalNoticeBanner = ({ operationalControls }: Props) => {
   // verified without manually closing every card; a reload just re-shows it.
   useEffect(() => {
     if (!hasNotice) return;
-    const timer = setTimeout(() => setDismissed(true), 20000);
+    const timer = setTimeout(() => setDismissed(true), 8000);
     return () => clearTimeout(timer);
   }, [hasNotice]);
 
