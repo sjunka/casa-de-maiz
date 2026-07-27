@@ -82,3 +82,4 @@ yarn-error.log
 /CONTEXT.md
 /docs/adr/
 /docs/agents/
+/.scratch/
