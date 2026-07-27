@@ -77,9 +77,9 @@ yarn-error.log
 !.yarn/sdks
 !.yarn/versions
 
-# Agent-local docs (untracked)
+# Agent-local docs (untracked) — symlinks into ../casa-de-maiz-agent-docs, so no trailing slash
 /CLAUDE.md
 /CONTEXT.md
-/docs/adr/
-/docs/agents/
-/.scratch/
+/docs/adr
+/docs/agents
+/.scratch
