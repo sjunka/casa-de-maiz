@@ -6,4 +6,5 @@ export const useBootstrap = () =>
   useQuery<Awaited<ReturnType<typeof fetchBootstrap>>, ApiError>({
     queryKey: ['bootstrap'],
     queryFn: fetchBootstrap,
+    staleTime: Infinity,
   });
