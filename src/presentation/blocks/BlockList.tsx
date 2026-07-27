@@ -10,8 +10,11 @@ export const BlockList = ({ layout, fallbackPromotions, source = 'cms' }: Props)
   <View style={styles.container}>
     {layout.map((block, index) => {
       const rendered = renderBlock(block, index, { fallbackPromotions });
+      // No block carries a stable id, so key on content rather than position:
+      // a key that survives the layout being filtered or reordered.
+      const key = JSON.stringify(block);
       return rendered === null ? null : (
-        <SourceMarker key={index} source={source} note={block.blockType}>
+        <SourceMarker key={key} source={source} note={block.blockType}>
           {rendered}
         </SourceMarker>
       );
