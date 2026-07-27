@@ -102,6 +102,7 @@ conditionals anywhere (`data/logic/featureFlags.ts`,
 [**Download the Android APK**](https://github.com/sjunka/casa-de-maiz/releases/latest) —
 33 MB, arm64-v8a, JS bundled in, pointed at the published CMS. Signed with the
 React Native debug keystore, so Android will warn about an unknown developer.
+Verified on a physical Android device (Redmi Note 8 Pro) — 2026-07-26.
 
 ```sh
 adb install casa-maiz-1.0.0-arm64.apk

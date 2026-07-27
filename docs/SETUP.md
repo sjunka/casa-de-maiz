@@ -64,7 +64,8 @@ adb install casa-maiz-1.0.0-arm64.apk
 
 arm64-v8a only, JS bundled into the binary, pointed at the published CMS. It is
 signed with the React Native debug keystore, so Android warns about an unknown
-developer. Rebuild it with:
+developer. Verified installing and running on a physical Android device
+(Redmi Note 8 Pro) — 2026-07-26. Rebuild it with:
 
 ```sh
 (cd android && ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a)
