@@ -1,72 +1,243 @@
-# Architecture
+# Arquitectura
 
-The app is organized around seven boundaries, screens composed on top:
+La app se organiza en siete fronteras, con las pantallas compuestas encima.
+Cada flecha apunta en una sola dirección: nada de abajo conoce lo de arriba.
 
 ```mermaid
 flowchart TD
-    A["core/transport<br/>HTTP client"] --> B["core/contract<br/>Zod schemas"]
-    B --> C["data/remote<br/>fetchers, cache"]
-    C --> D["data/logic<br/>app state"]
-    D --> E["navigation<br/>tab shell"]
-    D --> F["presentation/blocks<br/>+ banners"]
-    E --> G["presentation/screens"]
+    subgraph core["src/core: contrato y red"]
+        A["transport<br/>cliente HTTP, errores, base URL"]
+        B["contract<br/>schemas Zod, delivery context"]
+    end
+    subgraph data["src/data: datos y estado, sin React"]
+        C["remote<br/>fetchers, hooks, cache"]
+        D["logic<br/>alerts, appUpdate, featureFlags"]
+    end
+    subgraph ui["src/presentation + src/navigation"]
+        E["navigation<br/>tab shell y destinos"]
+        F["blocks + banners"]
+        G["screens<br/>solo composición"]
+    end
+
+    A --> B --> C --> D
+    D --> E
+    D --> F
+    E --> G
     F --> G
 ```
 
-- `src/core/transport` — HTTP client, error mapping, base-URL config
-- `src/core/contract` — supported contract version, delivery-context construction, installed app version, and `src/core/contract/models` — Zod schemas and their inferred TypeScript types, grouped by what references what:
-  - `models/primitives` — media, rich text, envelope, contract version — no dependency on any other model
-  - `models/blocks` — the block union, depends on `primitives`
-  - `models/bootstrap` — alert, promotion, operational controls — the pieces `bootstrap` assembles
-  - `models/screens` — per-screen payloads (`home`, `menu`, `legalDocument`, `bootstrap`), depends on `blocks` and `bootstrap`
-- `src/data/remote` — endpoint fetchers, query hooks, cache and freshness policy, query client:
-  - `remote/fetchers` — one function per endpoint, returns validated data
-  - `remote/hooks` — a `useQuery` wrapper per fetcher
-  - `cache.ts`, `queryClient.ts` stay at the root — shared by every fetcher/hook
-- `src/data/logic` — bootstrap-driven application state, no React, enforced by lint:
-  - `logic/alerts` — alert selection, frequency policy, notice-source resolution
-  - `logic/appUpdate` — version comparison and update decisioning
-  - `featureFlags.ts`, `scrollProgress.ts` stay at the root — single-purpose, unrelated to either group
-- `src/navigation` — destination resolution and the tab shell built from bootstrap:
-  - `navigation/components` — the tab bar, tab icon, header title, tab navigator
-  - `navigation/destinations` — destination resolution, deep linking, navigation ref
-  - `types.ts` stays at the root — shared by both groups
-- `src/presentation/blocks` — the block registry and block components
-- `src/presentation/banners` — the alert banner, app-update gate and operational-notice banner
-- `src/presentation/ui` / `src/presentation/theme` — shared presentation, tokens, dark mode, reduced motion
-- `src/presentation/screens` — composition only; no screen talks to the network or cache directly
+- `src/core/transport`: cliente HTTP, mapeo de errores, configuración de base URL.
+- `src/core/contract`: versión de contrato soportada, construcción del delivery
+  context, versión instalada de la app. Dentro, `src/core/contract/models`
+  guarda los schemas Zod y sus tipos inferidos, agrupados por quién referencia
+  a quién:
+  - `models/primitives`: media, rich text, envelope, contract version. No
+    dependen de ningún otro modelo.
+  - `models/blocks`: la unión de blocks, depende de `primitives`.
+  - `models/bootstrap`: alert, promotion, operational controls. Las piezas que
+    `bootstrap` ensambla.
+  - `models/screens`: payload por pantalla (`home`, `menu`, `legalDocument`,
+    `bootstrap`), depende de `blocks` y `bootstrap`.
+- `src/data/remote`: fetchers por endpoint, hooks de query, política de cache y
+  frescura, query client.
+  - `remote/fetchers`: una función por endpoint, devuelve datos ya validados.
+  - `remote/hooks`: un wrapper de `useQuery` por fetcher.
+  - `cache.ts` y `queryClient.ts` se quedan en la raíz, los comparten todos.
+- `src/data/logic`: estado de aplicación derivado de bootstrap, sin React, y el
+  lint lo obliga.
+  - `logic/alerts`: selección de alerta, política de frecuencia, resolución de
+    la fuente del aviso.
+  - `logic/appUpdate`: comparación de versiones y decisión de actualizar.
+  - `featureFlags.ts` y `scrollProgress.ts` viven en la raíz: cada uno hace una
+    sola cosa y no pertenece a ninguno de los dos grupos.
+- `src/navigation`: resolución de destinos y el tab shell construido desde
+  bootstrap.
+  - `navigation/components`: tab bar, ícono de tab, título de header, navigator.
+  - `navigation/destinations`: resolución de destinos, deep linking, nav ref.
+  - `types.ts` se queda en la raíz porque lo usan ambos grupos.
+- `src/presentation/blocks`: el block registry y los componentes de block.
+- `src/presentation/banners`: banner de alerta, update gate y aviso operativo.
+- `src/presentation/ui` y `src/presentation/theme`: presentación compartida,
+  tokens, dark mode, reduced motion.
+- `src/presentation/screens`: solo composición. Ninguna pantalla habla con la
+  red ni con el cache.
 
-## Key trade-offs
+## El ciclo de una petición de contenido
 
-- **Runtime validation over generated types**. The live API returns fields the public contract doesn't declare, so a generated client and hand validation would be two sources of truth that drift. Zod schemas describe only what the app consumes, tolerate additive fields, and infer TypeScript types with `z.infer` — one source of truth, and a malformed response is caught at the API boundary instead of deep in a component.
-- **TanStack Query behind a thin repository, not a bespoke cache**. Query owns request lifecycle (dedupe, cancellation, refetch); the repository owns freshness policy — network-first, persisted last-good response served only on failure and always marked as saved, `nextChangeAt` as a hard expiry. Offline is derived from request failure rather than a connectivity library, since a reachable network with an unreachable API is the same user-facing situation.
-- **One destination resolver, keyed on path, not per-surface routing**. Nav items, alert actions, and block CTAs all converge on the same resolver, so every tappable CMS link gets the same safety rules (`https`-only external links, user-safe messaging for unsupported destinations) for free.
-- **Contract compatibility is major-equal, minor-greater-or-equal, checked twice**. The envelope is checked once; each block re-checks its own `contractVersion` and `channels` client-side even though the server already filters, so one incompatible block degrades without taking the page down.
-- **Unknown blocks fail safe, not silent forever**. A block with no registry entry, a bad version, or an excluded channel renders nothing in release (logging only the `blockType`) and a visible marker in development — new blocks are additive, a registry entry rather than a screen rewrite.
-- **No UI kit**. `StyleSheet` plus local design tokens, light/dark driven by system appearance, because a Material component library would impose Android conventions on iOS. The cost is presentation components written by hand instead of imported. Debug builds add an in-memory scheme override behind a gear in the dev-only form tab, so dark mode is reviewable without leaving the app.
-- **A custom scheme through the existing resolver, not a second `linking` table**. `casamaiz://` deep links are stripped to a path and routed through the same `resolveDestination` every other tappable CMS link uses. Universal Links / Android App Links are out of scope — there's no domain the assessment lets us verify ownership of.
+Una pantalla nunca sabe de dónde salió lo que pinta. Pide datos al hook y
+recibe contenido validado, más una bandera `isSaved` si viene del disco.
 
-## Types strategy
+```mermaid
+sequenceDiagram
+    participant S as Screen
+    participant H as useHome / useMenu
+    participant C as fetchWithCache
+    participant T as transport/client
+    participant Z as schema Zod
+    participant A as AsyncStorage
 
-Zod schemas, not generated OpenAPI types. Generated types give a compile-time shape with no runtime guarantee — a response that stops matching the contract still gets to the render path. The live API also returns fields the public OpenAPI contract doesn't declare, so a generated client and a hand-written validation layer would become two sources of truth that drift from each other over time. Zod schemas describe only the fields the app actually consumes, tolerate any additive field the contract doesn't promise, and TypeScript types are inferred straight from the schema with `z.infer` — one definition, checked at both compile time and at the API boundary at runtime.
+    S->>H: render
+    H->>C: fetch(path, schema)
+    C->>T: GET con delivery context
+    T->>Z: parse del envelope
+    Z-->>C: datos tipados
+    C->>A: guarda última respuesta buena
+    C-->>H: datos, isSaved: false
+    H-->>S: contenido fresco
 
-## Dependencies
+    Note over T,A: si la red falla
+    T--xC: ApiError
+    C->>A: lee la copia guardada
+    A-->>C: envelope previo
+    C-->>S: mismos datos, isSaved: true
+```
 
-Every dependency added beyond the React Native CLI template, and why:
+## Política de frescura
 
-| Dependency | Why |
+La regla es network-first. El disco solo entra cuando la red falla, y la copia
+guardada caduca sola en `nextChangeAt`.
+
+```mermaid
+flowchart TD
+    R["Petición"] --> N{"¿Responde la red?"}
+    N -->|Sí| W["Guarda en disco"] --> OK["Contenido fresco<br/>isSaved: false"]
+    N -->|No| U{"¿El error es<br/>unsupported-contract?"}
+    U -->|Sí| E1["Propaga el error.<br/>Nunca se sirve del disco"]
+    U -->|No| K{"¿Hay copia guardada<br/>del mismo delivery context<br/>y misma versión?"}
+    K -->|No| E2["Estado de error<br/>con retry"]
+    K -->|Sí| X{"¿Pasó nextChangeAt?"}
+    X -->|Sí| E2
+    X -->|No| SAV["Contenido guardado<br/>isSaved: true"]
+```
+
+Un contrato incompatible nunca cae al disco: si el servidor cambió de forma, la
+copia vieja es igual de inválida y mostrarla sería mentirle al usuario.
+
+## Un solo resolver de destinos
+
+Ítems de navegación, acciones de alerta, CTAs de block y deep links
+`casamaiz://` pasan todos por la misma función. Las reglas de seguridad se
+escriben una vez.
+
+```mermaid
+flowchart TD
+    P["path o href"] --> S{"¿Trae scheme?"}
+    S -->|"https://"| EXT["Externo:<br/>abre en navegador"]
+    S -->|"otro scheme"| NO["unsupported:<br/>mensaje al usuario"]
+    S -->|No| M{"¿Coincide con<br/>una ruta conocida?"}
+    M -->|"/"| HOME["Home"]
+    M -->|"/menu"| MENU["Menu"]
+    M -->|"/reservas"| RES["Reservas"]
+    M -->|"/legal/:key"| LEG["Documento legal"]
+    M -->|Ninguna| NO
+```
+
+## Blocks que fallan seguro
+
+El registry decide qué se pinta. Un block que no encaja se descarta solo, sin
+tumbar la página.
+
+```mermaid
+flowchart TD
+    B["Block del CMS"] --> CH{"¿channels incluye<br/>esta plataforma?"}
+    CH -->|No| NADA["No renderiza nada"]
+    CH -->|Sí| CV{"¿contractVersion<br/>compatible?"}
+    CV -->|No| NADA
+    CV -->|Sí| REG{"¿blockType en<br/>el registry?"}
+    REG -->|No| MARK["Log del blockType +<br/>marcador visible solo en dev"]
+    REG -->|Sí| VAL{"¿Pasa el schema Zod?"}
+    VAL -->|No| MARK
+    VAL -->|Sí| OKB["Renderiza el componente"]
+```
+
+Agregar un block nuevo es agregar una entrada al registry, no reescribir una
+pantalla.
+
+## Trade-offs principales
+
+**Validación en runtime en vez de tipos generados.** La API viva devuelve
+campos que el contrato público no declara. Un cliente generado más validación a
+mano serían dos fuentes de verdad que se separan con el tiempo.
+
+Los schemas Zod describen solo lo que la app consume, toleran campos
+adicionales e infieren los tipos de TypeScript con `z.infer`. Una respuesta mal
+formada se detecta en la frontera de la API, no dentro de un componente.
+
+**TanStack Query detrás de un repositorio delgado, no un cache propio.** Query
+se encarga del ciclo de vida de la petición: dedupe, cancelación, refetch.
+
+El repositorio se encarga de la frescura: network-first, la última respuesta
+buena servida solo ante un fallo y siempre marcada como guardada, y
+`nextChangeAt` como expiración dura.
+
+Offline se deriva del fallo de la petición, no de una librería de conectividad.
+Una red alcanzable con una API caída es la misma situación para el usuario.
+
+**Un resolver de destinos, indexado por path.** Nav items, acciones de alerta y
+CTAs de block convergen en la misma función, así que cada link tappable del CMS
+hereda las mismas reglas de seguridad sin costo extra.
+
+**Compatibilidad de contrato: major igual, minor mayor o igual, verificada dos
+veces.** El envelope se verifica una vez, y cada block revisa de nuevo su
+propio `contractVersion` y sus `channels` en el cliente.
+
+El servidor ya filtra, pero con la segunda revisión un block incompatible se
+degrada solo en lugar de llevarse la página entera.
+
+**Los blocks desconocidos fallan seguro, no en silencio para siempre.** Sin
+entrada en el registry, con versión mala o canal excluido, el block no pinta
+nada en release y solo registra su `blockType`. En desarrollo aparece un
+marcador visible.
+
+**Sin UI kit.** `StyleSheet` más tokens de diseño locales, light y dark según
+la apariencia del sistema. Una librería de componentes Material impondría
+convenciones de Android sobre iOS.
+
+El costo es escribir los componentes de presentación a mano. Los builds de
+debug agregan un override de esquema en memoria detrás del engrane de la
+pestaña de formulario, para revisar dark mode sin salir de la app.
+
+**Un scheme propio pasando por el resolver existente, no una segunda tabla de
+`linking`.** Los deep links `casamaiz://` se reducen a un path y se enrutan por
+el mismo `resolveDestination` que usa todo lo demás.
+
+Universal Links y Android App Links quedan fuera de alcance: no hay un dominio
+cuya propiedad el assessment nos permita verificar.
+
+## Estrategia de tipos
+
+Schemas Zod, no tipos generados de OpenAPI. Un tipo generado da forma en tiempo
+de compilación y ninguna garantía en runtime: una respuesta que deja de cumplir
+el contrato igual llega al render.
+
+La API viva además devuelve campos que el contrato OpenAPI público no declara.
+Un cliente generado y una capa de validación escrita a mano terminarían siendo
+dos fuentes de verdad que se van separando.
+
+Los schemas describen solo los campos que la app consume y toleran cualquier
+campo adicional que el contrato no promete. Los tipos de TypeScript salen del
+mismo schema con `z.infer`: una definición, verificada al compilar y en la
+frontera de la API en runtime.
+
+## Dependencias
+
+Cada dependencia agregada más allá del template de React Native CLI, y para qué:
+
+| Dependencia | Para qué |
 |---|---|
-| `zod` | Runtime validation at the API boundary and the single source of truth for types. |
-| `@tanstack/react-query` | Request de-duplication, cancellation of obsolete responses, and refetch/pull-to-refresh without hand-rolling them. |
-| `@react-native-async-storage/async-storage` | Persists the last-good response for the offline fallback; the standard, officially-mocked choice for this. |
-| `react-native-config` | Reads `API_BASE_URL` from `.env` per environment, so the base URL is configurable without editing code. |
-| `react-native-device-info` | Reads the real installed app version for the `appVersion` delivery-context parameter, rather than trusting a source-file constant that can drift from the binary. |
-| `@react-navigation/native`, `@react-navigation/bottom-tabs` | The tab shell is built at runtime from `bootstrap.navigation`; these provide native-feeling tab and stack navigation without writing a router. |
-| `react-native-screens`, `react-native-safe-area-context` | Required peer dependencies of `@react-navigation` for native screen management and safe-area handling (notch, home indicator). |
-| `react-native-reanimated`, `react-native-worklets` | Notice/banner transitions and the undo window run off the JS thread, and honour Reduce Motion. |
-| `@shopify/flash-list` | Virtualizes the block list and long CMS form layouts. |
-| `@react-native-community/blur` | The iOS translucent/glass treatment, gated on Reduce Transparency. |
-| `@react-native-vector-icons/material-design-icons` | Tab and notice iconography; Material set on Android, same glyphs sized to iOS conventions. |
-| `@sentry/react-native` | Native and JS crash reporting at the app root — see [Observability](OBSERVABILITY.md). |
+| `zod` | Validación en runtime en la frontera de la API y fuente única de los tipos. |
+| `@tanstack/react-query` | Dedupe de peticiones, cancelación de respuestas obsoletas, refetch y pull-to-refresh sin escribirlos a mano. |
+| `@react-native-async-storage/async-storage` | Persiste la última respuesta buena para el fallback offline. Es la opción estándar y con mock oficial. |
+| `react-native-config` | Lee `API_BASE_URL` del `.env` por ambiente, así la base URL se configura sin tocar código. |
+| `react-native-device-info` | Lee la versión instalada real para el parámetro `appVersion`, en vez de confiar en una constante que se desfasa del binario. |
+| `@react-navigation/native`, `@react-navigation/bottom-tabs` | El tab shell se arma en runtime desde `bootstrap.navigation`. Dan navegación nativa sin escribir un router. |
+| `react-native-screens`, `react-native-safe-area-context` | Peer dependencies de `@react-navigation` para manejo nativo de pantallas y safe areas (notch, home indicator). |
+| `react-native-reanimated`, `react-native-worklets` | Las transiciones de avisos y la ventana de undo corren fuera del hilo de JS y respetan Reduce Motion. |
+| `@shopify/flash-list` | Virtualiza la lista de blocks y los formularios largos del CMS. |
+| `@react-native-community/blur` | El tratamiento traslúcido de iOS, condicionado a Reduce Transparency. |
+| `@react-native-vector-icons/material-design-icons` | Iconografía de tabs y avisos. Set Material en Android, mismos glifos ajustados a convenciones de iOS. |
+| `@sentry/react-native` | Crash reporting nativo y de JS en la raíz de la app. Ver [Observabilidad](OBSERVABILITY.md). |
 
-No image library, connectivity library, or UI kit was added — each was considered and rejected in favour of a platform primitive or a documented deferral (see [Limitations](LIMITATIONS.md)).
+No se agregó librería de imágenes, de conectividad ni UI kit. Cada una se
+consideró y se descartó a favor de una primitiva de la plataforma o de un
+aplazamiento documentado (ver [Limitaciones](LIMITATIONS.md)).
