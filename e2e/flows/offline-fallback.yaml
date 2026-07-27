@@ -1,5 +1,10 @@
-# Guest opens Home, load succeeds and is cached. Home then fails on refresh —
-# the last-good content is served, visibly marked as saved (not silently stale).
+# Guest opens Home, load succeeds and is cached. Home then fails on the next
+# launch — the last-good content is served, visibly marked as saved (not
+# silently stale).
+#
+# The refresh is a relaunch, not a pull-to-refresh swipe: XCTest's synthesised
+# swipe never drives RefreshControl, and a cold launch against a dead API is
+# the situation this flow is about anyway.
 appId: ${APP_ID}
 ---
 - runScript: reset-normal.js
@@ -10,8 +15,7 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: "content-saved-banner"
 - runScript: set-home-failing.js
-- swipe:
-    direction: DOWN
+- launchApp
 - assertVisible:
     id: "content-saved-banner"
 - assertVisible:

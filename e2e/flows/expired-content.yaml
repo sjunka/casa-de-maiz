@@ -1,6 +1,10 @@
 # Home loads and caches with a near-future nextChangeAt. Once that boundary
 # passes, a failing refresh must NOT fall back to the now-expired cache — the
 # guest should see the retry state, never stale content silently served as current.
+#
+# The refresh is a relaunch rather than a pull-to-refresh swipe, for the same
+# reason as offline-fallback.yaml: XCTest's synthesised swipe never drives
+# RefreshControl.
 appId: ${APP_ID}
 ---
 - runScript: reset-normal.js
@@ -13,8 +17,7 @@ appId: ${APP_ID}
     id: "content-saved-banner"
 - runScript: wait-past-expiry.js
 - runScript: set-home-failing.js
-- swipe:
-    direction: DOWN
+- launchApp
 - assertVisible:
     id: "content-error"
 - assertNotVisible:

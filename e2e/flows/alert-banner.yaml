@@ -7,6 +7,6 @@ appId: ${APP_ID}
     clearState: true
 - assertVisible:
     id: "alert-banner"
-- tapOn: "Dismiss alert"
+- tapOn: "Descartar alerta"
 - assertNotVisible:
     id: "alert-banner"

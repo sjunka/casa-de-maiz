@@ -55,7 +55,9 @@ de un `fetch` scripteado: fallback offline, contenido expirado, versión de
 contrato no soportada, navegación por tabs, una alerta publicada por el CMS y
 un envío de formulario.
 
-Corren con Maestro contra un servidor de contenido mockeado local.
+Corren con Maestro contra un servidor de contenido mockeado local. Los seis
+flows pasan en verde en iOS (simulador iPhone 17, iOS 26.2) y en Android
+(emulador API 36).
 
 ```sh
 npm run e2e:mock-server    # terminal 1: API de contenido mockeada en :4001
@@ -66,6 +68,14 @@ npm run e2e:ios            # corre los flows contra el simulador de iOS
 npm run e2e:build:android  # el emulador de Android ya debe estar corriendo
 npm run e2e:android
 ```
+
+Los dos scripts fijan `--platform` a propósito: con un simulador de iOS y un
+emulador de Android arrancados a la vez, Maestro elige uno solo y el otro falla
+con `Package … is not installed`.
+
+El refresco de los flows de resiliencia es un relanzamiento, no un
+pull-to-refresh: el swipe sintético de XCTest no dispara `RefreshControl`, y un
+arranque en frío contra una API caída es justamente el escenario que prueban.
 
 Los flows viven en `e2e/flows/`. Los archivos `.js` de ese directorio manejan
 el estado del mock server (un endpoint de home que falla, un `nextChangeAt`
